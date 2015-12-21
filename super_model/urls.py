@@ -8,4 +8,27 @@ url(r'^comment/get_confirm_form_ajax/$', views.CommentGetConfirmFormAjax.as_view
 url(r'^comment/do_confirm_ajax/$', views.CommentDoConfirmAjax.as_view(), name='comment-do-confirm-ajax'),
 url(r'^get_ajax_login_form/$', views.GetAjaxLoginFormView.as_view(), name='get-ajax-login-form'),
 url(r'^ajax_login/$', views.AjaxLoginView.as_view(), name='ajax-login'),
-        ]
+
+
+
+url(r'^signup/$', views.SuperSignupView.as_view(), name='signup'),
+url(r'^login/$', views.SuperLoginView.as_view(), name='login'),
+url(r'^logout/$', views.SuperLogoutView.as_view(), name='logout'),
+url(r'^password_change/$', views.SuperPasswordChangeView.as_view(), name='password-change'),
+url(r'^password_reset/$', views.SuperPasswordResetView.as_view(), name='password-reset'),
+url(r'^password_reset_done/$', views.SuperPasswordResetDoneView.as_view(), name='password-reset-done'),
+url(r"^password_reset_from_key/(?P<uidb36>[0-9A-Za-z]+)-(?P<key>.+)/$",
+    views.SuperPasswordResetFromKeyView.as_view(),
+    name="password-reset-from-key"),
+url(r"^password_reset_from_key_done/$", views.SuperPasswordResetFromKeyDoneView.as_view(),
+    name="password-reset-from-key-done"),
+url(r"^email/$", views.SuperEmailView.as_view(), name="account_email"),
+url(r"^confirm-email/(?P<key>\w+)/$", views.SuperConfirmEmailView.as_view(), name="account_confirm_email"),
+#social
+url(r'^social_login/$', views.SuperSocialSignupView.as_view(), name='socialaccount_signup'), #Перекрываем их url. Иначе не получилось.
+url(r'^login_cancelled/$', views.SuperLoginCancelledView.as_view(),
+    name='socialaccount_login_cancelled'),
+url(r'^login_error/$', views.SuperLoginErrorView.as_view(), name='socialaccount_login_error'),
+url(r'^connections/$', views.SuperConnectionsView.as_view(), name='socialaccount_connections'),
+
+    ]

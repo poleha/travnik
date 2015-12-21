@@ -35,7 +35,7 @@ class Post(super_models.SuperPost):
     @classmethod
     def get_post_type(cls):
         if cls == Plant:
-            return settings.POST_TYPE_PLAND
+            return settings.POST_TYPE_PLANT
         elif cls == Recipe:
             return settings.POST_TYPE_RECIPE
 

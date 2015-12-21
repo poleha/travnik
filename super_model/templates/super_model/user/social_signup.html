@@ -1,0 +1,18 @@
+{% extends  base_template %}
+
+
+
+{% block content %}
+
+<p>Вы собираетесь войти на {{site.name}} с помощью {{account.get_provider.name}}. Для завершения, пожалуйста, заполните эту форму:</p>
+
+<form class="signup auth-form" id="signup_form" method="post" action="{% url 'socialaccount_signup' %}">
+  {% csrf_token %}
+  {{ form.as_p }}
+  {% if redirect_field_value %}
+  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+  {% endif %}
+  <button class="btn btn-success" type="submit">Войти</button>
+</form>
+
+{% endblock %}

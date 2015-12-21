@@ -44,10 +44,10 @@ INSTALLED_APPS = (
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.vk',
-    'allauth.socialaccount.providers.openid',
-    'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.facebook',
+    #'allauth.socialaccount.providers.vk',
+    #'allauth.socialaccount.providers.openid',
+    #'allauth.socialaccount.providers.google',
+    #'allauth.socialaccount.providers.facebook',
     'sorl.thumbnail',
     'django.contrib.redirects',
     'compressor',
@@ -311,33 +311,13 @@ SITE_NAME = 'Travnik.ru'
 
 
 
-POST_TYPE_DRUG = 1
-POST_TYPE_BLOG = 2
-POST_TYPE_FORUM = 3
-POST_TYPE_COSMETICS = 4
-POST_TYPE_COMPONENT = 5
-POST_TYPE_BRAND = 6
-POST_TYPE_DRUG_DOSAGE_FORM = 7
-POST_TYPE_COSMETICS_DOSAGE_FORM = 8
-POST_TYPE_COSMETICS_LINE = 9
-POST_TYPE_COSMETICS_USAGE_AREA = 10
-POST_TYPE_DRUG_USAGE_AREA = 11
-POST_TYPE_CATEGORY = 12
+POST_TYPE_PLANT = 1
+POST_TYPE_RECIPE = 2
 
 
 POST_TYPES = (
-    (POST_TYPE_DRUG, 'Препарат'),
-    (POST_TYPE_BLOG, 'Блог'),
-    (POST_TYPE_FORUM, 'Форум'),
-    (POST_TYPE_COMPONENT, 'Компонент'),
-    (POST_TYPE_COSMETICS, 'Косметика'),
-    (POST_TYPE_BRAND, 'Бренд'),
-    (POST_TYPE_DRUG_DOSAGE_FORM, 'Форма выпуска препарата'),
-    (POST_TYPE_COSMETICS_DOSAGE_FORM, 'Форма выпуска косметики'),
-    (POST_TYPE_COSMETICS_LINE, 'Линия косметики'),
-    (POST_TYPE_COSMETICS_USAGE_AREA, 'Область применения косметики'),
-    (POST_TYPE_DRUG_USAGE_AREA, 'Област применения препарата'),
-    (POST_TYPE_CATEGORY, 'Категория'),
+    (POST_TYPE_PLANT, 'Растение'),
+    (POST_TYPE_RECIPE, 'Рецепт'),
 )
 
 #SUPER_MODEL_KEY_NAME = 'prozdo_key'
