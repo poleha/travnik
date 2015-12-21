@@ -1,0 +1,46 @@
+ <script>
+$(function () {
+
+     $(document).on('click', '.confirm-comment', function (e) {
+
+                    var commentBlock = $(this).closest('.single-comment');
+                    var pk = commentBlock.find('.comment-pk').val();
+                    var resultBlock = commentBlock.find('.confirmation-block');
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '{% url 'comment-get-confirm-form-ajax' %}',
+                        data: {'pk': pk},
+                        success: function (data) {
+                            resultBlock.html(data);
+                        },
+                        error: function (data) {
+
+                        }
+                    });
+
+                });
+
+                $(document).on('submit', '.comment-do-confirm-form', function (e) {
+
+                    var commentBlock = $(this).closest('.single-comment');
+                    //var pk = commentBlock.find('.comment-pk').val();
+                    var resultBlock = commentBlock.find('.confirmation-block');
+                    var data = $(e.currentTarget).serialize();
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '{% url 'comment-do-confirm-ajax' %}',
+                        data: data,
+                        success: function (data) {
+                            resultBlock.html(data);
+                        },
+                        error: function (data) {
+
+                        }
+                    });
+
+                    e.preventDefault();
+                });
+});
+ </script>

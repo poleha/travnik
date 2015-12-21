@@ -1,0 +1,50 @@
+<script>
+$(function () {
+$('#ajax-login-button').click(function(e){
+    var loginForm = $("#ajax-login-form");
+    if (loginForm.length > 0) {
+    $('#login-form-block').html('');
+    }
+    else {
+    $.ajax({
+                        type: 'POST',
+                        url: '{% url 'get-ajax-login-form' %}',
+                        success: function (data) {
+                            $('#login-form-block').html(data);
+                        },
+                        error: function (data) {
+
+                        }
+                    });
+
+}
+});
+
+
+$(document).on('submit', '#ajax-login-form', function(e){
+
+    var loginForm = $('#ajax-login-form');
+
+$.ajax({
+                        type: 'POST',
+                        data: loginForm.serialize(),
+                        url: "{% url 'ajax-login' %}",
+                        success: function (data) {
+                        window.location.href = location.href;
+                        },
+                        error: function (data) {
+                        $('#login-form-block').html(data.responseJSON.html);
+                        }
+                    });
+
+
+e.preventDefault();
+
+
+
+});
+
+});
+
+
+</script>

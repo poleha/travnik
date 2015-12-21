@@ -1,0 +1,7 @@
+{% load account socialaccount %}
+<div id="social-login">
+<a id="facebook-login" href="{% provider_login_url "facebook" process=process %}"></a>
+<a id="google-login" href="{% provider_login_url "google" process=process %}"></a>
+<a id="vk-login" href="{% provider_login_url "vk" process=process %}"></a>
+</div>
+{% include "socialaccount/snippets/login_extra.html" %}
