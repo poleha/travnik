@@ -8,7 +8,6 @@ url(r'^comment/get_confirm_form_ajax/$', views.CommentGetConfirmFormAjax.as_view
 url(r'^comment/do_confirm_ajax/$', views.CommentDoConfirmAjax.as_view(), name='comment-do-confirm-ajax'),
 url(r'^get_ajax_login_form/$', views.GetAjaxLoginFormView.as_view(), name='get-ajax-login-form'),
 url(r'^ajax_login/$', views.AjaxLoginView.as_view(), name='ajax-login'),
-url(r'^comment/get_tree_ajax/$', views.CommentGetTreeAjax.as_view(), name='get-comment-tree-ajax'),
 url(r'^comment/get_tiny_ajax/$', views.CommentGetTinyAjax.as_view(), name='comment-get-tiny-ajax'),
 url(r'^comment/show_marked_users_ajax/$', views.CommentShowMarkedUsersAjax.as_view(), name='comment-show-marked-users-ajax'),
 url(r'^unsubscribe/(?P<email>[0-9a-zA-Z.\-_@]+)/(?P<key>[0-9A-Za-z]+)/$', views.UnsubscribeView.as_view(), name='unsubscribe'),

@@ -857,7 +857,7 @@ class SuperHistory(SuperModel):
                 hist_exists_by_ip = History.objects.filter(history_type=history_type, post=post, ip=ip, user=None, deleted=False).exists()
                 hist_exists = hist_exists_by_key or hist_exists_by_ip
 
-            if not hist_exists and ((not post.is_blog and mark and mark > 0) or post.is_blog):
+            if not hist_exists:
                 h = History.objects.create(history_type=history_type, post=post, user=user, ip=ip, comment=comment,
                                    user_points=History.get_points(history_type), author=post_author, mark=mark, session_key=session_key)
                 return h

@@ -18,6 +18,8 @@ from django.shortcuts import get_object_or_404
 from django.db import transaction
 from django.utils import timezone
 from django.contrib import messages
+from django.db.models import Q
+
 
 Comment = import_string(settings.BASE_COMMENT_CLASS)
 History = import_string(settings.BASE_HISTORY_CLASS)
@@ -565,7 +567,7 @@ class SuperPostDetail(SuperListView):
             else:
                 return self.render_to_response(self.get_context_data(comment_form=comment_form, **kwargs))
 
-class CommentGetTreeAjax(generic.TemplateView):
+class SuperCommentGetTreeAjax(generic.TemplateView):
     template_name = 'super_model/widgets/_get_child_comments.html'
 
     @csrf_exempt

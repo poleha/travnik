@@ -142,3 +142,6 @@ class AutocompleteView(generic.View):
             'results': suggestions
         }
         return JsonResponse(data)
+
+class CommentGetTreeAjax(super_views.SuperCommentGetTreeAjax):
+    template_name = 'main/widgets/_get_child_comments.html'

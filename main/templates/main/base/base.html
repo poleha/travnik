@@ -31,29 +31,45 @@
 {% endblock head %}
 
 
-<!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script> -->
-{% block header %}
-{% top_menu %}
-{% endblock header %}
+<body>
+<div class="container-fluid">
+<div class="row" id="header">
+    {% block header %}
+        {% top_menu %}
+    {% endblock header %}
+</div>
 
-{% block sidebar_left %}
+<div class="row">
+<div class="col-lg-2 col-md-3 hidden-sm hidden-xs" id="sidebar-left">
+    {% block sidebar_left %}
 
 {% endblock sidebar_left %}
+</div>
+<div class="col-lg-8 col-md-6 col-sm-8 col-xs-12">
+{% block breadcrumbs %}
+
+{% endblock breadcrumbs %}
+
 
 {% block content %}
 
 {% endblock content %}
+</div>
 
-
+<div class="col-lg-2 col-md-3 col-sm-4 hidden-xs" id="sidebar-right">
 {% block sidebar_right %}
 
 {% endblock sidebar_right %}
+</div>
+</div>
 
-
+<div class="row">
 {% block footer %}
 
 {% endblock footer %}
-
+</div>
+</div>
+</body>
 
 {% block bottom_scripts %}
 
