@@ -25,3 +25,12 @@ class RecipeForm(forms.ModelForm):
         model = models.Recipe
         exclude = ('post_type', 'created', 'updated', 'published')
 
+
+class CommentForm(super_forms.SuperCommentForm):
+    class Meta:
+        model = models.Comment
+        fields = ('username', 'email', 'body', 'parent' )
+
+
+class CommentOptionsForm(super_forms.SuperCommentOptionsForm):
+        show_type_label = 'Вид показа комментариев'

@@ -13,7 +13,11 @@ from . import forms
 from allauth.account.views import SignupView, LoginView, LogoutView, PasswordChangeView, PasswordResetView, PasswordResetDoneView, PasswordResetFromKeyView, PasswordResetFromKeyDoneView, ConfirmEmailView, EmailView
 from allauth.socialaccount.views import SignupView as SocialSignupView, LoginCancelledView, LoginErrorView, ConnectionsView
 from .decorators import login_required
- 
+from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import get_object_or_404
+from django.db import transaction
+from django.utils import timezone
+from django.contrib import messages
 
 Comment = import_string(settings.BASE_COMMENT_CLASS)
 History = import_string(settings.BASE_HISTORY_CLASS)
@@ -406,3 +410,157 @@ class SuperConfirmEmailView(ConfirmEmailView):
             return ["main/user/email_confirmed.html"]
         else:
             return ["main/user/email_confirm.html"]
+
+
+class SuperPostDetail(SuperListView):
+    context_object_name = 'comments'
+    paginate_by = settings.POST_COMMENTS_PAGE_SIZE
+    template_name = 'super_model/post/post_detail.html'
+    comment_form = forms.SuperCommentForm
+    comment_options_form = forms.SuperCommentOptionsForm
+
+    @csrf_exempt
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        request = self.request
+        try:
+            show_type = int(request.GET.get('show_type', forms.COMMENTS_SHOW_TYPE_PLAIN))
+        except:
+            show_type = forms.COMMENTS_SHOW_TYPE_PLAIN
+        try:
+            order_by_created = int(request.GET.get('order_by_created', forms.COMMENTS_ORDER_BY_CREATED_DEC))
+        except:
+            order_by_created = forms.COMMENTS_ORDER_BY_CREATED_DEC
+
+        if show_type == forms.COMMENTS_SHOW_TYPE_TREE:
+            comments = self.post.obj.comments.get_available().filter(parent=None)
+        else:
+            comments = self.post.obj.comments.get_available()
+        if order_by_created == forms.COMMENTS_ORDER_BY_CREATED_DEC:
+            comments = comments.order_by('-created')
+        else:
+            comments = comments.order_by('created')
+
+        return comments
+
+
+    def get(self, request, *args, **kwargs):
+        self.set_obj()
+        self.set_comment_page()
+        res = super().get(request, *args, **kwargs)
+        last_modified = self.obj.last_modified
+        if last_modified:
+            last_modified = helper.convert_date_for_last_modified(last_modified)
+            expires = timezone.now() + timezone.timedelta(seconds=settings.CACHED_VIEW_DURATION)
+            res['Last-Modified'] = last_modified
+            res['Expires'] = helper.convert_date_for_last_modified(expires)
+        return res
+
+    @staticmethod
+    def get_post(kwargs):
+        if 'alias' in kwargs:
+            alias = kwargs['alias']
+            post = get_object_or_404(Post, alias=alias)
+        else:
+            pk = kwargs['pk']
+            post = get_object_or_404(Post, pk=pk)
+        return post
+
+    def set_obj(self):
+        post = self.get_post(self.kwargs)
+        self.post = post
+        self.obj = post.obj
+
+    def set_comment_page(self):
+        if self.kwargs['action'] == 'comment':
+            try:
+                comment = Comment.objects.get(pk=self.kwargs['comment_pk'])
+                self.kwargs[self.page_kwarg] = comment.page
+            except ObjectDoesNotExist:
+                pass
+
+    def get_context_data(self, comment_form=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+
+        request = self.request
+        try:
+            show_type = int(request.GET.get('show_type', forms.COMMENTS_SHOW_TYPE_PLAIN))
+        except:
+            show_type = forms.COMMENTS_SHOW_TYPE_PLAIN
+
+        if show_type == forms.COMMENTS_SHOW_TYPE_TREE:
+            context['show_tree'] = True
+
+        else:
+            context['show_tree'] = False
+
+        context['obj'] = self.obj
+
+        if comment_form is None:
+            comment_form = self.comment_form(request=self.request, post=self.post)
+        context['comment_form'] = comment_form
+        comments_options_form = self.comment_options_form(self.request.GET)
+        context['comments_options_form'] = comments_options_form
+        context['mark'] = self.post.obj.get_mark_by_request(request)
+
+        if self.obj.can_be_rated:
+            user_mark = self.obj.get_mark_by_request(request)
+            if user_mark == 0:
+                context['can_mark_blog'] = True
+            else:
+                context['can_mark_blog'] = False
+
+
+        #visibility
+        if context['mark']:
+            if user.is_authenticated():
+                hist_exists = History.objects.filter(history_type=models.HISTORY_TYPE_POST_RATED, user=user, post=self.post, deleted=False).exists()
+            else:
+                hist_exists = History.objects.filter(history_type=models.HISTORY_TYPE_POST_RATED, session_key=getattr(request.session, settings.SUPER_MODEL_KEY_NAME), post=self.post, deleted=False).exists()
+            if hist_exists:
+                show_your_mark_block_cls = ''
+                show_make_mark_block_cls = 'hidden'
+            else:
+                show_your_mark_block_cls = 'hidden'
+                show_make_mark_block_cls = ''
+        else:
+            show_your_mark_block_cls = 'hidden'
+            show_make_mark_block_cls = ''
+        context['show_your_mark_block_cls'] = show_your_mark_block_cls
+        context['show_make_mark_block_cls'] = show_make_mark_block_cls
+        return context
+
+    @transaction.atomic()
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        self.set_obj()
+        self.object_list = self.get_queryset()
+        comment_form = self.comment_form(request.POST, request=request, post=self.post)
+        comment_form.instance.post = self.post
+        comment_form.instance.ip = request.client_ip
+        comment_form.instance.session_key = helper.set_and_get_session_key(request.session)
+        if user.is_authenticated() and not comment_form.instance.user:
+            comment_form.instance.user = user
+
+        if comment_form.is_valid():
+            comment_form.instance.status = comment_form.instance.get_status()
+            comment = comment_form.save()
+            published = comment.status == models.COMMENT_STATUS_PUBLISHED
+
+            if not published:
+                messages.add_message(request, messages.INFO, 'Ваш отзыв будет опубликован после проверки модератором')
+            comment.send_confirmation_mail(request=request)
+
+            #models.History.save_history(history_type=models.HISTORY_TYPE_COMMENT_CREATED, post=self.post, user=request.user, ip=request.client_ip, comment=comment)
+            if request.is_ajax():
+                return JsonResponse({'href': comment.get_absolute_url(), 'status': 1, 'published': published})
+            else:
+                return HttpResponseRedirect(self.obj.get_absolute_url())
+        else:
+            if request.is_ajax():
+                return JsonResponse({'comment_form': comment_form.as_p(), 'status': 2})
+            else:
+                return self.render_to_response(self.get_context_data(comment_form=comment_form, **kwargs))

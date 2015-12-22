@@ -4,7 +4,7 @@ from cache.models import CachedModelMixin
 from mptt.models import MPTTModel, TreeForeignKey
 from mptt.querysets import TreeQuerySet
 from django.contrib.auth.models import User, AnonymousUser
-from cache.decorators import cached_property
+from cache.decorators import cached_property, cached_method
 from .app_settings import settings
 from django.core.urlresolvers import reverse
 from math import ceil
@@ -20,8 +20,7 @@ from django.template.loader import render_to_string
 from allauth.account.models import EmailAddress
 from django.db.models.signals import post_save
 from super_model.helper import generate_key
-
-
+from django.db.models.aggregates import Count
 
 
 class SuperModel(models.Model):
@@ -126,6 +125,95 @@ class SuperComment(SuperModel, CachedModelMixin, MPTTModel, class_with_published
     def has_avaliable_children(self):
         return self.children.get_available().exists()
 
+    @cached_property
+    def comment_mark(self):
+        History = import_string(settings.BASE_HISTORY_CLASS)
+        try:
+            mark = History.objects.filter(comment=self, history_type=HISTORY_TYPE_COMMENT_RATED, deleted=False).aggregate(Count('pk'))['pk__count']
+            if mark is None:
+                mark = 0
+        except:
+            mark = 0
+        return mark
+
+    @cached_property
+    def complain_count(self):
+        History = import_string(settings.BASE_HISTORY_CLASS)
+        try:
+            count = History.objects.filter(comment=self, history_type=HISTORY_TYPE_COMMENT_COMPLAINT, deleted=False).aggregate(Count('pk'))['pk__count']
+            if count is None:
+                count = 0
+        except:
+            count = 0
+        return count
+
+    @cached_method()
+    def hist_exists_by_comment_and_user(self, history_type, user):
+        History = import_string(settings.BASE_HISTORY_CLASS)
+        return History.objects.filter(history_type=history_type, comment=self, user=user, deleted=False).exists()
+
+    def hist_exists_by_request(self, history_type, request):
+        History = import_string(settings.BASE_HISTORY_CLASS)
+        if request_with_empty_guest(request):
+            return False
+        user = request.user
+        if user and user.is_authenticated():
+            hist_exists = self.hist_exists_by_comment_and_user(history_type, user)
+        else:
+            session_key = getattr(request.session, settings.SUPER_MODEL_KEY_NAME, None)
+            if session_key is None:
+                return False
+            hist_exists = History.exists_by_comment(session_key, self, history_type)
+        return hist_exists
+
+    def show_do_action_button(self, history_type, request):
+        if request_with_empty_guest(request):
+            return True
+        return not self.hist_exists_by_request(history_type, request) and not self.is_author_for_show_buttons(request)
+
+    def show_undo_action_button(self, history_type, request):
+        if request_with_empty_guest(request):
+            return False
+        return self.hist_exists_by_request(history_type, request) and not self.is_author_for_show_buttons(request)
+
+    def is_author_for_show_buttons(self, request):
+        if request_with_empty_guest(request):
+            return False
+        user = request.user
+        if user and user.is_authenticated():
+            return user == self.user
+        else:
+            session_key = getattr(request.session, settings.SUPER_MODEL_KEY_NAME, None)
+            if session_key is None:
+                return False
+            else:
+                return self.session_key == session_key
+
+
+    def hist_exists_by_data(self, history_type, user=None, ip=None, session_key=None):
+        History = import_string(settings.BASE_HISTORY_CLASS)
+        if user and user.is_authenticated():
+            hist_exists = History.objects.filter(history_type=history_type, comment=self, user=user, deleted=False).exists()
+        elif not History.exists(session_key):
+            return False
+        else:
+            if session_key:
+                hist_exists_by_key = History.objects.filter(history_type=history_type, comment=self, session_key=session_key, deleted=False).exists()
+            else:
+                hist_exists_by_key = False
+            if ip:
+                hist_exists_by_ip = History.objects.filter(history_type=history_type, comment=self, ip=ip, deleted=False).exists()
+            else:
+                hist_exists_by_ip = False
+            hist_exists = hist_exists_by_key or hist_exists_by_ip
+
+        return hist_exists
+
+    def can_do_action(self, history_type, user, ip, session_key):
+        if user and not user.is_authenticated():
+            return True
+        return not self.hist_exists_by_data(history_type, user, ip, session_key) and not self.is_author_for_save_history(user, ip, session_key)
+
 
     @property
     def get_tree_level(self):
@@ -133,6 +221,21 @@ class SuperComment(SuperModel, CachedModelMixin, MPTTModel, class_with_published
             return self.tree_level
         else:
             return 0
+
+    def __str__(self):
+        return self.short_body
+
+    def type_str(self):
+        return 'Сообщение'
+
+    def get_confirm_url(self):
+        return reverse('comment-confirm', kwargs={'comment_pk': self.pk, 'key': self.key})
+
+    @property
+    def consult_done(self):
+        return self.available_children.filter(user__user_profile__role=settings.USER_ROLE_DOCTOR).exists()
+
+
 
     @property
     def update_url(self):
@@ -401,8 +504,26 @@ class SuperPost(AbstractModel, class_with_published_mixin(POST_STATUS_PUBLISHED)
     status = models.IntegerField(choices=POST_STATUSES, verbose_name='Статус', default=POST_STATUS_PROJECT, db_index=True)
     post_type = models.IntegerField(choices=settings.POST_TYPES, verbose_name='Вид записи', db_index=True )
 
+    can_be_rated = False
 
     objects = PostManager()
+
+
+    def get_mark_by_request(self, request):
+        History = import_string(settings.BASE_HISTORY_CLASS)
+        user = request.user
+        if user.is_authenticated():
+            try:
+                mark = History.objects.filter(user=user, history_type=HISTORY_TYPE_POST_RATED, post=self, deleted=False).count()
+            except:
+                mark = 0
+        else:
+            try:
+                mark = History.objects.filter(post=self, history_type=HISTORY_TYPE_POST_RATED, user=None, deleted=False).filter(session_key=getattr(request.session, settings.SUPER_MODEL_KEY_NAME)).count()
+            except:
+                mark = 0
+
+        return mark
 
     @cached_property
     def last_modified(self):

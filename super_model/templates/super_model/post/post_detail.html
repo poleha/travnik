@@ -1,0 +1,753 @@
+{% extends base_template %}
+{% load prozdo_main_tags %}
+{% load helper_tags %}
+{% load compress %}
+{% block content %}
+
+
+    <div id="full-post">
+        <input id="post-pk" type="hidden" value="{{ obj.pk }}">
+
+        <h1><a class="post-title" href="{{ obj.get_absolute_url }}">{{ obj }}</a></h1>
+        {% if user.is_admin or user.is_author %}
+            <a href="{{ obj.update_url }}">Редактировать</a>
+
+        {% endif %}
+        {% if obj.is_drug or obj.is_cosmetics %}
+        <div class="row">
+            <div class="col-md-6">
+
+
+                <div>
+                    <a href="{{ obj.get_absolute_url }}">
+                        <img alt="{{ obj.title }}" class="img-rounded" src="{{ obj.thumb220 }}">
+                    </a>
+
+                </div>
+            </div>
+            <div class="col-md-6 post-right-block">
+
+                {% if user.is_regular %}
+                <div id="post-mark-block>">
+                        <div id="current-post-mark-block" class="{{ show_your_mark_block_cls }}">
+                            <label>Ваша оценка: </label><span id="current-post-mark"> {{ mark }}</span>
+                        <input type="button" value="Отменить оценку" id="cancel-mark-button" class="btn btn-warning {{ show_your_mark_block_cls }}">
+                        </div>
+
+
+                        <div id="post-mark" class="{{ show_make_mark_block_cls }}">
+
+
+                            <label>Оценить: </label>
+     <a class="star" id="post-mark-1"></a>
+     <a class="star" id="post-mark-2"></a>
+     <a class="star" id="post-mark-3"></a>
+     <a class="star" id="post-mark-4"></a>
+     <a class="star" id="post-mark-5"></a>
+                        </div>
+
+                    </div>
+{% endif %}
+
+                    <div>
+                        <label>Средняя оценка: </label><span id="post-average-mark">{{ obj.average_mark }}</span>(количество оценок: <span id="post-marks-count">{{ obj.marks_count }})</span>
+                    </div>
+
+                    <div>
+                        <label>Количество отзывов: </label><span>{{ obj.published_comments_count }}</span>
+                    </div>
+                    {% if obj.last_comment_date %}
+                        <div>
+                            <label>Последний отзыв оставлен: </label><span>{{ obj.last_comment_date }}</span>
+                        </div>
+                    {% endif %}
+                    <a href="#comment-form" class="btn btn-success">Оставить отзыв</a>
+
+            </div>
+
+
+        </div>
+
+    {% endif %}
+
+        <div class="row">
+
+            <div class="col-xs-12">
+            {% if obj.is_blog %}
+            {% if user.is_regular %}
+  <div id="blog-full-mark-block">
+             <div class="blog-mark-block">
+        <span class="blog-current-mark">Материал сочли полезным: <span class="blog-current-mark-span">{{ obj.mark }}</span></span>
+
+
+    </div>   
+                
+        {% if can_mark_blog %}
+         <input class="blog-unmark-button btn btn-cancel hidden" type="button" value='Отозвать оценку'>
+         <input class="blog-mark-button btn btn-success" type="button" value='Материал полезен'>
+        {% else %}
+        <input class="blog-unmark-button btn btn-cancel" type="button" value='Отозвать оценку'>
+        <input class="blog-mark-button btn btn-success hidden" type="button" value='Материал полезен'>
+        {% endif %}
+                
+      </div>
+      {% endif %}
+            <a id="blog-image" href="{{ obj.get_absolute_url }}">
+                        <img alt="{{ obj.title }}" class="img-rounded" src="{{ obj.thumb220 }}">
+                    </a>
+
+        {% endif %}
+                <div id="post-block">
+                    {% if obj.body %}
+                        <div>
+                            {% if obj.show_body_label %}
+                                <h4>{% get_verbose_field_name obj 'body' %}:</h4>
+                            {% endif %}
+                            {{ obj.body|safe }}
+                        </div>
+                    {% endif %}
+
+                    {% if obj.is_drug %}
+                        {% if obj.features %}
+                            <div>
+                                <h4>{% get_verbose_field_name obj 'features' %}:</h4>
+                                {{ obj.features|safe }}
+                            </div>
+                        {% endif %}
+
+                        {% if obj.indications %}
+                            <div>
+                                <h4>{% get_verbose_field_name obj 'indications' %}:</h4>
+                                {{ obj.indications|safe }}
+                            </div>
+                        {% endif %}
+
+                        {% if obj.application_scheme %}
+                            <div>
+                                <h4>{% get_verbose_field_name obj 'application_scheme' %}:</h4>
+                                {{ obj.application_scheme|safe }}
+                            </div>
+                        {% endif %}
+
+                        {% if obj.dosage_form %}
+                            <div>
+                                <h4>{% get_verbose_field_name obj 'dosage_form' %}:</h4>
+                                {{ obj.dosage_form|safe }}
+                            </div>
+                        {% endif %}
+
+                        {% if obj.contra_indications %}
+                            <div>
+                                <h4>{% get_verbose_field_name obj 'contra_indications' %}:</h4>
+                                {{ obj.contra_indications|safe }}
+                            </div>
+                        {% endif %}
+
+                        {% if obj.side_effects %}
+                            <div>
+                                <h4>{% get_verbose_field_name obj 'side_effects' %}:</h4>
+                                {{ obj.side_effects|safe }}
+                            </div>
+                        {% endif %}
+
+                        {% if obj.compound %}
+                            <div>
+                                <h4>{% get_verbose_field_name obj 'compound' %}:</h4>
+                                {{ obj.compound|safe }}
+                            </div>
+                        {% endif %}
+
+                        {% with components=obj.components.all %}
+                            {% if components.count > 0 %}
+                                <div>
+                                <h4>Компоненты:</h4>
+                                {% for component in components %}
+                                    <div><a href="{{ component.get_absolute_url }}">{{ component }}</a></div>
+
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+
+                        {% endwith %}
+                        <div>
+                            <h4>Формы выпуска:</h4>
+                            {% for dosage_form in obj.dosage_forms.all %}
+                                <div><a href="{{ dosage_form.get_absolute_url }}">{{ dosage_form }}</a></div>
+
+                            {% endfor %}
+                        </div>
+
+                        <div>
+                            <h4>Области применения:</h4>
+                            {% for usage_area in obj.usage_areas.all %}
+                                <div><a href="{{ usage_area.get_absolute_url }}">{{ usage_area }}</a></div>
+
+                            {% endfor %}
+                        </div>
+                    {% elif obj.is_cosmetics %}
+
+                        <div>
+                            <h4>Формы выпуска:</h4>
+                            {% for dosage_form in obj.dosage_forms.all %}
+                                <div><a href="{{ dosage_form.get_absolute_url }}">{{ dosage_form }}</a></div>
+
+                            {% endfor %}
+                        </div>
+
+                        <div>
+                            <h4>Области применения:</h4>
+                            {% for usage_area in obj.usage_areas.all %}
+                                <div><a href="{{ usage_area.get_absolute_url }}">{{ usage_area }}</a></div>
+
+                            {% endfor %}
+                        </div>
+
+                        <div>
+                            <h4>Линия:</h4>
+
+                            <div><a href="{{ obj.line.get_absolute_url }}">{{ obj.line }}</a></div>
+                        </div>
+
+                        <div>
+                            <h4>Бренд:</h4>
+
+                            <div><a href="{{ obj.brand.get_absolute_url }}">{{ obj.brand }}</a></div>
+                        </div>
+
+
+
+                        <div>
+                            <h4>Области применения:</h4>
+                            {% for usage_area in obj.usage_areas.all %}
+                                <div><a href="{{ usage_area.get_absolute_url }}">{{ usage_area }}</a></div>
+
+                            {% endfor %}
+                        </div>
+                    {% elif obj.is_blog %}
+
+                        <div>
+                            <h4>Категории:</h4>
+                            {% for category in obj.category.all %}
+                                <div> {{ category }}</div>
+
+                            {% endfor %}
+                        </div>
+                    {% elif obj.is_component %}
+                        <div>
+                            <h4>Тип компонента:</h4>
+                            {{ obj.component_type_text }}
+                        </div>
+
+                        <div>
+                            <h4>Компонент содержится в:</h4>
+                            {% for drug in obj.drugs.all %}
+                                <div><a href="{{ drug.get_absolute_url }}">{{ drug }}</a></div>
+
+                            {% endfor %}
+                        </div>
+
+
+                    {% endif %}
+                </div>
+                {% if not obj.is_component %}
+                    {% if show_ad and comments.count > 20 %}
+                    <!-- Яндекс.Директ -->
+                    <script type="text/javascript">
+                    yandex_partner_id = 75763;
+                    yandex_site_bg_color = 'FFFFFF';
+                    yandex_stat_id = 8;
+                    yandex_ad_format = 'direct';
+                    yandex_font_size = 1;
+                    yandex_direct_type = 'horizontal';
+                    yandex_direct_limit = 3;
+                    yandex_direct_title_font_size = 2;
+                    yandex_direct_links_underline = true;
+                    yandex_direct_header_bg_color = 'FEEAC7';
+                    yandex_direct_title_color = '0000CC';
+                    yandex_direct_url_color = '006600';
+                    yandex_direct_text_color = '000000';
+                    yandex_direct_hover_color = '0066FF';
+                    yandex_direct_sitelinks_color = '0000CC';
+                    yandex_direct_favicon = true;
+                    yandex_no_sitelinks = false;
+                    document.write('<scr'+'ipt type="text/javascript" src="//an.yandex.ru/system/context.js"></scr'+'ipt>');
+                    </script>
+                    {% endif %}
+
+                    <div id="comment-filter-form">
+                        <form method="get">
+                            {{ comments_options_form.as_p }}
+                            <input type="submit" value="Применить" class="btn btn-success">
+                        </form>
+                    </div>
+                    <div id="comments">
+                        <h2>Отзывы:</h2>
+                        {% for comment in comments %}
+
+                            <div class="full-comment">
+                                {% get_comment comment %}
+
+                                <div class="comment-children-block">
+
+
+                                    {% if show_tree %}
+                                        {% get_child_comments %}
+
+                                    {% endif %}
+                                </div>
+                            </div>
+                         {% if show_ad and forloop.counter0 == 15 %}
+                         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                        <!-- _comments responsive -->
+                        <ins class="adsbygoogle"
+                             style="display:block"
+                             data-ad-client="ca-pub-0854751854460145"
+                             data-ad-slot="3674363631"
+                             data-ad-format="auto"></ins>
+                        <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                        </script>
+                         {% endif %}
+                        {% endfor %}
+                    </div>
+
+                    {% if paginator.num_pages > 1 %}
+                        {% include 'super_model/base/_pager.html' with url=obj.get_absolute_url %}
+                    {% endif %}
+
+                    <div>
+                        <h3>Оставьте отзыв:</h3>
+                        <div id="answer-to-block" class="hidden">
+                            <label>В ответ на:</label><span id="answer-to-span"></span>
+                            <input type="button" id="clean-answer-to" value="Очистить">
+                        </div>
+
+
+                        <form method="post" id="comment-form" action="{{ obj.get_absolute_url }}">
+                            {% csrf_token %}
+                            <div id="comment-form-inner">
+                                {{ comment_form.as_p }}
+                            </div>
+                            <input class="btn btn-success" type="submit" value="Отправить">
+                        </form>
+                    </div>
+
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+
+{% block bottom_scripts %}
+        {{ block.super }}
+    {% compress js %}
+        <script>
+            $(function () {
+                $(document).on('click', '.comment-mark-button', function (e) {
+                    var level = $(this).closest('.single-comment').find('.comment-level').val();
+                    var pk = $(this).closest('.single-comment').find('.comment-pk').val();
+                    var targetSpan = $(this).closest('.single-comment').find('.comment-current-mark-span');
+                    var toHide = $(this).closest('.single-comment').find('.comment-mark-button, .comment-complain-button, .comment-uncomplain-button');
+                    var toShow = $(this).closest('.single-comment').find('.comment-unmark-button');
+                    var data = {'pk': pk, 'action': 'comment-mark'};
+                    commentAjaxAction(data, targetSpan, toHide, toShow);
+                });
+
+                $(document).on('click', '.comment-unmark-button', function (e) {
+                    var level = $(this).closest('.single-comment').find('.comment-level').val();
+                    var pk = $(this).closest('.single-comment').find('.comment-pk').val();
+                    var targetSpan = $(this).closest('.single-comment').find('.comment-current-mark-span');
+                    var toHide = $(this).closest('.single-comment').find('.comment-unmark-button');
+                    var toShow = $(this).closest('.single-comment').find('.comment-mark-button, .comment-complain-button');
+                    var data = {'pk': pk, 'action': 'comment-unmark'};
+                    commentAjaxAction(data, targetSpan, toHide, toShow);
+                });
+
+
+                $(document).on('click', '.comment-complain-button', function (e) {
+                    var level = $(this).closest('.single-comment').find('.comment-level').val();
+                    var pk = $(this).closest('.single-comment').find('.comment-pk').val();
+                    var targetSpan = $(this).closest('.single-comment').find('.comment-current-complain-span');
+                    var toHide = $(this).closest('.single-comment').find('.comment-complain-button, .comment-mark-button, .comment-unmark-button');
+                    var toShow = $(this).closest('.single-comment').find('.comment-uncomplain-button');
+                    var data = {'pk': pk, 'action': 'comment-complain'};
+                    commentAjaxAction(data, targetSpan, toHide, toShow);
+
+                });
+
+                $(document).on('click', '.comment-uncomplain-button', function (e) {
+                    var level = $(this).closest('.single-comment').find('.comment-level').val();
+                    var pk = $(this).closest('.single-comment').find('.comment-pk').val();
+                    var targetSpan = $(this).closest('.single-comment').find('.comment-current-complain-span');
+                    var toHide = $(this).closest('.single-comment').find('.comment-uncomplain-button');
+                    var toShow = $(this).closest('.single-comment').find('.comment-complain-button, .comment-mark-button');
+                    var data = {'pk': pk, 'action': 'comment-uncomplain'};
+                    commentAjaxAction(data, targetSpan, toHide, toShow);
+                });
+
+
+                $(document).on('click', '.comment-delete-button', function (e) {
+                    var level = $(this).closest('.single-comment').find('.comment-level').val();
+                    var pk = $(this).closest('.single-comment').find('.comment-pk').val();
+                    var targetSpan = null;
+                    var toHide = $(this).closest('.single-comment').find('.comment-delete-button');
+                    var toShow = $(this).closest('.single-comment').find('.comment-undelete-button');
+                    var data = {'pk': pk, 'action': 'comment-delete'};
+                    commentAjaxAction(data, targetSpan, toHide, toShow);
+
+                });
+
+                $(document).on('click', '.comment-undelete-button', function (e) {
+                    var level = $(this).closest('.single-comment').find('.comment-level').val();
+                    var pk = $(this).closest('.single-comment').find('.comment-pk').val();
+                    var targetSpan = null;
+                    var toHide = $(this).closest('.single-comment').find('.comment-undelete-button');
+                    var toShow = $(this).closest('.single-comment').find('.comment-delete-button');
+                    var data = {'pk': pk, 'action': 'comment-undelete'};
+                    commentAjaxAction(data, targetSpan, toHide, toShow);
+
+                });
+
+
+                function commentAjaxAction(actionData, targetSpan, toHide, toShow) {
+                    toHide.attr('disabled', 'disabled');
+                    toShow.attr('disabled', 'disabled');
+                    $.ajax({
+                        type: 'POST',
+                        url: '{% url 'history-ajax-save' %}',
+                        data: actionData,
+                        success: function (data) {
+                            toHide.removeAttr('disabled');
+                            toShow.removeAttr('disabled');
+                            if (data.saved) {
+                                if (targetSpan != null) {
+                                    targetSpan.html(data.mark);
+                                }
+                                toHide.addClass('hidden');
+                                toShow.removeClass('hidden');
+
+                            }
+                            else {
+                                alert('Действие не засчитано');
+                            }
+                        },
+                        error: function (data) {
+                        toHide.removeAttr('disabled');
+                        toShow.removeAttr('disabled');
+                        }
+                    });
+
+                }
+
+
+                $(document).on('click', '.answer-to-comment', function (e) {
+                    var level = $(this).closest('.single-comment').find('.comment-level').val();
+                    var pk = $(this).closest('.single-comment').find('.comment-pk').val();
+                    var action = 'show';
+
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '{% url 'comment-get-for-answer-block-ajax' %}',
+                        data: {'pk': pk},
+                        success: function (data) {
+                            $('#id_parent').val(pk);
+                            $('#answer-to-block').removeClass('hidden');
+// var commentBody = $('#comment-body-level-' + level + '-pk-' + pk).html();
+                            $('#answer-to-span').html(data);
+                            $('#id_body').focus();
+                        },
+                        error: function (data) {
+                        }
+                    });
+
+
+                });
+
+
+                $('#clean-answer-to').click(function (e) {
+                    $('#id_parent').val('');
+                    $('#answer-to-block').addClass('hidden');
+                    $('#answer-to-span').html('');
+
+                });
+
+
+                $(document).on('click', '.show-comment-tree', function (e) {
+                    var id = this.id;
+                    var level = $(this).closest('.full-comment').find('.comment-level').val();
+                    var pk = $(this).closest('.full-comment').find('.comment-pk').val();
+                    var childrenBlock = $(this).closest('.full-comment').find('.comment-children-block');
+                    var actionData = {'pk': pk, 'action': 'comment-tree-show'};
+                    var cur = this;
+                    var showCommentTreeButton = $(cur).closest('.full-comment').find('.show-comment-tree');
+                    var hideCommentTreeButton = $(cur).closest('.full-comment').find('.hide-comment-tree');
+                    showCommentTreeButton.attr('disabled', 'disabled');
+                    hideCommentTreeButton.attr('disabled', 'disabled');
+                    $.ajax({
+                        type: 'POST',
+                        url: '{% url 'get-comment-tree-ajax' %}',
+                        data: actionData,
+                        success: function (data) {
+                            showCommentTreeButton.removeAttr('disabled');
+                            hideCommentTreeButton.removeAttr('disabled');
+                            showCommentTreeButton.addClass('hidden');
+                            hideCommentTreeButton.removeClass('hidden');
+                            childrenBlock.fadeTo('slow', 1, function () {
+                                childrenBlock.html(data);
+                            });
+                        },
+                        error: function (data) {
+                            showCommentTreeButton.removeAttr('disabled');
+                            hideCommentTreeButton.removeAttr('disabled');
+                        }
+                    });
+
+                });
+
+                $(document).on('click', '.hide-comment-tree', function (e) {
+                    var showCommentTreeButton = $(this).closest('.full-comment').find('.show-comment-tree');
+                    var hideCommentTreeButton = $(this).closest('.full-comment').find('.hide-comment-tree');
+                    $(this).closest('.full-comment').find('.comment-children-block').fadeTo('slow', 0, function () {
+                        $(this).closest('.full-comment').find('.comment-children-block').html('');
+                    });
+                    showCommentTreeButton.removeClass('hidden');
+                    hideCommentTreeButton.addClass('hidden');
+                });
+
+
+                $(document).on('click', '.tiny-comment-show-full, .tiny-comment-hide-full', function (e) {
+                    var block = $(this).closest('.tiny-comment');
+                    var action, toHide, toShow;
+                    //var cls = $(this).attr('class');
+                    if ($(this).hasClass('tiny-comment-show-full')) {
+                        action = 'show';
+                        toHide = block.find('.tiny-comment-show-full');
+                        toShow = block.find('.tiny-comment-hide-full');
+                    }
+                    else {
+                        action = 'hide';
+                        toHide = block.find('.tiny-comment-hide-full');
+                        toShow = block.find('.tiny-comment-show-full');
+                    }
+                    var pk = block.find('.tiny-comment-pk').val();
+                    $.ajax({
+                        type: 'POST',
+                        url: '{% url 'comment-get-tiny-ajax' %}',
+                        data: {'pk': pk, 'action': action},
+                        success: function (data) {
+                            block.find('.tiny-comment-body').html(data);
+                            toHide.addClass('hidden');
+                            toShow.removeClass('hidden');
+
+                        },
+                        error: function (data) {
+                        }
+                    });
+
+                });
+
+
+                $(document).on('submit', '#comment-form', function (e) {
+                    var frm = $('#comment-form');
+                    var innerForm = frm.find('#comment-form-inner');
+                    var button = frm.find('.btn');
+                    button.attr('disabled', 'disabled');
+                    $.ajax({
+                        type: 'POST',
+                        url: frm.attr('action'),
+                        data: frm.serialize(),
+                        success: function (data) {
+
+                            if (data.status == 1) {
+                                if (!data.published) {
+                                    alert('Ваш отзыв будет опубликован после проверки модератором');
+                                }
+                                location.href = data.href;
+                            }
+                            else {
+                                innerForm.html(data.comment_form);
+                                button.removeAttr('disabled');
+                            }
+
+                        },
+                        error: function (data) {
+                            button.removeAttr('disabled');
+                        }
+                    });
+
+                    e.preventDefault();
+                });
+
+
+                $(document).on('click', '#post-mark > .star', function (e) {
+                    var mark = e.currentTarget.id.replace('post-mark-', '');
+                    var pk = $('#post-pk').val();
+                    var actionData = {'action': 'post-mark', 'mark': mark, 'pk': pk};
+                    $('.star').addClass('hidden');
+                    $.ajax({
+                        type: 'POST',
+                        url: '{% url 'history-ajax-save' %}',
+                        data: actionData,
+                        success: function (data) {
+                            $('.star').removeClass('hidden');
+                         if (data.saved) {
+                            $('#post-average-mark').html(data['average_mark']);
+                            $('#post-marks-count').html(data['marks_count']);
+                            $('#current-post-mark-block').removeClass('hidden');
+                            $('#current-post-mark').html(data.mark);
+                            $('#cancel-mark-button').removeClass('hidden');
+                             $('#post-mark').addClass('hidden');
+                            $('#id_post_mark').closest('p').addClass('hidden');
+                            $('#id_post_mark').closest('p').find('select').val('');
+                        }
+                            else {
+                                alert('Действие не засчитано');
+                            }
+
+                        },
+                        error: function (data) {
+                        $('.star').removeClass('hidden');
+                        }
+                    });
+
+                });
+
+
+                $(document).on('click', '#cancel-mark-button', function (e) {
+
+                    var pk = $('#post-pk').val();
+                    var actionData = {'action': 'post-unmark', 'pk': pk}
+                    $('#cancel-mark-button').attr('disabled', 'disabled');
+                    $.ajax({
+                        type: 'POST',
+                        url: '{% url 'history-ajax-save' %}',
+                        data: actionData,
+                        success: function (data) {
+                         $('#cancel-mark-button').removeAttr('disabled');
+                            if (data.saved) {
+                            $('#current-post-mark-block').addClass('hidden');
+                            $('#post-mark').removeClass('hidden');
+                            $('#current-post-mark').html('');
+                            $('#cancel-mark-button').addClass('hidden');
+
+                            $('#id_post_mark').closest('p').removeClass('hidden');
+                            $('#post-average-mark').html(data['average_mark']);
+                            $('#post-marks-count').html(data['marks_count']);
+                        }
+                            else {
+                                alert('Действие не засчитано');
+                            }
+                        },
+                        error: function (data) {
+                        $('#cancel-mark-button').removeAttr('disabled');
+                        }
+                    });
+
+                });
+
+
+                $(document).on('click', '.blog-mark-button', function (e) {
+                    var pk = $('#post-pk').val();
+                    var actionData = {'action': 'post-mark', 'mark': 0, 'pk': pk};
+                    $('.blog-mark-button').attr('disabled', 'disabled');
+                    $.ajax({
+                        type: 'POST',
+                        url: '{% url 'history-ajax-save' %}',
+                        data: actionData,
+                        success: function (data) {
+                         $('.blog-mark-button').removeAttr('disabled');
+                         if (data.saved) {
+                            $('.blog-current-mark-span').html(data['marks_count']);
+                            $('.blog-mark-button').addClass('hidden');
+                            $('.blog-unmark-button').removeClass('hidden');
+                        }
+                            else {
+                                alert('Действие не засчитано');
+                            }
+
+                        },
+                        error: function (data) {
+                        $('.blog-mark-button').removeAttr('disabled');
+
+                        }
+                    });
+
+                });
+
+
+                $(document).on('click', '.blog-unmark-button', function (e) {
+                    var pk = $('#post-pk').val();
+                    var actionData = {'action': 'post-unmark', 'mark': 0, 'pk': pk};
+                    $('.blog-unmark-button').attr('disabled', 'disabled');
+                    $.ajax({
+                        type: 'POST',
+                        url: '{% url 'history-ajax-save' %}',
+                        data: actionData,
+                        success: function (data) {
+                            $('.blog-unmark-button').removeAttr('disabled');
+                            if (data.saved) {
+                                $('.blog-current-mark-span').html(data['marks_count']);
+                                $('.blog-mark-button').removeClass('hidden');
+                                $('.blog-unmark-button').addClass('hidden');
+                            }
+                            else {
+                                alert('Действие не засчитано');
+                            }
+
+                        },
+                        error: function (data) {
+                        $('.blog-unmark-button').removeAttr('disabled');
+                        }
+                    });
+
+                });
+
+
+                $(document).on('click', '.comment-show-marked-users, .comment-hide-marked-users', function (e) {
+
+                    var commentBlock = $(this).closest('.single-comment');
+                    //var cls = $(this).attr('class');
+                    var pk = commentBlock.find('.comment-pk').val();
+                    var resultBlock = commentBlock.find('.comment-show-marked');
+                    var showButton = commentBlock.find('.comment-show-marked-users')
+                    var hideButton = commentBlock.find('.comment-hide-marked-users')
+                    var markBlock = commentBlock.find('.comment-mark-block');
+
+
+                    if ($(this).hasClass('comment-show-marked-users')) {
+
+                        $.ajax({
+                            type: 'POST',
+                            url: '{% url 'comment-show-marked-users-ajax' %}',
+                            data: {'pk': pk},
+                            success: function (data) {
+                                resultBlock.html(data);
+                                showButton.addClass('hidden');
+                                hideButton.removeClass('hidden');
+                                markBlock.addClass('on-top');
+                            },
+                            error: function (data) {
+
+                            }
+                        });
+
+                    }
+                    else {
+                        resultBlock.html('');
+                        showButton.removeClass('hidden');
+                        hideButton.addClass('hidden');
+                        markBlock.removeClass('on-top');
+                    }
+
+                });
+
+            });
+
+        </script>
+
+        {% include 'super_model/scripts/comment_confirmation_scripts.html' %}
+
+    {% endcompress %}
+{% endblock bottom_scripts %}

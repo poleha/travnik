@@ -83,14 +83,12 @@ class PostCreate(PostCreateUpdateMixin, generic.CreateView):
 class PostUpdate(PostCreateUpdateMixin, generic.UpdateView):
     template_name ='main/post/post_create.html'
 
-class ProzdoSignupView(SignupView):
-    template_name = 'main/user/signup.html'
-    form_class = super_forms.SuperSignupForm
 
-class ProzdoLoginView(LoginView):
-    template_name = 'main/user/login.html'
-    #form_class = forms.ProzdoSignupForm
+class PostDetail(super_views.SuperPostDetail):
+    template_name = 'main/post/post_detail.html'
+    comment_form = forms.CommentForm
+    comment_options_form = forms.CommentOptionsForm
 
-
-class ProzdoLogoutView(LogoutView):
-    pass
+    @cached_view(test=super_models.request_with_empty_guest)
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
