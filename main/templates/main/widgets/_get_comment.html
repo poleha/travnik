@@ -59,9 +59,6 @@
 
 
 
- {% if comment.consult_required %}
-     <div class="consult-required-block">Нужна консультация провизора</div>
-    {% endif %}
 
 </div>
 
@@ -71,7 +68,7 @@
 {% endif %}
 {% if comment.parent and not show_tree and not show_as_child %}
     <div>
-    <label>В ответ на:</label>{% include 'prozdo_main/comment/_tiny_comment.html' with comment=comment.parent %}
+    <label>В ответ на:</label>{% include 'main/comment/_tiny_comment.html' with comment=comment.parent %}
 </div>
 {% endif %}
 
@@ -161,7 +158,7 @@
   <div>
         <label>Ответы на отзыв:</label>
          {% for child in comment.available_first_level_children %}
-         {% include 'prozdo_main/comment/_tiny_comment.html' with comment=child %}
+         {% include 'main/comment/_tiny_comment.html' with comment=child %}
          {% endfor %}
         </div>
 
