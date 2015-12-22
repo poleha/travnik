@@ -1,0 +1,183 @@
+{% load prozdo_main_tags %}
+{% load staticfiles %}
+<div class="single-comment {{ comment_class }}">
+<div class="comment-top">
+    <div class="avatar">
+    {% if comment.user and comment.user.thumb50 %}
+<div>
+<div class="image-wrapper">
+<a class="user" href="{{ comment.user.get_absolute_url }}">
+    <img alt="{{ comment.user }}" class="img-rounded" src="{{ comment.user.thumb50 }}">
+</a>
+</div>
+</div>
+{% else %}
+
+<img alt="Гость" class="img-rounded" src="{% static "prozdo_main/images/guest.png" %}">
+
+{% endif %}
+</div>
+
+
+ <div class="user-block">
+{% if comment.user %}
+<div>
+<a class="user" href="{{ comment.user.get_absolute_url }}">{{ comment.user }}</a>
+<span class="user-info-top">
+<a href="{{ comment.user.get_karm_url }}"><span>Карма: </span>{{ comment.user.karm }}</a>
+<a href="{{ comment.user.get_activity_url }}"><span>Активность: </span>{{ comment.user.activity }}</a>
+</span>
+</div>
+{% else %}
+
+            <span class="guest">{{ comment.username }}</span>
+
+{% endif %}
+</div>
+    <a class="permalink" href="{{ comment.get_absolute_url }}">Постоянная ссылка на отзыв</a>
+
+{% if comment.user == user %}
+<a class="update-url" href="{{ comment.update_url }}">Редактировать</a>
+{% elif user.email_confirmed and comment.email == user.email %}
+<a class="update-url" href="{{ comment.update_url }}">Редактировать</a>
+{% endif %}
+
+
+</div>
+    <div class="content">
+
+  <div class="single-comment-top-right">
+
+        <div class="confirmation-block">
+ {% if comment.confirmed %}
+     <div class="comment-confirmed"> Отзыв подтвержден</div>
+ {% else %}
+     <div class="comment-unconfirmed">Отзыв не подтвержден</div>
+     <input type="button" value="Подтвердить" class="confirm-comment btn btn-default">
+    {% endif %}
+</div>
+
+
+
+ {% if comment.consult_required %}
+     <div class="consult-required-block">Нужна консультация провизора</div>
+    {% endif %}
+
+</div>
+
+
+{% if comment.get_tree_level == 0 or not show_tree %}
+<div id="c{{ comment.pk }}"></div>
+{% endif %}
+{% if comment.parent and not show_tree and not show_as_child %}
+    <div>
+    <label>В ответ на:</label>{% include 'prozdo_main/comment/_tiny_comment.html' with comment=comment.parent %}
+</div>
+{% endif %}
+
+
+<span class="date">{{ comment.created }}</span>
+
+
+        <div class="comment-body" id="comment-body-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}">
+            {% if comment.user.is_regular %}
+            {{ comment.body|linebreaks }}
+            {% else %}
+            {{ comment.body|safe|linebreaks }}
+            {% endif %}
+        </div>
+
+
+
+<input type="hidden" value="{{ comment.get_tree_level }}" class="comment-level">
+<input type="hidden" value="{{ comment.pk }}" class="comment-pk">
+
+<div class="comment-all-marks-block">
+
+    <div class="comment-current-complain" id="comment-current-complain-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}">Жалоб: <span class="comment-current-complain-span" id="comment-current-complain-span-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}">{{ comment.complain_count }}</span></div>
+
+        <div class="comment-mark-block">
+        <span class="comment-current-mark" id="comment-current-mark-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}">Отзыв сочли полезным: <span class="comment-current-mark-span" id="comment-current-mark-span-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}">{{ comment.comment_mark }}</span></span>
+{% if comment.comment_mark %}
+    <span class="comment-show-marked-buttons">
+<input type="button" value="?" class="comment-show-marked-users btn">
+<input type="button" value="x" class="comment-hide-marked-users btn hidden">
+</span>
+
+{% endif %}
+<div class="comment-show-marked"></div>
+    </div>
+
+</div>
+
+
+        <div class="comment-bottom-buttons">
+        <input type="button" class="answer-to-comment btn btn-success" id="answer-to-comment-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value="Ответить">
+
+        {% if user.is_regular %}
+         {% if can_mark %}
+         <input class="comment-unmark-button btn btn-cancel hidden" type="button" id="comment-unmark-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Отозвать оценку'>
+         <input class="comment-mark-button btn btn-success" type="button" id="comment-mark-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Отзыв полезен'>
+         <input class="comment-uncomplain-button btn btn-cancel hidden" type="button" id="comment-uncomplain-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Отозвать жалобу'>
+         <input class="comment-complain-button btn btn-danger" type="button" id="comment-complain-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Пожаловаться на отзыв'>
+        {% elif can_unmark %}
+        <input class="comment-unmark-button btn btn-cancel" type="button" id="comment-unmark-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Отозвать оценку'>
+        <input class="comment-mark-button btn btn-success hidden" type="button" id="comment-mark-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Отзыв полезен'>
+        <input class="comment-uncomplain-button btn btn-cancel hidden" type="button" id="comment-uncomplain-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Отозвать жалобу'>
+        <input class="comment-complain-button btn btn-danger hidden" type="button" id="comment-complain-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Пожаловаться на отзыв'>
+
+
+        {% elif can_uncomplain %}
+        <input class="comment-unmark-button btn btn-cancel hidden" type="button" id="comment-unmark-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Отозвать оценку'>
+        <input class="comment-mark-button btn btn-success hidden" type="button" id="comment-mark-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Отзыв полезен'>
+        <input class="comment-uncomplain-button btn btn-cancel" type="button" id="comment-uncomplain-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Отозвать жалобу'>
+        <input class="comment-complain-button btn btn-danger hidden" type="button" id="comment-complain-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Пожаловаться на отзыв'>
+
+
+        {% endif %}
+        {% endif %}
+
+        {% if not user.is_regular %}
+
+        {% if comment.delete_mark %}
+         <input class="comment-undelete-button btn btn-cancel" type="button" id="comment-undelete-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Снять метку удаления'>
+         <input class="comment-delete-button btn btn-danger hidden" type="button" id="comment-mark-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Пометить на удаление'>
+        {% else %}
+        <input class="comment-undelete-button btn btn-cancel hidden" type="button" id="comment-undelete-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Снять метку удаления'>
+        <input class="comment-delete-button btn btn-danger" type="button" id="comment-delete-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Пометить на удаление'>
+        {% endif %}
+
+        {% endif %}
+
+</div>
+ {% if comment.has_avaliable_children and not show_as_child %}
+ <div class="comment-all-children-block">
+  {% if show_tree %}
+         <div>
+    <input type="button" class="show-comment-tree btn btn-success hidden" id="show-comment-tree-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value="Развернуть ответы({{ comment.available_children_count }})">
+    <input type="button" class="hide-comment-tree btn btn-default" id="hide-comment-tree-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value="Свернуть ответы({{ comment.available_children_count }})">
+        </div>
+{% else %}
+  <div>
+        <label>Ответы на отзыв:</label>
+         {% for child in comment.available_first_level_children %}
+         {% include 'prozdo_main/comment/_tiny_comment.html' with comment=child %}
+         {% endfor %}
+        </div>
+
+    <input type="button" class="show-comment-tree btn btn-success" id="show-comment-tree-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value="Развернуть ответы({{ comment.available_children_count }})">
+    <input type="button" class="hide-comment-tree btn btn-default hidden" id="hide-comment-tree-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value="Свернуть ответы({{ comment.available_children_count }})">
+{% endif %}
+</div>
+ {% endif %}
+
+{% if comment.updater %}
+<div class="comment-updater">
+Отзыв изменен пользователем <a class="user" href="{{ comment.updater.get_absolute_url }}">{{ comment.updater }}</a> {{ comment.updated }}
+</div>
+
+{% endif %}
+
+</div>
+</div>
+

@@ -4,9 +4,12 @@ from super_model import views as super_views
 from . import forms
 from cache.decorators import cached_view
 from super_model import models as super_models
-from super_model import forms as super_forms
 from django.views import generic
-from allauth.account.views import SignupView, LoginView, LogoutView, PasswordChangeView, PasswordResetView, PasswordResetDoneView, PasswordResetFromKeyView, PasswordResetFromKeyDoneView, ConfirmEmailView, EmailView
+from django.views.decorators.csrf import csrf_exempt
+from super_model import forms as super_forms
+from django.http import JsonResponse
+from haystack.generic_views import SearchView as OriginalSearchView
+from haystack.query import SearchQuerySet
 
 
 class PostViewMixin(super_views.SuperPostViewMixin):
@@ -92,3 +95,50 @@ class PostDetail(super_views.SuperPostDetail):
     @cached_view(test=super_models.request_with_empty_guest)
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
+
+
+class MainPageView(generic.TemplateView):
+    template_name = 'main/base/main.html'
+
+
+class CommentGetForAnswerToBlockAjax(generic.TemplateView):
+    template_name = 'main/comment/_comment_for_answer_block.html'
+
+    @csrf_exempt
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = self.request.POST['pk']
+        context['comment'] = models.Comment.objects.get(pk=pk)
+        return context
+
+    def post(self, request, *args, **kwargs):
+        return self.render_to_response(self.get_context_data(**kwargs))
+
+
+
+class SearchView(OriginalSearchView):
+    queryset = SearchQuerySet().all()
+    form_class = super_forms.SuperSearchForm
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.order_by('weight')
+        return queryset
+
+
+class AutocompleteView(generic.View):
+    @csrf_exempt
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        q = request.POST.get('q', '').strip()
+
+        suggestions = []
+        data = {
+            'results': suggestions
+        }
+        return JsonResponse(data)

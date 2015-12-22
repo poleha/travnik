@@ -55,7 +55,7 @@ class Post(super_models.SuperPost):
         if cls == Plant:
             return reverse('plant-list-ajax')
         elif cls == Recipe:
-            return reverse('recipt-list-ajax')
+            return reverse('recipe-list-ajax')
 
     @classmethod
     def submit_url(cls):
@@ -216,51 +216,11 @@ class UserProfile(super_models.SuperUserProfile):
 
     @cached_property
     def can_publish_comment(self):
-        if self.user.is_admin or self.user.is_author or self.user.is_doctor or self.get_user_karm >= settings.PUBLISH_COMMENT_WITHOUT_APPROVE_KARM:
+        if self.user.is_admin or self.user.is_author or self.get_user_karm >= settings.PUBLISH_COMMENT_WITHOUT_APPROVE_KARM:
             return True
         else:
             return False
 
-    def get_unsubscribe_url(self):
-        email_adress = EmailAddress.objects.get(email=self.user.email)
-        try:
-            key = email_adress.emailconfirmation_set.latest('created').key
-        except:
-            key = EmailConfirmation.create(email_adress).key
-
-        return reverse('unsubscribe', kwargs={'email': self.user.email, 'key': key})
-
-    def karm_history(self):
-        return self._karm_history().order_by('-created')
-
-    def _karm_history(self):
-        hists = History.objects.filter(author=self.user, history_type=super_models.HISTORY_TYPE_COMMENT_RATED, deleted=False)
-        return hists
-
-
-    def _activity_history(self):
-        return History.objects.filter(user=self.user, user_points__gt=0, deleted=False)
-
-    @cached_property
-    def activity_history(self):
-        return self._activity_history().order_by('-created')
-
-    @cached_property
-    def get_user_activity(self):
-        try:
-            activity = self.activity_history.aggregate(Sum('user_points'))['user_points__sum']
-        except:
-            activity = ''
-        return activity
-
-
-    @cached_property
-    def get_user_karm(self):
-        try:
-            karm = self.karm_history().aggregate(Sum('user_points'))['user_points__sum']
-        except:
-            karm = 0
-        return karm if karm is not None else 0
 
     @property
     def thumb50(self):

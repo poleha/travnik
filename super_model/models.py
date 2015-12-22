@@ -17,10 +17,10 @@ from django.db.models import ImageField
 from django.core.cache import cache
 from django.core.mail.message import EmailMultiAlternatives
 from django.template.loader import render_to_string
-from allauth.account.models import EmailAddress
+from allauth.account.models import EmailAddress, EmailConfirmation
 from django.db.models.signals import post_save
 from super_model.helper import generate_key
-from django.db.models.aggregates import Count
+from django.db.models.aggregates import Count, Sum
 
 
 class SuperModel(models.Model):
@@ -604,10 +604,7 @@ class SuperUserProfile(SuperModel, CachedModelMixin):
 
     @property
     def can_publish_comment(self):
-        if self.user.is_admin or self.user.is_author or self.user.is_doctor or self.get_user_karm >= settings.PUBLISH_COMMENT_WITHOUT_APPROVE_KARM:
-            return True
-        else:
-            return False
+        return False
 
     def __str__(self):
         return 'Профиль пользователя {0}, pk={1}'.format(self.user.username, self.user.pk)
@@ -628,6 +625,49 @@ class SuperUserProfile(SuperModel, CachedModelMixin):
 
         super().save(*args, **kwargs)
         #invalidate_obj(self.user)
+
+    def get_unsubscribe_url(self):
+        email_adress = EmailAddress.objects.get(email=self.user.email)
+        try:
+            key = email_adress.emailconfirmation_set.latest('created').key
+        except:
+            key = EmailConfirmation.create(email_adress).key
+
+        return reverse('unsubscribe', kwargs={'email': self.user.email, 'key': key})
+
+    def karm_history(self):
+        return self._karm_history().order_by('-created')
+
+    def _karm_history(self):
+        History = import_string(settings.BASE_HISTORY_CLASS)
+        hists = History.objects.filter(author=self.user, history_type=HISTORY_TYPE_COMMENT_RATED, deleted=False)
+        return hists
+
+
+    def _activity_history(self):
+        History = import_string(settings.BASE_HISTORY_CLASS)
+        return History.objects.filter(user=self.user, user_points__gt=0, deleted=False)
+
+    @cached_property
+    def activity_history(self):
+        return self._activity_history().order_by('-created')
+
+    @cached_property
+    def get_user_activity(self):
+        try:
+            activity = self.activity_history.aggregate(Sum('user_points'))['user_points__sum']
+        except:
+            activity = ''
+        return activity
+
+
+    @cached_property
+    def get_user_karm(self):
+        try:
+            karm = self.karm_history().aggregate(Sum('user_points'))['user_points__sum']
+        except:
+            karm = 0
+        return karm if karm is not None else 0
 
 
 

@@ -1,0 +1,6 @@
+{% for user in users %}
+<a href="{{ user.get_absolute_url }}">{{ user }}</a>
+{% endfor %}
+<div>
+<label>Гостей: </label>{{ guest_count }}
+</div>

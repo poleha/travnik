@@ -564,3 +564,83 @@ class SuperPostDetail(SuperListView):
                 return JsonResponse({'comment_form': comment_form.as_p(), 'status': 2})
             else:
                 return self.render_to_response(self.get_context_data(comment_form=comment_form, **kwargs))
+
+class CommentGetTreeAjax(generic.TemplateView):
+    template_name = 'super_model/widgets/_get_child_comments.html'
+
+    @csrf_exempt
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = self.request.POST['pk']
+        comment = Comment.objects.get(pk=pk)
+        action = self.request.POST['action']
+
+        if action == 'comment-tree-show':
+            context['show_as_child'] = True
+            context['children'] = comment.get_children_tree
+        return context
+
+    def post(self, request, *args, **kwargs):
+        return self.render_to_response(self.get_context_data(**kwargs))
+
+
+class CommentGetTinyAjax(generic.View):
+    @csrf_exempt
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+
+    def post(self, request, *args, **kwargs):
+        pk = self.request.POST['pk']
+        action = self.request.POST['action']
+        comment = Comment.objects.get(pk=pk)
+        if action == 'show':
+            res = comment.body
+        else:
+            res = comment.short_body
+        return HttpResponse(res)
+
+class CommentShowMarkedUsersAjax(generic.TemplateView):
+    template_name = 'super_model/comment/_comment_show_marked_users_ajax.html'
+
+    @csrf_exempt
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        request = self.request
+        pk = request.POST['pk']
+        comment = Comment.objects.get(pk=pk)
+
+        user_pks = History.objects.filter(~Q(user=None), history_type=models.HISTORY_TYPE_COMMENT_RATED, comment=comment, deleted=False).values_list('user', flat=True)
+        context['users'] = models.User.objects.filter(pk__in=user_pks)
+        context['guest_count'] = History.objects.filter(user=None, history_type=models.HISTORY_TYPE_COMMENT_RATED, comment=comment, deleted=False).count()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        return self.render_to_response(self.get_context_data(**kwargs))
+
+
+class UnsubscribeView(generic.View):
+
+    def get(self, request, *args, **kwargs):
+        email = kwargs['email']
+        key_from_request = kwargs['key']
+        email_address = EmailAddress.objects.get(email=email)
+        try:
+            key = email_address.emailconfirmation_set.latest('created').key
+        except:
+            key = None
+
+        if key is not None and key == key_from_request:
+            user = email_address.user
+            user_profile = user.user_profile
+            user_profile.receive_messages = False
+            user_profile.save()
+            #messages.add_message(request, messages.INFO, 'Вы больше не будете получать сообщения с сайта Prozdo.ru')
+            return HttpResponseRedirect(reverse_lazy('main-page'))
