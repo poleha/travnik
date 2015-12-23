@@ -18,8 +18,8 @@ from django.contrib import admin
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-#from main.sitemaps import sitemaps
 from django.views.decorators.cache import cache_page
+from main.sitemaps import sitemaps
 from django.contrib.sitemaps.views import sitemap
 
 
@@ -30,8 +30,8 @@ urlpatterns = [
     url(r'^', include('super_model.urls')),
     url(r'^', include('main.urls')),
     url(r'^contact_form/', include('contact_form.urls', namespace="contact_form")),
-    #url(r'^sitemap\.xml$', cache_page(60 * 60 * 12)(sitemap), {'sitemaps': sitemaps},
-    #name='django.contrib.sitemaps.views.sitemap'),
+    url(r'^sitemap\.xml$', cache_page(60 * 60 * 12)(sitemap), {'sitemaps': sitemaps},
+    name='django.contrib.sitemaps.views.sitemap'),
 
 
 ]

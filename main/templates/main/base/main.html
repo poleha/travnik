@@ -1,1 +1,12 @@
 {% extends 'main/base/base.html' %}
+
+{% block content %}
+{% for plant in popular_plants %}
+    <a href="{{ plant.get_absolute_url }}">{{ plant }}</a>
+    {% endfor %}
+
+    {% for recipe in recent_recipes %}
+    <a href="{{ recipe.get_absolute_url }}">{{ recipe }}</a>
+    {% endfor %}
+
+{% endblock content %}

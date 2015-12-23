@@ -10,6 +10,9 @@ from super_model import forms as super_forms
 from django.http import JsonResponse
 from haystack.generic_views import SearchView as OriginalSearchView
 from haystack.query import SearchQuerySet
+from super_model import helper as super_helper
+from django.db.models.aggregates import Count
+from django.utils import timezone
 
 
 class PostViewMixin(super_views.SuperPostViewMixin):
@@ -99,6 +102,36 @@ class PostDetail(super_views.SuperPostDetail):
 
 class MainPageView(generic.TemplateView):
     template_name = 'main/base/main.html'
+
+    @cached_view(timeout=60 * 60, test=super_models.request_with_empty_guest)
+    def dispatch(self, request, *args, **kwargs):
+        res = super().dispatch(request, *args, **kwargs)
+        try:
+            last_modified = models.History.objects.filter(history_type=super_models.HISTORY_TYPE_COMMENT_CREATED, deleted=False).latest('created').created
+            res['Last-Modified'] = super_helper.convert_date_for_last_modified(last_modified)
+            res['Expires'] = super_helper.convert_date_for_last_modified(last_modified + timezone.timedelta(seconds=60 * 60))
+        except:
+            pass
+
+        return res
+
+    def get_popular_plants(self):
+        plants = models.Plant.objects.get_available().annotate(comment_count=Count('comments')).order_by('-comment_count')[:16]
+        return plants
+
+    def get_recent_recipes(self):
+        recipes = models.Recipe.objects.get_available().order_by('-created')[:4]
+        return recipes
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['popular_plants'] = self.get_popular_plants()
+        recent_recipes = self.get_recent_recipes()
+        if recent_recipes.exists():
+            context['recent_recipes'] = recent_recipes[1:4]
+            context['main_recent_recipe'] = recent_recipes[0]
+        return context
+
 
 
 class CommentGetForAnswerToBlockAjax(generic.TemplateView):
