@@ -102,3 +102,62 @@ def user_menu(context):
         menu_items.append(MenuItem(title='Создать рецепт', url=reverse_lazy('recipe-create'), cls=''))
 
     return {'menu_items': menu_items}
+
+@register.inclusion_tag('main/widgets/_metatags.html', takes_context=True)
+def metatags(context):
+    request = context['request']
+    url_name = request.resolver_match.url_name
+    #kwargs = request.resolver_match.kwargs
+
+    metatags_dict = {}
+    metatags_dict['title'] = 'Травник'
+    metatags_dict['keywords'] = "Ключевые слова травника"
+    metatags_dict['description'] = "Описание травнике"
+    metatags_dict['canonical'] = ''
+
+    if url_name == 'main-page':
+        pass
+
+    elif url_name == 'plant-list':
+        metatags_dict['title'] = 'Отзывы о лекарствах | Про здоровье'
+        metatags_dict['keywords'] = "отзывы, лекарственные препараты, лекарства"
+        metatags_dict['description'] = "Отзывы о лекарственных препаратах."
+
+    elif url_name == 'recipe-list':
+        metatags_dict['title'] = 'Отзывы об аптечной косметике | Про здоровье'
+        metatags_dict['keywords'] = "отзывы, лекарственные препараты, лекарства"
+        metatags_dict['description'] = "Отзывы о лекарственных препаратах."
+
+
+    elif url_name in ['post-detail-alias', 'post-detail-alias-comment', 'post-detail-pk', 'post-detail-pk-comment', 'post-detail-pk-comment']:
+        obj = context['obj']
+        if obj.is_plant:
+            metatags_dict['title'] = '{0} - отзывы | Про здоровье'.format(obj.title)
+            metatags_dict['keywords'] = "{0} - отзывы, лекарственные препараты, лекарства, отзывы, {1}".format(obj.title, obj.title)
+            metatags_dict['description'] = "Отзывы о препарате {0}.".format(obj.title)
+        elif obj.is_recipe:
+            metatags_dict['title'] = '{0} | Про здоровье'.format(obj.title)
+            metatags_dict['keywords'] = "{0}, блог о здоровом образе жизни".format(obj.title)
+            metatags_dict['description'] = obj.anons
+
+        if 'page' in request.GET or url_name == 'post-detail-pk-comment':
+            metatags_dict['canonical'] = obj.get_absolute_url()
+
+
+    elif url_name == 'user-profile':
+        user = context['user']
+
+    elif url_name == 'user-detail':
+        user = context['current_user']
+
+    elif url_name in ['user-comments', 'user-karma']:
+        user = context['current_user']
+        if url_name == 'user-comments':
+            pass
+        elif url_name == 'user-karma':
+            pass
+
+    elif url_name == 'search':
+        metatags_dict['title'] = 'Поиск по сайту | Про здоровье'
+
+    return metatags_dict
