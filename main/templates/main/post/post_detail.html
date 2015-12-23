@@ -71,14 +71,14 @@
         <div class="row">
 
             <div class="col-xs-12">
-            {% if user.is_regular %}
+
   <div id="blog-full-mark-block">
              <div class="blog-mark-block">
         <span class="blog-current-mark">Материал сочли полезным: <span class="blog-current-mark-span">{{ obj.mark }}</span></span>
 
 
     </div>   
-                
+       {% if user.is_regular %}
         {% if can_mark_blog %}
          <input class="blog-unmark-button btn btn-cancel hidden" type="button" value='Отозвать оценку'>
          <input class="blog-mark-button btn btn-success" type="button" value='Материал полезен'>
@@ -86,7 +86,7 @@
         <input class="blog-unmark-button btn btn-cancel" type="button" value='Отозвать оценку'>
         <input class="blog-mark-button btn btn-success hidden" type="button" value='Материал полезен'>
         {% endif %}
-                
+    {% endif %}
       </div>
 
 
@@ -100,9 +100,19 @@
                         </div>
                     {% endif %}
 
-
-
                 </div>
+
+            {% if obj.is_plant and obj.recipes.get_available.exists %}
+            <h2>Рецепты:</h2>
+                {% for recipe in obj.recipes.get_available %}
+                <a href="{{ recipe.get_absolute_url }}">{{ recipe }}</a>
+            {% endfor %}
+            {% elif obj.is_recipe and obj.plants.get_available.exists %}
+                <h2>Растения:</h2>
+            {% for plant in obj.plants.get_available %}
+                <a href="{{ plant.get_absolute_url }}">{{ plant }}</a>
+                {% endfor %}
+            {% endif %}
 
 
                     <div id="comment-filter-form">
@@ -152,7 +162,6 @@
                         </form>
                     </div>
 
-                {% endif %}
             </div>
         </div>
     </div>

@@ -164,7 +164,7 @@ class Plant(Post):
 class Recipe(Post):
     body = RichTextField(verbose_name='Описание', blank=True)
     image = ImageField(verbose_name='Изображение', upload_to='plant', blank=True, null=True, max_length=300)
-    plants = models.ManyToManyField(Plant, verbose_name='Растения', blank=True, related_name='plants')
+    plants = models.ManyToManyField(Plant, verbose_name='Растения', blank=True, related_name='recipes')
 
     objects = super_models.PostManager()
 
