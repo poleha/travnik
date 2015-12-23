@@ -1,0 +1,32 @@
+{% extends 'prozdo_main/base/base.html' %}
+{% load prozdo_main_tags %}
+{% block content %}
+{% user_detail current_user%}
+<a class="btn btn-menu active" href="{% url 'user-comments' current_user.pk %}">Отзывы</a>
+<a class="btn btn-menu" href="{% url 'user-karma' current_user.pk %}">Карма</a>
+<a class="btn btn-menu" href="{% url 'user-activity' current_user.pk %}">Активность</a>
+
+
+ <div>
+ <h2>Отзывы</h2>
+ <table class="table table-bordered">
+ <thead>
+ <tr>
+     <th>Дата</th><th>Отзыв</th><th>Тема</th><th>Полезно</th>
+ </tr>
+ </thead>
+ <tbody>
+     {% for comment in comments %}
+<tr>
+<td>{{ comment.created }}</td>
+<td><a href="{{ comment.get_absolute_url }}">{{ comment }}</a></td>
+<td><a href="{{ comment.post.obj.get_absolute_url }}">{{ comment.post }}</a></td>
+<td>{{ comment.comment_mark }}</td>
+</tr>
+
+ {% endfor %}
+ </tbody>
+ </table>
+ </div>
+{% include 'super_model/base/_pager.html' %}
+{% endblock content %}

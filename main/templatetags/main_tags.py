@@ -88,3 +88,17 @@ def breadcrumbs(context):
         breadcrumbs_list.append(Breadcrumb(title="Поиск по сайту", href=reverse_lazy('search')))
 
     return {'breadcrumbs_list': breadcrumbs_list}
+
+
+@register.inclusion_tag('main/widgets/_user_menu.html', takes_context=True)
+def user_menu(context):
+    user = context['request'].user
+    if user.is_regular:
+        return
+    menu_items = []
+
+    if user.is_admin:
+        menu_items.append(MenuItem(title='Создать растение', url=reverse_lazy('plant-create'), cls=''))
+        menu_items.append(MenuItem(title='Создать рецепт', url=reverse_lazy('recipe-create'), cls=''))
+
+    return {'menu_items': menu_items}

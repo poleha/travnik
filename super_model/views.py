@@ -19,6 +19,7 @@ from django.db import transaction
 from django.utils import timezone
 from django.contrib import messages
 from django.db.models import Q
+from cache.decorators import cached_view
 
 
 Comment = import_string(settings.BASE_COMMENT_CLASS)
@@ -646,3 +647,132 @@ class UnsubscribeView(generic.View):
             user_profile.save()
             #messages.add_message(request, messages.INFO, 'Вы больше не будете получать сообщения с сайта Prozdo.ru')
             return HttpResponseRedirect(reverse_lazy('main-page'))
+
+
+
+class UserProfileView(generic.TemplateView):
+    template_name = 'prozdo_main/user/user_profile.html'
+
+    @login_required()
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, user_profile_form=None, user_form=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        user_profile = self.request.user.user_profile
+        context['user'] = user
+        #context['user_profile'] = user_profile
+        if user_profile_form is None:
+            user_profile_form = forms.UserProfileForm(instance=user_profile)
+        context['user_profile_form'] = user_profile_form
+
+        if user_form is None:
+            user_form = forms.UserForm(instance=user)
+        context['user_form'] = user_form
+        return context
+
+
+    @transaction.atomic()
+    def post(self, request, *args, **kwargs):
+        user = self.request.user
+        user_profile = self.request.user.user_profile
+        user_profile_form = forms.UserProfileForm(request.POST, request.FILES, instance=user_profile)
+        user_form = forms.UserForm(request.POST,instance=user)
+        if user_form.is_valid() and user_profile_form.is_valid():
+            user_form.save()
+            user_profile_form.save()
+            messages.add_message(request, messages.INFO, 'Данные о пользователе изменены.')
+            return HttpResponseRedirect(reverse_lazy('user-profile'))
+        else:
+            return self.render_to_response(self.get_context_data(user_profile_form=user_profile_form, user_form=user_form, **kwargs))
+
+
+class UserDetailView(generic.TemplateView):
+    template_name = 'super_model/user/user_detail.html'
+
+    @cached_view(timeout= 60 * 60 * 24, test=models.request_with_empty_guest)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = self.kwargs['pk']
+        user = models.User.objects.get(pk=pk)
+        context['current_user'] = user
+        #context['comments'] = user.comments.get_available()
+        return context
+
+
+class UserCommentsView(SuperListView):
+    template_name = 'super_model/user/user_comments.html'
+    context_object_name = 'comments'
+    paginate_by = 50
+
+    @cached_view(timeout= 60 * 60 * 24, test=models.request_with_empty_guest)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        pk = self.kwargs['pk']
+        user = models.User.objects.get(pk=pk)
+        return user.comments.get_available().order_by('-created')
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = self.kwargs['pk']
+        user = models.User.objects.get(pk=pk)
+        context['current_user'] = user
+        return context
+
+
+
+class UserKarmaView(SuperListView):
+    template_name = 'super_model/user/user_karma.html'
+    context_object_name = 'hists'
+    paginate_by = 50
+
+    #TODO переделать на инвалидацию и добавить заголовки. Пока сойтет так
+    @cached_view(timeout= 60 * 60 * 24, test=models.request_with_empty_guest)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        pk = self.kwargs['pk']
+        user = models.User.objects.get(pk=pk)
+        return user.user_profile.karm_history()
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = self.kwargs['pk']
+        user = models.User.objects.get(pk=pk)
+        context['current_user'] = user
+        return context
+
+
+class UserActivityView(SuperListView):
+    template_name = 'super_model/user/user_activity.html'
+    context_object_name = 'hists'
+    paginate_by = 50
+
+    #TODO переделать на инвалидацию и добавить заголовки. Пока сойтет так
+    @cached_view(timeout= 60 * 60 * 24, test=models.request_with_empty_guest)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        pk = self.kwargs['pk']
+        user = models.User.objects.get(pk=pk)
+        return user.activity_history
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = self.kwargs['pk']
+        user = models.User.objects.get(pk=pk)
+        context['current_user'] = user
+        return context

@@ -35,6 +35,9 @@
 <div class="container-fluid">
 <div class="row" id="header">
     {% block header %}
+    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" id="user-info-top">
+    {% include 'super_model/user/_user_info_top.html' %}
+</div>
         {% top_menu %}
     {% endblock header %}
 </div>
@@ -58,7 +61,7 @@
 
 <div class="col-lg-2 col-md-3 col-sm-4 hidden-xs" id="sidebar-right">
 {% block sidebar_right %}
-
+{% user_menu %}
 {% endblock sidebar_right %}
 </div>
 </div>
