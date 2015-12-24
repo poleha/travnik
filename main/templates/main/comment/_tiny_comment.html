@@ -6,11 +6,11 @@
     {% if comment.user.thumb50 %}
              <img alt="{{ comment.user }}" class="img-rounded" src="{{ comment.user.thumb50 }}">
     {% else %}
-     <img alt="Гость" class="img-rounded" src="{% static "prozdo_main/images/guest.png" %}">
+     <img alt="Гость" class="img-rounded" src="{% static "main/images/guest.png" %}">
     {% endif %}</a>
      <a href="{{ comment.user.get_absolute_url }}" class="user">{{ comment.user }}</a>
     {% else %}
-    <img alt="Гость" class="img-rounded" src="{% static "prozdo_main/images/guest.png" %}">
+    <img alt="Гость" class="img-rounded" src="{% static "main/images/guest.png" %}">
     <span class="guest">{{ comment.username }}</span>
 {% endif %}
 </div>

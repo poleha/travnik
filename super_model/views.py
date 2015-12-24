@@ -651,7 +651,7 @@ class UnsubscribeView(generic.View):
 
 
 class UserProfileView(generic.TemplateView):
-    template_name = 'prozdo_main/user/user_profile.html'
+    template_name = 'super_model/user/user_profile.html'
 
     @login_required()
     def dispatch(self, request, *args, **kwargs):
