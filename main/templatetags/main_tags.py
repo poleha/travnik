@@ -17,7 +17,7 @@ recent_comments = register.inclusion_tag('main/widgets/_comments_portlet.html')(
 
 best_comments = register.inclusion_tag('main/widgets/_comments_portlet.html')(super_tags.best_comments)
 
-
+"""
 @register.inclusion_tag('main/widgets/_top_menu.html', takes_context=True)
 def top_menu(context):
 
@@ -31,6 +31,7 @@ def top_menu(context):
     search_form = SuperSearchForm(request.GET)
 
     return {'menu_items': menu_items, 'search_form': search_form }
+"""
 
 Breadcrumb = namedtuple('Breadcrumb', ['title', 'href'])
 
@@ -41,28 +42,12 @@ def breadcrumbs(context):
     url_name = request.resolver_match.url_name
     #kwargs = request.resolver_match.kwargs
 
-    if url_name == 'main-page':
+    if url_name == 'plant-list':
         return
 
-    breadcrumbs_list = [Breadcrumb(title='Главная', href=reverse_lazy('main-page'))]
+    breadcrumbs_list = [Breadcrumb(title='Главная', href=reverse_lazy('plant-list'))]
 
-    if url_name == 'plant-list':
-        breadcrumbs_list.append(Breadcrumb(title='Лекарственные растения', href=reverse_lazy('plant-list')))
-
-    elif url_name == 'recipe-list':
-        breadcrumbs_list.append(Breadcrumb(title='Рецепты', href=reverse_lazy('recipe-list')))
-
-
-    elif url_name in ['post-detail-alias', 'post-detail-alias-comment', 'post-detail-pk', 'post-detail-pk-comment']:
-        obj = context['obj']
-        if obj.is_plant:
-            list_title = 'Лекарственные растения'
-            href = reverse_lazy('plant-list')
-        elif obj.is_recipe:
-            list_title = 'Рецепты'
-            href = reverse_lazy('recipe-list')
-
-        breadcrumbs_list.append(Breadcrumb(title=list_title, href=href))
+    if url_name in ['post-detail-alias', 'post-detail-alias-comment', 'post-detail-pk', 'post-detail-pk-comment']:
         obj = context['obj']
         breadcrumbs_list.append(Breadcrumb(title=obj.title, href=obj.get_absolute_url()))
 

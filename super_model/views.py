@@ -216,7 +216,7 @@ class SuperPostListFilterMixin(SuperListView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = super().get_queryset().get_available()
         filter_form = self.get_filter_form()
         if filter_form:
             filter_form.full_clean()

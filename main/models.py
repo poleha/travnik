@@ -5,8 +5,10 @@ from django.core.urlresolvers import reverse
 from allauth.account.models import EmailAddress, EmailConfirmation
 from sorl.thumbnail import ImageField, get_thumbnail
 from ckeditor.fields import RichTextField
-from cache.decorators import cached_property, cached_method
+from cache.decorators import cached_property
 from super_model import models as super_models
+from django.utils.html import strip_tags
+from helper import helper
 
 
 COMPONENT_TYPE_VITAMIN = 1
@@ -27,6 +29,8 @@ class History(super_models.SuperHistory):
 
 class Post(super_models.SuperPost):
     history_class = History
+
+    short_body = models.TextField(verbose_name='Анонс', blank=True)
 
     cached_views = (
         ('travnik_main.views.PostDetail', 'get'),
@@ -54,22 +58,30 @@ class Post(super_models.SuperPost):
     def ajax_submit_url(cls):
         if cls == Plant:
             return reverse('plant-list-ajax')
-        elif cls == Recipe:
-            return reverse('recipe-list-ajax')
+        #elif cls == Recipe:
+        #    return reverse('recipe-list-ajax')
 
     @classmethod
     def submit_url(cls):
         if cls == Plant:
             return reverse('plant-list')
-        elif cls == Recipe:
-            return reverse('recipe-list')
+        #elif cls == Recipe:
+        #    return reverse('recipe-list')
 
     @classmethod
     def get_list_url(cls):
         if cls == Plant:
             return reverse('plant-list')
-        elif cls == Recipe:
-            return reverse('recipe-list')
+        #elif cls == Recipe:
+        #    return reverse('recipe-list')
+
+
+    @property
+    def anons(self):
+        if self.short_body:
+            return self.short_body
+        else:
+            return helper.cut_text(strip_tags(self.body), 200)
 
     @property
     def update_url(self):
