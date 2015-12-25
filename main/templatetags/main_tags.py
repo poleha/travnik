@@ -146,3 +146,8 @@ def metatags(context):
         metatags_dict['title'] = 'Поиск по сайту | Про здоровье'
 
     return metatags_dict
+
+@register.inclusion_tag('main/widgets/_user_detail.html')
+def user_detail(user):
+    return {'user': user}
+

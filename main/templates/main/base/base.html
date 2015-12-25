@@ -45,6 +45,7 @@
 <div class="row">
 <div class="col-lg-2 col-md-3 hidden-sm hidden-xs" id="sidebar-left">
     {% block sidebar_left %}
+    <h3>Популярные сообщения</h3>
 {% best_comments %}
 {% endblock sidebar_left %}
 </div>
@@ -62,6 +63,7 @@
 <div class="col-lg-2 col-md-3 col-sm-4 hidden-xs" id="sidebar-right">
 {% block sidebar_right %}
 {% user_menu %}
+    <h3>Новые сообщения</h3>
 {% recent_comments %}
 {% endblock sidebar_right %}
 </div>

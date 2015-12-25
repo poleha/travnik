@@ -13,7 +13,7 @@ from haystack.query import SearchQuerySet
 from super_model import helper as super_helper
 from django.db.models.aggregates import Count
 from django.utils import timezone
-
+from django.http.response import HttpResponseRedirect
 
 class PostViewMixin(super_views.SuperPostViewMixin):
     def set_model(self):
@@ -145,3 +145,21 @@ class AutocompleteView(generic.View):
 
 class CommentGetTreeAjax(super_views.SuperCommentGetTreeAjax):
     template_name = 'main/widgets/_get_child_comments.html'
+
+
+class CommentUpdate(generic.UpdateView):
+    model = models.Comment
+    form_class = forms.CommentUpdateForm
+    template_name = 'main/comment/update.html'
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        pk = kwargs['pk']
+        comment = self.model.objects.get(pk=pk)
+        if not user == comment.user:
+            return HttpResponseRedirect(comment.get_absolute_url())
+        form = self.form_class(request.POST, instance=comment)
+        form.instance.updater = request.user
+        form.instance.session_key = super_helper.set_and_get_session_key(request.session)
+        comment = form.save()
+        return HttpResponseRedirect(comment.get_absolute_url())

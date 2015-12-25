@@ -1,7 +1,6 @@
 from super_model import forms as super_forms
 from django.conf import settings
 from django import forms
-from super_model import fields as super_fields
 from . import models
 
 class PlantFilterForm(super_forms.PostFilterForm):
@@ -34,3 +33,10 @@ class CommentForm(super_forms.SuperCommentForm):
 
 class CommentOptionsForm(super_forms.SuperCommentOptionsForm):
         show_type_label = 'Вид показа комментариев'
+
+
+class CommentUpdateForm(forms.ModelForm):
+    class Meta:
+        model = models.Comment
+        fields = ('body', )
+

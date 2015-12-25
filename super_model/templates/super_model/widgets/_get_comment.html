@@ -1,4 +1,4 @@
-{% load prozdo_main_tags %}
+{% load main_tags %}
 {% load staticfiles %}
 <div class="single-comment {{ comment_class }}">
 <div class="comment-top">
@@ -13,7 +13,7 @@
 </div>
 {% else %}
 
-<img alt="Гость" class="img-rounded" src="{% static "prozdo_main/images/guest.png" %}">
+<img alt="Гость" class="img-rounded" src="{% static "main/images/guest.png" %}">
 
 {% endif %}
 </div>
@@ -71,7 +71,7 @@
 {% endif %}
 {% if comment.parent and not show_tree and not show_as_child %}
     <div>
-    <label>В ответ на:</label>{% include 'prozdo_main/comment/_tiny_comment.html' with comment=comment.parent %}
+    <label>В ответ на:</label>{% include 'main/comment/_tiny_comment.html' with comment=comment.parent %}
 </div>
 {% endif %}
 
@@ -161,7 +161,7 @@
   <div>
         <label>Ответы на отзыв:</label>
          {% for child in comment.available_first_level_children %}
-         {% include 'prozdo_main/comment/_tiny_comment.html' with comment=child %}
+         {% include 'main/comment/_tiny_comment.html' with comment=child %}
          {% endfor %}
         </div>
 

@@ -1,5 +1,5 @@
 {% extends base_template %}
-{% load prozdo_main_tags %}
+{% load main_tags %}
 {% block content %}
 {% user_detail current_user%}
 <a class="btn btn-menu" href="{% url 'user-comments' current_user.pk %}">Отзывы</a>

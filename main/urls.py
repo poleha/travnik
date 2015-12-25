@@ -20,6 +20,7 @@ urlpatterns = [
 
 
     url(r'^comment/get_for_answer_block_ajax/$', views.CommentGetForAnswerToBlockAjax.as_view(), name='comment-get-for-answer-block-ajax'),
+    url(r'^comment/update/(?P<pk>\d+)/$', views.CommentUpdate.as_view(), name='comment-update'),
 
     url(r'^search/', views.SearchView.as_view(), name='search'),
     url(r'^autocomplete/$', views.AutocompleteView.as_view(), name='autocomplete'),
