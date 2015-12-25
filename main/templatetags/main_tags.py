@@ -33,6 +33,17 @@ def top_menu(context):
     return {'menu_items': menu_items, 'search_form': search_form }
 """
 
+
+@register.inclusion_tag('main/widgets/_search_form.html', takes_context=True)
+def search_form(context):
+
+    request = context['request']
+    search_form = SuperSearchForm(request.GET)
+
+    return {'search_form': search_form }
+
+
+
 Breadcrumb = namedtuple('Breadcrumb', ['title', 'href'])
 
 @register.inclusion_tag('main/widgets/_breadcrumbs.html', takes_context=True)
