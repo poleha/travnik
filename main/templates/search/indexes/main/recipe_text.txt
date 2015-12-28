@@ -1,0 +1,8 @@
+{{ object.title }}
+{{ object.body }}
+{{ object.indications }}
+{{ object.application_scheme }}
+{{ object.dosage_form }}
+{{ object.contra_indications }}
+{{ object.side_effects }}
+{{ object.compound }}

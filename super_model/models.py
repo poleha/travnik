@@ -291,7 +291,10 @@ class SuperComment(SuperModel, CachedModelMixin, MPTTModel, class_with_published
     def _cached_get_absolute_url(self):
         if self.status == COMMENT_STATUS_PUBLISHED:
             #return '{0}comment/{1}#c{1}'.format(self.post.get_absolute_url(), self.pk)
-            return reverse('post-detail-pk-comment', kwargs={'pk': self.post.pk, 'comment_pk': self.pk}) + '#c' + str(self.pk)
+            if self.post.alias:
+                return reverse('post-detail-alias-comment', kwargs={'alias': self.post.alias, 'comment_pk': self.pk}) + '#c' + str(self.pk)
+            else:
+                return reverse('post-detail-pk-comment', kwargs={'pk': self.post.pk, 'comment_pk': self.pk}) + '#c' + str(self.pk)
         else:
             return self.post.get_absolute_url()
 

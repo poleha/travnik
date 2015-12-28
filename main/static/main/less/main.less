@@ -1,3 +1,20 @@
+.form-mixin {
+   input, select {
+    display: block;
+    &[type="checkbox"] {
+      display: inline;
+      width: inherit;
+
+    }
+    width: 400px;
+  }
+  textarea {
+    width: 100%;
+  }
+
+}
+
+
 .date {
   font-size: 0.9em;
   font-style: italic;
@@ -179,4 +196,234 @@ width: 180px;
 }
 
 
+}
+
+
+
+
+.single-comment {
+
+
+         @media (max-width: @container-sm) {
+
+	font-size: 0.8em;
+
+}
+
+    @media (max-width: 400px) {
+
+	font-size: 0.7em;
+
+}
+
+
+   .btn{
+    font-size: 0.8em;
+    padding: 3px 6px 3px 6px;
+    margin-top: 5px;
+  }
+
+position: relative;
+margin-top: 20px;
+
+.content {
+border: 1px solid #e0ebea;
+margin: 10px 0 0 65px;
+padding: 7px;
+word-wrap: break-word;
+
+
+.comment-body {
+  text-align: justify;
+}
+
+.single-comment-top-right {
+  font-size: 0.8em;
+   @media (max-width: @container-sm) {
+     .clearfix;
+   }
+
+.confirmation-block {
+  float: right;
+
+
+
+.comment-confirmed {
+color: green;
+}
+
+.comment-unconfirmed {
+color: #CC6633;
+
+}
+
+
+.btn-default {
+float: right;
+  color: #669933;
+}
+
+
+.comment-do-confirm-form{
+
+  .btn{
+    font-size: inherit;
+
+  }
+
+}
+
+}
+
+  .consult-required-block{
+  float: right;
+ color: blue;
+
+margin-right: 3px;
+  }
+}
+
+.comment-bottom-buttons {
+  margin-top: 20px;
+}
+
+
+}
+
+  .comment-top {
+height: 15px;
+
+  .image-wrapper {
+    width: 60px;
+    text-align: center;
+  }
+    .permalink, .update-url {
+  float: right;
+
+     color: @btn-menu-bg;
+    font-size: .85em;
+       font-style: italic;
+    margin-left: 10px;
+      }
+
+         .user-block{
+  margin-left: 10px;
+  float: left;
+   .user-info-top {
+     margin-left: 5px;
+     a {
+     color: @btn-menu-bg;
+    font-size: .85em;
+       font-style: italic;
+     }
+   }
+
+
+
+
+         }
+
+.avatar {
+  float: left;
+}
+
+  }
+
+.comment-all-marks-block {
+ float: right;
+font-size: 0.8em;
+.comment-mark-block {
+
+&.on-top {
+.box-shadow-mixin;
+overflow: hidden;
+word-wrap: break-word;
+padding: 5px 0 5px 5px;
+  position: absolute;
+background-color: white;
+  z-index: 10;
+width: 190px;
+height: 150px;
+right: 0;
+
+}
+
+  .btn {
+    font-size: inherit;
+  }
+
+}
+
+
+
+}
+
+
+.update-url {
+  float: right;
+}
+
+.comment-updater {
+  font-size: 0.8em;
+  font-style: italic;
+  margin-top: 5px;
+}
+
+}
+
+
+.tiny-comment {
+font-size: 0.8em;
+img {
+  margin-right: 3px;
+  display: inline-block;
+}
+
+.user, .guest {
+  display: block;
+}
+
+.user-info {
+  float: left;
+  text-align: center;
+}
+
+.btn {
+  font-size: inherit;
+  margin-bottom: 3px;
+}
+
+.go-to-comment-link {
+    color: @btn-menu-bg;
+    font-size: .95em;
+    font-style: italic;
+}
+
+border-bottom: 1px solid #dee7e6;
+margin-bottom: 5px;
+.clearfix;
+}
+
+
+.comment-all-children-block {
+  margin-top: 5px;
+  .tiny-comment {
+    margin-bottom: 5px;
+  }
+}
+
+
+
+
+#comment-form {
+  .form-mixin;
+
+  #id_post_mark {
+  width: inherit;
+}
+
+  input {
+   width: 200px;
+  }
+  margin-bottom: 20px;
 }
