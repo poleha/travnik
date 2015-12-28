@@ -14,6 +14,8 @@ from super_model import helper as super_helper
 from django.db.models.aggregates import Count
 from django.utils import timezone
 from django.http.response import HttpResponseRedirect
+from django.db.models import Case, Value, When, CharField
+
 
 class PostViewMixin(super_views.SuperPostViewMixin):
     def set_model(self):
@@ -137,7 +139,12 @@ class AutocompleteView(generic.View):
     def post(self, request, *args, **kwargs):
         q = request.POST.get('q', '').strip()
 
-        suggestions = []
+        if len(q) > 2:
+            queryset = models.Post.objects.get_available().filter(title__icontains=q).annotate(
+                comment_count=Count('comments')).order_by('-comment_count')[:5]
+            suggestions = [post.title for post in queryset]
+        else:
+            suggestions = []
         data = {
             'results': suggestions
         }

@@ -1,0 +1,44 @@
+{% load compress %}
+{% compress js %}
+<script>
+$(function () {
+
+
+$("#id_q").keyup(function (e) {
+    var resultBlock = $('#autocomplete-suggestions');
+
+    $.ajax({
+        type: 'POST',
+        url: '{% url 'autocomplete' %}',
+        data: $("#search-form").serialize(),
+        success: function (data) {
+            resultBlock.html('');
+            if (data.results.length > 0){
+            resultBlock.append('<ul id="autocomplete-suggestions-list"></ul>');
+                }
+        for (var result_index in data.results) {
+            var result = data.results[result_index];
+            $('#autocomplete-suggestions-list').append('<li class="autocomplete-suggestion">' + result + '</li>');
+        }
+
+        },
+        error: function (data) {
+        resultBlock.html('');
+        }
+    });
+
+
+});
+
+$(document).on('click', '.autocomplete-suggestion', function (e) {
+$("#id_q").val($(this).html());
+$("#search-form").trigger('submit');
+
+});
+});
+</script>
+{% endcompress %}
+
+{% if not debug %}
+
+{% endif %}

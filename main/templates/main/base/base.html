@@ -35,9 +35,11 @@
 <div class="container-fluid">
 <div class="row" id="header">
     {% block header %}
-    <div class="col-xs-8 col-sm-9"></div>
 
-    <div class="col-xs-12 col-sm-3" id="user-info-top">
+
+        <div class="col-sm-9"></div>
+
+    <div class="col-sm-3" id="user-info-top">
     {% include 'super_model/user/_user_info_top.html' %}
 </div>
 
@@ -81,5 +83,5 @@
 </body>
 
 {% block bottom_scripts %}
-
+{% include 'main/base/_bottom_scripts.html' %}
 {% endblock bottom_scripts %}
