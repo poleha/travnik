@@ -105,22 +105,6 @@ class Post(super_models.SuperPost):
         else:
             return reverse('post-detail-pk', kwargs={'pk': self.pk})
 
-    def get_mark_by_request(self, request):
-        if super_models.request_with_empty_guest(request):
-            return 0
-        user = request.user
-        if user.is_authenticated():
-            try:
-                mark = History.objects.get(user=user, history_type=super_models.HISTORY_TYPE_POST_RATED, post=self, deleted=False).mark
-            except:
-                mark = ''
-        else:
-            try:
-                mark = History.objects.get(post=self, session_key=getattr(request.session, settings.SUPER_MODEL_KEY_NAME), history_type=super_models.HISTORY_TYPE_POST_RATED, user=None, deleted=False).mark
-            except:
-                mark = 0
-
-        return mark
 
     @cached_property
     def average_mark(self):
