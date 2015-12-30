@@ -3,7 +3,6 @@
 {% load staticfiles %}
 {% block sidebar_left %}
 
-    {% if post_type == 'drug' or post_type == 'cosmetics' or post_type == 'component' %}
     <div>
 
         <form id="post-list-form" method="get" action="{{ submit_url }}">
@@ -13,7 +12,6 @@
 </form>
 
 </div>
-    {% endif %}
 
 
     {{ block.super }}

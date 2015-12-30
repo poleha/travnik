@@ -52,7 +52,9 @@
     {% search_form %}
     <h3>Популярные сообщения</h3>
 {% best_comments %}
+{% if user.is_regular %}
 {% get_contact_form %}
+{% endif %}
 {% endblock sidebar_left %}
 </div>
 <div class="col-lg-8 col-md-6 col-sm-8 col-xs-12">
