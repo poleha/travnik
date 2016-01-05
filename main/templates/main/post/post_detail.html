@@ -14,17 +14,7 @@
 
         {% endif %}
         <div class="row">
-            <div class="col-md-6">
-
-
-                <div>
-                    <a href="{{ obj.get_absolute_url }}">
-                        <img alt="{{ obj.title }}" class="img-rounded" src="{{ obj.thumb220 }}">
-                    </a>
-
-                </div>
-            </div>
-            <div class="col-md-6 post-right-block">
+            <div class="post-top-block">
 
                 {% if user.is_regular %}
                 <div id="post-mark-block>">
