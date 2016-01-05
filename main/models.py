@@ -202,7 +202,9 @@ class Recipe(Post):
 
 
 class UsageArea(Post):
-    pass
+
+    def type_str(self):
+        return 'Область применения'
 
 
 class Comment(super_models.SuperComment):
