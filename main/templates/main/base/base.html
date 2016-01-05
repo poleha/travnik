@@ -49,7 +49,6 @@
 <div class="row">
 <div class="col-lg-2 col-md-3 hidden-sm hidden-xs" id="sidebar-left">
     {% block sidebar_left %}
-    {% search_form %}
     <h3>Популярные сообщения</h3>
 {% best_comments %}
 {% if user.is_regular %}
@@ -70,6 +69,7 @@
 
 <div class="col-lg-2 col-md-3 col-sm-4 hidden-xs" id="sidebar-right">
 {% block sidebar_right %}
+{% search_form %}
 {% user_menu %}
     <h3>Новые сообщения</h3>
 {% recent_comments %}

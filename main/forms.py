@@ -7,10 +7,18 @@ class PlantFilterForm(super_forms.PostFilterForm):
     class Meta:
         post_type = settings.POST_TYPE_PLANT
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        del self.fields['title']
+
 
 class RecipeFilterForm(super_forms.PostFilterForm):
     class Meta:
         post_type = settings.POST_TYPE_RECIPE
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        del self.fields['title']
 
 
 class PlantForm(forms.ModelForm):

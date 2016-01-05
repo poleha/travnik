@@ -64,21 +64,7 @@ if (checkedArr.length > 0) {
  }
 
 
-function titleChanger(){
-if ($('#id_title').val() != '') {
-  var alphabetBlock = $('#id_alphabet')
-  alphabetBlock.find('input:checkbox:checked').each(function(){
-    $(this).prop('checked', false)
 
-
-});
-alphabetBlock.addClass('hidden').prev('label').addClass('hidden');
-}
-    else {
-   $('#id_alphabet').removeClass('hidden').prev('label').removeClass('hidden');
-}
-
-}
 
 $('#id_alphabet').find('input').change(function(e){
 
@@ -87,9 +73,6 @@ alphabetChanger();
 });
 
 
-$('#id_title').change(function(e){
-titleChanger();
-});
 
     $(document).on('change', '#post-list-form input', function (e) {
         var frm = $('#post-list-form');
@@ -132,7 +115,7 @@ titleChanger();
 
     });
 
-titleChanger();
+
 alphabetChanger();
 });
 
