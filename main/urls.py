@@ -18,6 +18,9 @@ urlpatterns = [
     #url(r'^recipe/list_ajax/$', views.PostListAjax.as_view(), name='recipe-list-ajax', kwargs={'post_type': 'recipe'}),
     url(r'^comment/get_tree_ajax/$', views.CommentGetTreeAjax.as_view(), name='get-comment-tree-ajax'),
 
+    url(r'^usage_area/create/$', views.PostCreate.as_view(), name='usage_area-create', kwargs={'post_type': 'usage_area'}),
+    url(r'^usage_area/update/(?P<pk>\d+)/$', views.PostUpdate.as_view(), name='usage_area-update', kwargs={'post_type': 'usage_area'}),
+
 
     url(r'^comment/get_for_answer_block_ajax/$', views.CommentGetForAnswerToBlockAjax.as_view(), name='comment-get-for-answer-block-ajax'),
     url(r'^comment/update/(?P<pk>\d+)/$', views.CommentUpdate.as_view(), name='comment-update'),

@@ -33,6 +33,13 @@ class RecipeForm(forms.ModelForm):
         exclude = ('post_type', 'created', 'updated', 'published')
 
 
+class UsageAreaForm(forms.ModelForm):
+    class Meta:
+        model = models.UsageArea
+        exclude = ('post_type', 'created', 'updated', 'published')
+
+
+
 class CommentForm(super_forms.SuperCommentForm):
     class Meta:
         model = models.Comment

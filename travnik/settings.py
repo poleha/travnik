@@ -313,11 +313,14 @@ SITE_NAME = 'Travnik.ru'
 
 POST_TYPE_PLANT = 1
 POST_TYPE_RECIPE = 2
+POST_TYPE_USAGE_AREA = 3
 
 
 POST_TYPES = (
     (POST_TYPE_PLANT, 'Растение'),
     (POST_TYPE_RECIPE, 'Рецепт'),
+    (POST_TYPE_USAGE_AREA, 'Область применения'),
+
 )
 
 #SUPER_MODEL_KEY_NAME = 'prozdo_key'

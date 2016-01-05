@@ -20,6 +20,12 @@ class DrugAdmin(AdminImageMixin, PostAdminMixin):
     search_fields = ('title', 'alias', 'body')
 
 
+@admin.register(models.UsageArea)
+class DrugAdmin(AdminImageMixin, PostAdminMixin):
+    list_filter = ('status', )
+    search_fields = ('title', 'alias')
+
+
 @admin.register(models.Post)
 class PostAdmin(PostAdminMixin):
     list_filter = ('status', 'post_type')

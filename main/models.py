@@ -30,8 +30,6 @@ class History(super_models.SuperHistory):
 class Post(super_models.SuperPost):
     history_class = History
 
-    short_body = models.TextField(verbose_name='Анонс', blank=True)
-
     cached_views = (
         ('travnik_main.views.PostDetail', 'get'),
     )
@@ -44,6 +42,8 @@ class Post(super_models.SuperPost):
             return settings.POST_TYPE_PLANT
         elif cls == Recipe:
             return settings.POST_TYPE_RECIPE
+        elif cls == UsageArea:
+            return settings.POST_TYPE_USAGE_AREA
 
     @property
     def is_plant(self):
@@ -52,6 +52,10 @@ class Post(super_models.SuperPost):
     @property
     def is_recipe(self):
         return self.post_type == settings.POST_TYPE_RECIPE
+
+    @property
+    def is_usage_area(self):
+        return self.post_type == settings.POST_TYPE_USAGE_AREA
 
 
     @classmethod
@@ -89,6 +93,8 @@ class Post(super_models.SuperPost):
             return reverse('plant-update', kwargs={'pk': self.pk})
         elif self.is_recipe:
             return reverse('recipe-update', kwargs={'pk': self.pk})
+        elif self.is_usage_area:
+            return reverse('usage_area-update', kwargs={'pk': self.pk})
 
 
     @property
@@ -97,6 +103,8 @@ class Post(super_models.SuperPost):
             return self.plant
         elif self.post_type == settings.POST_TYPE_RECIPE:
             return self.recipe
+        elif self.post_type == settings.POST_TYPE_USAGE_AREA:
+            return self.usagearea
 
     def get_absolute_url(self):
         alias = self.alias
@@ -129,6 +137,8 @@ class Post(super_models.SuperPost):
 class Plant(Post):
     body = RichTextField(verbose_name='Описание', blank=True)
     image = ImageField(verbose_name='Изображение', upload_to='plant', blank=True, null=True, max_length=300)
+    usage_areas = models.ManyToManyField('UsageArea', verbose_name='Области применения', blank=True, related_name='plants')
+    short_body = models.TextField(verbose_name='Анонс', blank=True)
 
     objects = super_models.PostManager()
 
@@ -161,6 +171,8 @@ class Recipe(Post):
     body = RichTextField(verbose_name='Описание', blank=True)
     image = ImageField(verbose_name='Изображение', upload_to='plant', blank=True, null=True, max_length=300)
     plants = models.ManyToManyField(Plant, verbose_name='Растения', blank=True, related_name='recipes')
+    usage_areas = models.ManyToManyField('UsageArea', verbose_name='Области применения', blank=True, related_name='recipes')
+    short_body = models.TextField(verbose_name='Анонс', blank=True)
 
     objects = super_models.PostManager()
 
@@ -189,7 +201,8 @@ class Recipe(Post):
             return ''
 
 
-
+class UsageArea(Post):
+    pass
 
 
 class Comment(super_models.SuperComment):

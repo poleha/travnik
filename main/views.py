@@ -23,6 +23,8 @@ class PostViewMixin(super_views.SuperPostViewMixin):
             self.model =  models.Plant
         elif self.kwargs['post_type'] == 'recipe':
             self.model = models.Recipe
+        elif self.kwargs['post_type'] == 'usage_area':
+            self.model = models.UsageArea
 
 
 class PostListFilterMixin(super_views.SuperPostListFilterMixin, PostViewMixin):
@@ -82,6 +84,8 @@ class PostCreateUpdateMixin(super_views.restrict_by_role_mixin(settings.USER_ROL
             return forms.PlantForm
         elif self.model == models.Recipe:
             return forms.RecipeForm
+        elif self.model == models.UsageArea:
+            return forms.UsageAreaForm
 
 
 class PostCreate(PostCreateUpdateMixin, generic.CreateView):
