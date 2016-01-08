@@ -7,6 +7,8 @@ class PlantFilterForm(super_forms.PostFilterForm):
     class Meta:
         post_type = settings.POST_TYPE_PLANT
 
+    usage_areas = forms.ModelMultipleChoiceField(queryset=models.UsageArea.objects.all(), label='Область применения', widget=forms.CheckboxSelectMultiple(), required=False)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         del self.fields['title']
