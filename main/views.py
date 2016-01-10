@@ -36,7 +36,7 @@ class PostListFilterMixin(super_views.SuperPostListFilterMixin, PostViewMixin):
         elif self.model == models.Recipe:
             context['post_type'] = 'recipe'
 
-        context['list_view_default_template'] = 'main/post/_post_list_grid.html'
+        context['list_view_default_template'] = 'main/post/_post_list_content.html'
         return context
 
     def get_filter_form(self):

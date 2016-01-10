@@ -1,0 +1,31 @@
+<table class="table">
+<thead><tr><th>Растение</th><th>Области применения</th><th>Отзывов</th></tr></thead>
+    <tbody>
+    {% for obj in objs %}
+<tr>
+<td>
+     <h5><a href="{{ obj.get_absolute_url }}">{{ obj }}</a></h5>
+</td>
+<td>
+
+
+<ul>
+{% for usage_area in obj.usage_areas.get_available %}
+    <li><a href="{{ usage_area.get_absolute_url }}">{{ usage_area }}</a></li>
+
+    {% endfor %}
+ </ul>
+</td>
+<td>
+    {% if obj.published_comments_count %}
+
+    <a href="{{ obj.get_absolute_url }}#comments">{{ obj.published_comments_count }}</a>
+    {% else %}
+   <a href="{{ obj.get_absolute_url }}#comments">Пока нет отзывов</a>
+    {% endif %}
+</td>
+</tr>
+   {% endfor %}
+</tbody>
+</table>
+ {% include 'super_model/base/_pager.html' %}
