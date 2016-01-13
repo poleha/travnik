@@ -28,7 +28,8 @@ class History(super_models.SuperHistory):
 
 
 class Post(super_models.SuperPost):
-    history_class = History
+    class Meta:
+        ordering = ['title']
 
     cached_views = (
         ('travnik_main.views.PostDetail', 'get'),

@@ -228,7 +228,7 @@ class SuperPostListFilterMixin(SuperListView):
                     if field_name == 'alphabet':
                         ids = ()
                         for letter in field_value:
-                            cur_ids = self.model.objects.filter(title__istartswith=letter).values_list('id', flat=True)
+                            cur_ids = self.model.objects.get_available().filter(title__istartswith=letter).values_list('id', flat=True)
                             ids += tuple(cur_ids)
                         flt['id__in'] = ids
                     elif isinstance(field_value, str):

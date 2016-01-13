@@ -63,7 +63,7 @@ class PostFilterForm(forms.Form):
             alph = ()
             letters = digits + ascii_lowercase + 'абвгдеёжзийклмнопрстуфхцчшщъыбэюя'
             for letter in letters:
-                posts = Post.objects.filter(post_type=post_type, title__istartswith=letter)
+                posts = Post.objects.get_available().filter(post_type=post_type, title__istartswith=letter)
                 count = posts.count()
                 if count > 0:
                     alph += ((letter, '{0}({1})'.format(letter, count)), )
