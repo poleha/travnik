@@ -49,14 +49,13 @@
 <div class="row">
 <div class="col-lg-2 col-md-3 hidden-sm hidden-xs" id="sidebar-left">
     {% block sidebar_left %}
-    <h3>Популярные сообщения</h3>
-{% best_comments %}
+{% best_comments 'Популярные сообщения' %}
 {% if user.is_regular %}
 {% get_contact_form %}
 {% endif %}
 {% endblock sidebar_left %}
 </div>
-<div class="col-lg-8 col-md-6 col-sm-8 col-xs-12">
+<div class="col-lg-8 col-md-6 col-sm-8 col-xs-12" id="middle-section">
 {% block breadcrumbs %}
 {% breadcrumbs %}
 {% endblock breadcrumbs %}
@@ -71,8 +70,7 @@
 {% block sidebar_right %}
 {% search_form %}
 {% user_menu %}
-    <h3>Новые сообщения</h3>
-{% recent_comments %}
+{% recent_comments 'Новые сообщения' %}
 {% endblock sidebar_right %}
 </div>
 </div>

@@ -1,6 +1,9 @@
 {% load cache %}
 {% cache cache_duration comments_portlet portlet_type %}
-{% for comment in comments %}
+{% if title and comments %}
+    <h3>{{ title }}</h3>
+    {% endif %}
+    {% for comment in comments %}
 <div class="portlet-item">
     <p>
     {% if comment.user.is_authenticated %}

@@ -49,16 +49,17 @@ def get_comment(context, comment):
     return res
 
 
-def recent_comments():
+def recent_comments(title=None):
     res = {}
     comments = Comment.objects.get_available().order_by('-created')[:10]
     res['comments'] = comments
     res['portlet_type'] = 'recent_comments'
     res['cache_duration'] = 60 * 60 * 2
+    res['title']  = title
     return res
 
 
-def best_comments():
+def best_comments(title=None):
     res = {}
     date = timezone.now() - timedelta(days=settings.BEST_COMMENTS_DAYS)
     comments = Comment.objects.filter(history_comment__history_type=models.HISTORY_TYPE_COMMENT_RATED, created__gte=date).annotate(hist_count=Count('history_comment')).order_by('-hist_count')[:10]
@@ -66,4 +67,5 @@ def best_comments():
     res['comments'] = comments
     res['portlet_type'] = 'best_comments'
     res['cache_duration'] = 60 * 60 * 24
+    res['title']  = title
     return res
