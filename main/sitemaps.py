@@ -1,9 +1,9 @@
 from django.contrib.sitemaps import Sitemap
-from .models import Plant, Recipe
+from .models import Plant, Recipe, UsageArea
 from django.core.urlresolvers import reverse_lazy
 
 class PostSitemap(Sitemap):
-    changefreq = "daily"
+    changefreq = "weekly"
     priority = 1.0
 
     def lastmod(self, obj):
@@ -25,32 +25,17 @@ class PlantListSitemap(Sitemap):
         return [self]
 
     location = reverse_lazy('plant-list')
-    changefreq = "weekly"
-    priority = 0.7
-
-
-class RecipeListSitemap(Sitemap):
-    def items(self):
-        return [self]
-
-    location = reverse_lazy('recipe-list')
-    changefreq = "weekly"
-    priority = 0.7
-
-
-
-class MainPageSitemap(Sitemap):
-    def items(self):
-        return [self]
-
-    location = reverse_lazy('main-page')
     changefreq = "daily"
     priority = 1.0
 
+
+class UsageAreaSitemap(PostSitemap):
+    def items(self):
+        return UsageArea.objects.get_available()
+
 sitemaps = {
     'plant-detail': PlantSitemap,
+    'usage_area-detail': UsageAreaSitemap,
     'recipe-detail': RecipeSitemap,
-    'plant-list': PlantListSitemap,
-    'recipe-list': RecipeListSitemap,
-    'main-page' : MainPageSitemap,
+    'plant-list' : PlantListSitemap,
 }
