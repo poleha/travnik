@@ -517,16 +517,17 @@ class SuperPost(AbstractModel, class_with_published_mixin(POST_STATUS_PUBLISHED)
         user = request.user
         if user.is_authenticated():
             try:
-                mark = History.objects.filter(user=user, history_type=HISTORY_TYPE_POST_RATED, post=self, deleted=False).count()
+                mark = History.objects.get(user=user, history_type=HISTORY_TYPE_POST_RATED, post=self, deleted=False).mark
             except:
                 mark = 0
         else:
             try:
-                mark = History.objects.filter(post=self, history_type=HISTORY_TYPE_POST_RATED, user=None, deleted=False).filter(session_key=getattr(request.session, settings.SUPER_MODEL_KEY_NAME)).count()
+                mark = History.objects.get(post=self, session_key=getattr(request.session, settings.SUPER_MODEL_KEY_NAME), history_type=HISTORY_TYPE_POST_RATED, user=None, deleted=False).mark
             except:
                 mark = 0
 
         return mark
+
 
     @cached_property
     def last_modified(self):

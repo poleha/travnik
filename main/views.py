@@ -106,7 +106,6 @@ class PostDetail(super_views.SuperPostDetail):
         return super().get(request, *args, **kwargs)
 
 
-
 class CommentGetForAnswerToBlockAjax(generic.TemplateView):
     template_name = 'main/comment/_comment_for_answer_block.html'
 
