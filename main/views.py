@@ -12,9 +12,7 @@ from haystack.generic_views import SearchView as OriginalSearchView
 from haystack.query import SearchQuerySet
 from super_model import helper as super_helper
 from django.db.models.aggregates import Count
-from django.utils import timezone
 from django.http.response import HttpResponseRedirect
-from django.db.models import Case, Value, When, CharField
 
 
 class PostViewMixin(super_views.SuperPostViewMixin):
