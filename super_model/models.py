@@ -792,7 +792,10 @@ class SuperHistory(SuperModel):
         return HISTORY_TYPES_POINTS[history_type]
 
     def __str__(self):
-        return "{0} - {1} - {2}".format(self.history_type, self.post, self.comment)
+        try:
+            return "{0} - {1} - {2}".format(self.history_type, self.post, self.comment)
+        except:
+            return "{0} - {1}".format(self.history_type, self.created)
 
     @classmethod
     def save_history(cls, history_type, post, user=None, ip=None, session_key=None, comment=None, mark=None):
