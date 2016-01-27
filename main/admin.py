@@ -1,10 +1,10 @@
 from django.contrib import admin
 from . import models
 from sorl.thumbnail.admin import AdminImageMixin
-import reversion
+from reversion.admin import VersionAdmin
 from super_model import models as super_models
 
-class PostAdminMixin(reversion.VersionAdmin):
+class PostAdminMixin(VersionAdmin):
     readonly_fields = ['post_type']
 
 
@@ -32,19 +32,19 @@ class PostAdmin(PostAdminMixin):
     search_fields = ('title', 'alias')
 
 @admin.register(models.History)
-class HistoryAdmin(reversion.VersionAdmin):
+class HistoryAdmin(VersionAdmin):
     list_filter = ('history_type', )
 
 
 @admin.register(models.UserProfile)
-class UserProfileAdmin(AdminImageMixin, reversion.VersionAdmin):
+class UserProfileAdmin(AdminImageMixin, VersionAdmin):
     list_filter = ('role', )
     search_fields = ('user__username', )
 
 
 
 @admin.register(models.Mail)
-class MailAdmin(reversion.VersionAdmin):
+class MailAdmin(VersionAdmin):
     list_filter = ('mail_type', )
 
 
@@ -59,7 +59,7 @@ comment_mass_unpublish.short_description = "Снять с публикации �
 
 
 @admin.register(models.Comment)
-class CommentAdmin(reversion.VersionAdmin):
+class CommentAdmin(VersionAdmin):
     list_filter = ('status', 'consult_required', 'confirmed', 'delete_mark' )
     search_fields = ('body', )
     actions = [comment_mass_publish, comment_mass_unpublish]
