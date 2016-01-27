@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import socket
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -23,9 +24,28 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 's#i56(1zz%a=y3%j!&edgohhav0kp^tu_l1+qlh8v)e&snyei)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+try:
+    HOSTNAME = socket.gethostname()
+except:
+    HOSTNAME = 'localhost'
 
-ALLOWED_HOSTS = []
+if HOSTNAME in ['ubuntu']:
+    DEBUG = True
+    COMPRESS_ENABLED = False
+    HTML_MINIFY = True
+    CACHE_ENABLED = True
+    DEBUG_TOOLBAR = False
+else:
+    DEBUG = False
+    DEBUG_TOOLBAR = False
+    CACHE_ENABLED = True
+    COMPRESS_ENABLED = True
+    HTML_MINIFY = True
+
+
+ALLOWED_HOSTS = ['127.0.0.1', 'medavi.ru']
+
+
 
 
 # Application definition
@@ -65,7 +85,11 @@ INSTALLED_APPS = (
 
 
 MIDDLEWARE_CLASSES = (
+    'django.middleware.http.ConditionalGetMiddleware',
+    'django_mobile.middleware.MobileDetectionMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.gzip.GZipMiddleware',
+    'reversion.middleware.RevisionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -75,6 +99,9 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
+    'htmlmin.middleware.HtmlMinifyMiddleware',
+    'htmlmin.middleware.MarkRequestMiddleware',
 )
 
 ROOT_URLCONF = 'travnik.urls'
@@ -104,14 +131,29 @@ WSGI_APPLICATION = 'travnik.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
-
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+"""
 
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'travnik',
+        'USER': 'kulik',
+        'PASSWORD': 'ZaX369Exn',
+       'HOST': '127.0.0.1',
+       'PORT': '5432',
+        'CONN_MAX_AGE': 500,
+        },
+
+
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
@@ -128,9 +170,9 @@ USE_TZ = True
 
 
 SITE_ID = '1'
-SITE_URL = 'http://travnik.ru'
-DEFAULT_FROM_EMAIL = 'Travnik.ru <info@travnik.ru>'
-SERVER_EMAIL = 'info@travnik.ru'
+SITE_URL = 'http://medavi.ru'
+DEFAULT_FROM_EMAIL = 'Medavi.ru <info@medavi.ru>'
+SERVER_EMAIL = 'info@medavi.ru'
 INTERNAL_IPS = ['127.0.0.1']
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
@@ -212,8 +254,6 @@ BEST_COMMENTS_DAYS = 100
 
 CKEDITOR_UPLOAD_PATH = "ckeditor_uploads/"
 
-DEBUG_TOOLBAR = False
-CACHE_ENABLED = False
 
 if DEBUG_TOOLBAR:
 
@@ -271,7 +311,7 @@ else:
 AUTO_APPROVE_EMAILS = ['approve@approve.me']
 AUTO_DONT_APPROVE_EMAILS = ['dont-approve@dont-approve.me']
 
-ADMINS = (('Alex Poleha', 'info@travnik.ru'),)
+ADMINS = (('Alex Poleha', 'info@medavi.ru'),)
 
 PUBLISH_COMMENT_WITHOUT_APPROVE_KARM = 20
 
@@ -307,7 +347,7 @@ BASE_USER_PROFILE_CLASS = 'main.models.UserProfile'
 BASE_COMMENT_CLASS = 'main.models.Comment'
 
 
-SITE_NAME = 'Travnik.ru'
+SITE_NAME = 'Medavi.ru'
 
 
 
@@ -339,3 +379,7 @@ USER_ROLES = (
     )
 
 BASE_TEMPLATE = 'main/base/base.html'
+
+
+#***************
+EXCLUDE_FROM_MINIFYING = ('^admin/',)
