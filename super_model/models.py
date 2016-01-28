@@ -21,7 +21,7 @@ from allauth.account.models import EmailAddress, EmailConfirmation
 from django.db.models.signals import post_save
 from super_model.helper import generate_key
 from django.db.models.aggregates import Count, Sum
-
+from . import fix
 
 class SuperModel(models.Model):
     created = models.DateTimeField(blank=True, verbose_name='Время создания', db_index=True)
