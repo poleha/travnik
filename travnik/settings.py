@@ -311,7 +311,7 @@ else:
 AUTO_APPROVE_EMAILS = ['approve@approve.me']
 AUTO_DONT_APPROVE_EMAILS = ['dont-approve@dont-approve.me']
 
-ADMINS = (('Alex Poleha', 'info@medavi.ru'),)
+ADMINS = (('Alex Poleha', 'admin@medavi.ru'),)
 
 PUBLISH_COMMENT_WITHOUT_APPROVE_KARM = 20
 
