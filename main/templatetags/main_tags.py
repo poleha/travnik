@@ -106,35 +106,30 @@ def metatags(context):
     #kwargs = request.resolver_match.kwargs
 
     metatags_dict = {}
-    metatags_dict['title'] = 'Травник'
-    metatags_dict['keywords'] = "Ключевые слова травника"
-    metatags_dict['description'] = "Описание травнике"
+    metatags_dict['title'] = 'Medavi.ru | Все о лекарственных растениях'
+    metatags_dict['keywords'] = 'лекарственные растения, отзывы, рецепты'
+    metatags_dict['description'] = 'Сайт о лекарственных растениях и обо всем, что с ними связано'
     metatags_dict['canonical'] = ''
 
     if url_name == 'main-page':
         pass
 
     elif url_name == 'plant-list':
-        metatags_dict['title'] = 'Отзывы о лекарствах | Про здоровье'
-        metatags_dict['keywords'] = "отзывы, лекарственные препараты, лекарства"
-        metatags_dict['description'] = "Отзывы о лекарственных препаратах."
+        metatags_dict['title'] = 'Medavi | Лекарственные растения'
 
     elif url_name == 'recipe-list':
-        metatags_dict['title'] = 'Отзывы об аптечной косметике | Про здоровье'
-        metatags_dict['keywords'] = "отзывы, лекарственные препараты, лекарства"
-        metatags_dict['description'] = "Отзывы о лекарственных препаратах."
-
+        metatags_dict['title'] = 'Medavi | Рецепты'
 
     elif url_name in ['post-detail-alias', 'post-detail-alias-comment', 'post-detail-pk', 'post-detail-pk-comment', 'post-detail-pk-comment']:
         obj = context['obj']
         if obj.is_plant:
-            metatags_dict['title'] = '{0} - отзывы | Про здоровье'.format(obj.title)
-            metatags_dict['keywords'] = "{0} - отзывы, лекарственные препараты, лекарства, отзывы, {1}".format(obj.title, obj.title)
-            metatags_dict['description'] = "Отзывы о препарате {0}.".format(obj.title)
+            metatags_dict['title'] = '{0} | Medavi.ru'.format(obj.title)
+            metatags_dict['keywords'] = "{0}, растение, рецепты, отзывы".format(obj.title, obj.title)
+            metatags_dict['description'] = "Информация о лекарственном растении {0}.".format(obj.title)
         elif obj.is_recipe:
-            metatags_dict['title'] = '{0} | Про здоровье'.format(obj.title)
-            metatags_dict['keywords'] = "{0}, блог о здоровом образе жизни".format(obj.title)
-            metatags_dict['description'] = obj.anons
+            metatags_dict['title'] = '{0} | Medavi.ru'.format(obj.title)
+            metatags_dict['keywords'] = "{0}, рецепт, отзывы, {1}".format(obj.title, obj.title, obj.plant.title)
+            metatags_dict['description'] = "Рецепт {0} с использованием лекарственного растения {1}.".format(obj.title, obj.plant.title)
 
         if 'page' in request.GET or url_name == 'post-detail-pk-comment':
             metatags_dict['canonical'] = obj.get_absolute_url()
@@ -154,7 +149,7 @@ def metatags(context):
             pass
 
     elif url_name == 'search':
-        metatags_dict['title'] = 'Поиск по сайту | Про здоровье'
+        metatags_dict['title'] = 'Поиск по сайту | Medavi.ru'
 
     return metatags_dict
 
