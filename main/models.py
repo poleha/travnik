@@ -228,7 +228,7 @@ class UserProfile(super_models.SuperUserProfile):
 
     @cached_property
     def can_publish_comment(self):
-        if self.user.is_admin or self.user.is_author or self.get_user_karm >= settings.PUBLISH_COMMENT_WITHOUT_APPROVE_KARM:
+        if self.user.is_admin or self.get_user_karm >= settings.PUBLISH_COMMENT_WITHOUT_APPROVE_KARM:
             return True
         else:
             return False
