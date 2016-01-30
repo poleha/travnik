@@ -14,6 +14,29 @@ from main import models
 from super_model.models import POST_STATUS_PUBLISHED
 from django.core.exceptions import ValidationError
 
+usage_areas_dict = {}
+
+with open('usage_areas.csv', 'r') as file:
+    line_num = 0
+    for line in file:
+        line_num += 1
+        line_as_list = line.split(';')
+
+        if not len(line_as_list) == 2:
+            print('List lenght error in usage areas in line {}'.format(line_num))
+            continue
+
+        line_as_list = [elem.strip() for elem in line_as_list]
+        try:
+            num = int(line_as_list[0].title())
+        except:
+            print('Number to int convertion error in usage areas in line {}'.format(line_num))
+            continue
+
+        title = line_as_list[1]
+        usage_areas_dict[num] = title
+
+"""
 usage_areas_dict = {
     1:	'Стоматология',
     2:	'Лечение органов дыхания',
@@ -39,6 +62,8 @@ usage_areas_dict = {
     22:	'Женское здоровье',
     23:	'Лактогонное средство',
 }
+
+"""
 
 with open('load.csv', 'r') as file:
     line_num = 0

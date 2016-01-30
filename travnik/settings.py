@@ -109,7 +109,7 @@ ROOT_URLCONF = 'travnik.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'travnik/templates/travnik')],
+        'DIRS': [os.path.join(BASE_DIR, 'main/templates/main')],
         #'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
