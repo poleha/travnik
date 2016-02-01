@@ -14,8 +14,6 @@ from main import models
 from super_model.models import POST_STATUS_PUBLISHED
 from django.core.exceptions import ValidationError
 
-usage_areas_dict = {}
-
 with open('usage_areas.csv', 'r') as file:
     line_num = 0
     for line in file:
@@ -28,13 +26,20 @@ with open('usage_areas.csv', 'r') as file:
 
         line_as_list = [elem.strip() for elem in line_as_list]
         try:
-            num = int(line_as_list[0].title())
+            code = int(line_as_list[0].title())
         except:
             print('Number to int convertion error in usage areas in line {}'.format(line_num))
             continue
 
-        title = line_as_list[1]
-        usage_areas_dict[num] = title
+        title = line_as_list[1].title()
+
+        usage_area, created = models.UsageArea.objects.get_or_create(code=code)
+        if not usage_area.title == title:
+            usage_area.title = title
+            usage_area.save()
+        if created:
+            print('Created usage area {} with code {}'.format(usage_area.title, usage_area.code))
+
 
 """
 usage_areas_dict = {
@@ -93,7 +98,11 @@ with open('load.csv', 'r') as file:
             print('Plant created "{0}" in line {1}'.format(plant.title, line_num))
 
         for usage_area_key in usage_area_keys:
-            usage_area, created = models.UsageArea.objects.get_or_create(title=usage_areas_dict[usage_area_key])
+            try:
+                usage_area = models.UsageArea.objects.get(code=usage_area_key)
+            except:
+                print('Usage area not found {}'.format(usage_area_key))
+                continue
             if usage_area.status != POST_STATUS_PUBLISHED:
                 usage_area.status = POST_STATUS_PUBLISHED
                 usage_area.save()

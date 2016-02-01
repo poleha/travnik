@@ -203,6 +203,7 @@ class Recipe(Post):
 
 
 class UsageArea(Post):
+    code = models.PositiveIntegerField()
 
     def type_str(self):
         return 'Область применения'
