@@ -85,11 +85,18 @@ with open('load.csv', 'r') as file:
             synonyms = line_as_list[3].split(',')
             synonyms = [elem.strip().lower() for elem in synonyms]
 
+            for synonym in plant.synonyms.all():
+                if synonym.synonym not in synonyms:
+                    synonym_text = synonym.synonym
+                    synonym.delete()
+                    print('Synonym {} deleted for plant with code {} and title {}'.format(synonym_text, plant.code, plant.title))
+
             for synonym_text in synonyms:
                 existing_synonyms = plant.synonyms.all().values_list('synonym', flat=True)
                 if not synonym_text in existing_synonyms:
                     models.Synonym.objects.create(plant=plant, synonym=synonym_text)
                     print('Added synonym {} for plant {} with code {}'.format(synonym_text, plant.title, plant.code))
+
 
         for usage_area_key in usage_area_keys:
             try:
@@ -105,3 +112,7 @@ with open('load.csv', 'r') as file:
                 print('Usage area added "{0}" to plant "{1}" in line:{2}'.format(usage_area.title, plant.title, line_num))
 
 
+        for usage_area in plant.usage_areas.all():
+            if usage_area.code not in usage_area_keys:
+                plant.usage_areas.remove(usage_area)
+                print('Usage area with code {} and title {} removed for plant {}'.format(usage_area.code, usage_area.title, plant.title))
