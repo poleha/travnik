@@ -59,6 +59,7 @@ with open('load.csv', 'r') as file:
         plant_title = line_as_list[1].lower()
         usage_area_keys = line_as_list[2].split(',')
         usage_area_keys = [int(elem.strip()) for elem in usage_area_keys]
+        usage_area_keys = set(usage_area_keys)
 
         try:
             code = int(code)
@@ -84,6 +85,7 @@ with open('load.csv', 'r') as file:
         if len(line_as_list) == 4:
             synonyms = line_as_list[3].split(',')
             synonyms = [elem.strip().lower() for elem in synonyms]
+            synonyms = set(synonyms)
 
             for synonym in plant.synonyms.all():
                 if synonym.synonym not in synonyms:
