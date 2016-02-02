@@ -9,6 +9,7 @@ from cache.decorators import cached_property
 from super_model import models as super_models
 from django.utils.html import strip_tags
 from helper import helper
+from django.utils.html import mark_safe
 
 
 COMPONENT_TYPE_VITAMIN = 1
@@ -36,6 +37,9 @@ class Post(super_models.SuperPost):
     )
 
     can_be_rated = True
+
+    def __str__(self):
+        return self.title.capitalize()
 
     @classmethod
     def get_post_type(cls):
@@ -134,12 +138,12 @@ class Post(super_models.SuperPost):
         return History.objects.filter(post=self, history_type=super_models.HISTORY_TYPE_POST_RATED, deleted=False).count()
 
 
-
 class Plant(Post):
     body = RichTextField(verbose_name='Описание', blank=True)
     image = ImageField(verbose_name='Изображение', upload_to='plant', blank=True, null=True, max_length=300)
     usage_areas = models.ManyToManyField('UsageArea', verbose_name='Области применения', blank=True, related_name='plants')
     short_body = models.TextField(verbose_name='Анонс', blank=True)
+    code = models.PositiveIntegerField()
 
     objects = super_models.PostManager()
 
@@ -152,6 +156,9 @@ class Plant(Post):
             return get_thumbnail(self.image, '110x200', quality=settings.DEFAULT_THUMBNAIL_QUALITY).url
         except:
             return ''
+
+    def synonyms_text(self):
+        return mark_safe(', '.join(self.synonyms.values_list('synonym', flat=True)))
 
     @property
     def thumb150(self):
@@ -166,6 +173,11 @@ class Plant(Post):
             return get_thumbnail(self.image, '220x400', quality=settings.DEFAULT_THUMBNAIL_QUALITY).url
         except:
             return ''
+
+
+class Synonym(models.Model):
+    synonym = models.CharField(max_length=500, verbose_name='Синоним')
+    plant = models.ForeignKey(Plant, verbose_name='Растение', related_name='synonyms')
 
 
 class Recipe(Post):

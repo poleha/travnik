@@ -33,7 +33,7 @@ if HOSTNAME in ['ubuntu']:
     DEBUG = True
     COMPRESS_ENABLED = False
     HTML_MINIFY = True
-    CACHE_ENABLED = True
+    CACHE_ENABLED = False
     DEBUG_TOOLBAR = False
 else:
     DEBUG = False

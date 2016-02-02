@@ -34,7 +34,7 @@ class PostListFilterMixin(super_views.SuperPostListFilterMixin, PostViewMixin):
         elif self.model == models.Recipe:
             context['post_type'] = 'recipe'
 
-        context['list_view_default_template'] = 'main/post/_post_list_content.html'
+        context['list_view_default_template'] = 'main/post/_plant_list_content.html'
         return context
 
     def get_filter_form(self):
@@ -69,7 +69,7 @@ class PostList(PostListFilterMixin):
 
 
 class PostListAjax(PostListFilterMixin):
-    template_name = 'main/post/_post_list_ajax.html'
+    template_name = 'main/post/_plant_list_ajax.html'
 
     def post(self, request, *args, **kwargs):
         self.object_list = self.get_queryset()

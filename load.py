@@ -14,6 +14,9 @@ from main import models
 from super_model.models import POST_STATUS_PUBLISHED
 from django.core.exceptions import ValidationError
 
+models.Plant.objects.all().delete()
+models.UsageArea.objects.all().delete()
+
 with open('usage_areas.csv', 'r') as file:
     line_num = 0
     for line in file:
@@ -26,12 +29,12 @@ with open('usage_areas.csv', 'r') as file:
 
         line_as_list = [elem.strip() for elem in line_as_list]
         try:
-            code = int(line_as_list[0].title())
+            code = int(line_as_list[0])
         except:
             print('Number to int convertion error in usage areas in line {}'.format(line_num))
             continue
 
-        title = line_as_list[1].title()
+        title = line_as_list[1].lower()
 
         usage_area, created = models.UsageArea.objects.get_or_create(code=code)
         if not usage_area.title == title:
@@ -41,61 +44,52 @@ with open('usage_areas.csv', 'r') as file:
             print('Created usage area {} with code {}'.format(usage_area.title, usage_area.code))
 
 
-"""
-usage_areas_dict = {
-    1:	'Стоматология',
-    2:	'Лечение органов дыхания',
-    3:	'Офтальмология',
-    4:	'Аллергология',
-    5:	'Лечение алкоголизма',
-    6:	'Противоопухолевое средство',
-    7:	'Противогрибковое средство',
-    8:	'Противоглистное средство',
-    9:	'Противовирусное средство',
-    10:	'Дезинфицирующее средство, антисептик',
-    11:	'Антибактериальное средство',
-    12:	'Средство, регулирующее функцию органов мочеполовой системы и репродукцию',
-    13:	'Лечение сердечно-сосудистой системы',
-    14:	'Лечение костной и хрящевой ткани',
-    15:	'Источник витаминов и минералов',
-    16:	'Анальгетик',
-    17:	'Дерматология',
-    18:	'Желудочно-кишечное средство',
-    19:	'Успокаивающее, снотворное',
-    20:	'Повышение иммунитета',
-    21:	'Мужское здоровье',
-    22:	'Женское здоровье',
-    23:	'Лактогонное средство',
-}
-
-"""
-
 with open('load.csv', 'r') as file:
     line_num = 0
     for line in file:
         line_num += 1
         line_as_list = line.split(';')
 
-        if not len(line_as_list) == 2:
+        if not (3 <= len(line_as_list) <= 4):
             print('List lenght error in line {}'.format(line_num))
             continue
 
         line_as_list = [elem.strip() for elem in line_as_list]
-        plant_title = line_as_list[0].title()
-        usage_area_keys = line_as_list[1].split(',')
+        code = line_as_list[0]
+        plant_title = line_as_list[1].lower()
+        usage_area_keys = line_as_list[2].split(',')
         usage_area_keys = [int(elem.strip()) for elem in usage_area_keys]
 
+        try:
+            code = int(code)
+        except:
+            print('Number to int convertion error in plants in line {}'.format(line_num))
+            continue
 
         try:
-            plant, created = models.Plant.objects.get_or_create(title=plant_title)
+            plant, created = models.Plant.objects.get_or_create(code=code)
         except ValidationError as e:
             print('Validation error "{0}" on creating plant {1} line {2}'.format(e, plant_title, line_num))
             continue
+
+        if plant.title != plant_title:
+                plant.title = plant_title
+                plant.save()
 
         if plant.status != POST_STATUS_PUBLISHED:
             plant.status = POST_STATUS_PUBLISHED
             plant.save()
             print('Plant created "{0}" in line {1}'.format(plant.title, line_num))
+
+        if len(line_as_list) == 4:
+            synonyms = line_as_list[3].split(',')
+            synonyms = [elem.strip().lower() for elem in synonyms]
+
+            for synonym_text in synonyms:
+                existing_synonyms = plant.synonyms.all().values_list('synonym', flat=True)
+                if not synonym_text in existing_synonyms:
+                    models.Synonym.objects.create(plant=plant, synonym=synonym_text)
+                    print('Added synonym {} for plant {} with code {}'.format(synonym_text, plant.title, plant.code))
 
         for usage_area_key in usage_area_keys:
             try:

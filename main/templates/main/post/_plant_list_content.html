@@ -1,5 +1,5 @@
 <table class="table">
-<thead><tr><th>Растение</th><th>Области применения</th><th>Отзывов</th></tr></thead>
+<thead><tr><th>Растение</th><th>Синонимы</th><th>Области применения</th><th>Отзывов</th></tr></thead>
     <tbody>
     {% for obj in objs %}
 <tr>
@@ -7,6 +7,11 @@
      <h5><a href="{{ obj.get_absolute_url }}">{{ obj }}</a></h5>
 </td>
 <td>
+
+{{ obj.synonyms_text }}
+</td>
+
+    <td>
 
 
 <ul>
