@@ -86,12 +86,14 @@ with open('load.csv', 'r') as file:
             synonyms = line_as_list[3].split(',')
             synonyms = [elem.strip().lower() for elem in synonyms]
             synonyms = set(synonyms)
+        else:
+            synonyms = []
 
-            for synonym in plant.synonyms.all():
-                if synonym.synonym not in synonyms:
-                    synonym_text = synonym.synonym
-                    synonym.delete()
-                    print('Synonym {} deleted for plant with code {} and title {}'.format(synonym_text, plant.code, plant.title))
+        for synonym in plant.synonyms.all():
+            if synonym.synonym not in synonyms:
+                synonym_text = synonym.synonym
+                synonym.delete()
+                print('Synonym {} deleted for plant with code {} and title {}'.format(synonym_text, plant.code, plant.title))
 
             for synonym_text in synonyms:
                 existing_synonyms = plant.synonyms.all().values_list('synonym', flat=True)

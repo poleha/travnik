@@ -157,6 +157,7 @@ class Plant(Post):
         except:
             return ''
 
+    @cached_property
     def synonyms_text(self):
         return mark_safe(', '.join(self.synonyms.values_list('synonym', flat=True)))
 
