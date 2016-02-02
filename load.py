@@ -14,8 +14,8 @@ from main import models
 from super_model.models import POST_STATUS_PUBLISHED
 from django.core.exceptions import ValidationError
 
-models.Plant.objects.all().delete()
-models.UsageArea.objects.all().delete()
+#models.Plant.objects.all().delete()
+#models.UsageArea.objects.all().delete()
 
 with open('usage_areas.csv', 'r') as file:
     line_num = 0
