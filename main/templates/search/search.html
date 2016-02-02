@@ -5,11 +5,17 @@
             <h3>Результаты поиска</h3>
             <table class="table table-bordered">
             <thead>
-            <th>Результат</th><th>Изображение</th><th>Тип материала</th>
+            <th>Результат</th><th>Синонимы</th><th>Изображение</th><th>Тип материала</th>
             </thead>
             {% for result in page_obj.object_list %}
                   <tr>
                       <td><a href="{{ result.object.get_absolute_url }}">{{ result.object }}</a></td>
+                  <td>
+                    {% if result.object.is_plant %}
+                      {{ result.object.synonyms_text }}
+                      {% endif %}
+                  </td>
+
                   <td>
                    {% if result.object.thumb110 %}
                    <a href="{{ result.object.get_absolute_url }}"><img src="{{ result.object.thumb110 }}"></a>
