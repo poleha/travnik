@@ -1,2 +1,5 @@
 {{ object.title }}
 {{ object.body }}
+{% for synonym in object.synonyms.all %}
+     {{ synonym.synonym }}
+{% endfor %}

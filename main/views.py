@@ -128,7 +128,7 @@ class SearchView(OriginalSearchView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset = queryset.order_by('weight')
+        #queryset = queryset.order_by('weight')
         return queryset
 
 

@@ -230,7 +230,7 @@ CACHES = {
         'BACKEND': 'redis_cache.RedisCache',
         "LOCATION": "redis://127.0.0.1:6379/1",
         "OPTIONS": {
-            'DB': 2,
+            'DB': 1,
             'PARSER_CLASS': 'redis.connection.HiredisParser',
         }
     }
