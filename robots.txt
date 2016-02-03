@@ -1,0 +1,10 @@
+#
+# robots.txt medavi.ru
+#
+
+User-agent: *
+Crawl-delay: 10
+Disallow: /admin
+Disallow: /search*?
+Sitemap: http://medavi.ru/sitemap.xml
+Host: medavi.ru
