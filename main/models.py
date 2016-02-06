@@ -232,9 +232,8 @@ class Comment(super_models.SuperComment):
     txt_template_name = 'main/comment/email/answer_to_comment.txt'
     html_template_name = 'main/comment/email/answer_to_comment.html'
 
-    confirm_comment_html_template_name = 'main/comment/email/confirm_comment_html_template.html'
     confirm_comment_text_template_name = 'main/comment/email/confirm_comment_text_template.txt'
-
+    confirm_comment_html_template_name = 'main/comment/email/confirm_comment_html_template.html'
 
 
 class UserProfile(super_models.SuperUserProfile):
