@@ -11,7 +11,6 @@
 {% metatags %}
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-<link rel="shortcut icon" href="/favicon.ico" type="image/vnd.microsoft.icon" />
     <!-- Bootstrap -->
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -21,41 +20,51 @@
     <![endif]-->
 <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">-->
      <link rel="stylesheet" type="text/css" href="{% static "main/css/styles.css" %}">
+     <link rel="shortcut icon" href="{% static "main/images/favicon.ico" %}" type="image/x-icon">
      <!-- Optional theme -->
 <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css"> -->
 
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+ <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
 
  </head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
 {% endblock head %}
 
 
 <body>
-<div class="container-fluid">
-<div class="row" id="header">
-    {% block header %}
+<div class="container">
+{% block header %}
+    <div id="header">
+    <div class="row" id="top-header">
+<div class="col-lg-offset-1 col-lg-8 col-sm-9" id="top-logo">
 
+				<a href="/"></a>
 
-        <div class="col-sm-9"></div>
-
-    <div class="col-sm-3" id="user-info-top">
+				</div>
+        <div class="col-sm-3" id="user-info-top">
     {% include 'super_model/user/_user_info_top.html' %}
 </div>
+</div>
+    <div class="row" id="bottom-header">
+        <div class="col-md-offset-1 col-md-3">
+					{% search_form %}
+		</div>
+</div>
+
+
+
+
+
 
     {% endblock header %}
 </div>
 
 <div class="row">
-<div class="col-lg-2 col-md-3 hidden-sm hidden-xs" id="sidebar-left">
-    {% block sidebar_left %}
-{% best_comments 'Популярные сообщения' %}
-{% if user.is_regular %}
-{% get_contact_form %}
-{% endif %}
-{% endblock sidebar_left %}
+<div class="col-lg-2 col-md-3 col-sm-3 hidden-xs" id="sidebar-left">
+{% block sidebar_left %}{% endblock sidebar_left %}
 </div>
-<div class="col-lg-8 col-md-6 col-sm-8 col-xs-12" id="middle-section">
+<div class="col-lg-8 col-md-9 col-sm-9 col-xs-12" id="middle-section">
 {% block breadcrumbs %}
 {% breadcrumbs %}
 {% endblock breadcrumbs %}
@@ -66,25 +75,28 @@
 {% endblock content %}
 </div>
 
-<div class="col-lg-2 col-md-3 col-sm-4 hidden-xs" id="sidebar-right">
+<div class="col-lg-2 hidden-md hidden-sm hidden-xs" id="sidebar-right">
 {% block sidebar_right %}
-{% search_form %}
 {% user_menu %}
-{% recent_comments 'Новые сообщения' %}
+ {% recent_comments 'Новые сообщения' %}
 {% endblock sidebar_right %}
-</div>
+{% if user.is_regular %}
+{% get_contact_form %}
+{% endif %}
+{% best_comments 'Популярные сообщения' %}
+ </div>
 </div>
 
-<div class="row">
+<div class="row" id="footer">
 {% block footer %}
- <div id="footer-info">
+ <p id="footer-info">
     Вся информация на сайте предоставляется исключительно в справочных целях. Напоминаем, что самолечение недопустимо и в случае заболевания рекомендуем обратиться к врачу.
     Перед применением любого лекарственного растения обязательно проконсультируйтесь с врачом.
-</div>
+</p>
 
-<div id="site-info">
+<p id="site-info">
     Авторское право © 2015-2016 Medavi.Ru. Все права на материалы, размещенные на сайте, защищены в соответствии с российским и международным законодательством об авторском праве и смежных правах. При любом использовании материалов сайта ссылка (для интернет-сайтов — гиперссылка) на Medavi.ru обязательна. По вопросам работы сайта обращайтесь на info@medavi.ru
-</div>
+</p>
 {% endblock footer %}
 </div>
 </div>
@@ -93,3 +105,4 @@
 {% block bottom_scripts %}
 {% include 'main/base/_bottom_scripts.html' %}
 {% endblock bottom_scripts %}
+</html>

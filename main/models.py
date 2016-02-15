@@ -180,6 +180,9 @@ class Synonym(models.Model):
     synonym = models.CharField(max_length=500, verbose_name='Синоним')
     plant = models.ForeignKey(Plant, verbose_name='Растение', related_name='synonyms')
 
+    def __str__(self):
+        return self.synonym
+
 
 class Recipe(Post):
     body = RichTextField(verbose_name='Описание', blank=True)

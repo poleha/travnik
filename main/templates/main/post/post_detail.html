@@ -5,6 +5,7 @@
 {% block content %}
 
 
+    <div class="row">
     <div id="full-post">
         <input id="post-pk" type="hidden" value="{{ obj.pk }}">
 
@@ -17,7 +18,6 @@
 
         {% endif %}
         {% if not obj.is_usage_area %}
-        <div class="row">
             <div class="post-top-block">
 
                 {% if user.is_regular %}
@@ -59,7 +59,6 @@
             </div>
 
 
-        </div>
 {% endif %}
 
         <div class="row">
@@ -67,9 +66,9 @@
             <div class="col-xs-12">
 
 
-                <div id="post-block">
+
                     {% if obj.body %}
-                        <div>
+                        <div id="post-block">
                             {% if obj.show_body_label %}
                                 <h4>{% get_verbose_field_name obj 'body' %}:</h4>
                             {% endif %}
@@ -77,9 +76,10 @@
                         </div>
                     {% endif %}
 
-                </div>
 
-            {% if obj.is_plant or obj.is_usage_area and obj.recipes.get_available.exists %}
+            <div id="post-related-list">
+                {% if obj.is_plant or obj.is_usage_area %}
+            {% if obj.recipes.get_available.exists %}
             <h2>Рецепты:</h2>
                 <ul>
                 {% for recipe in obj.recipes.get_available %}
@@ -94,6 +94,7 @@
                 {% endfor %}
                </ul>
             {% endif %}
+            {% endif %}
 
             {% if not obj.is_usage_area and obj.usage_areas.get_available.exists %}
             <h2>Области применения:</h2>
@@ -103,7 +104,7 @@
                 {% endfor %}
             </ul>
             {% endif %}
-
+            </div>
 
 
 {% if not obj.is_usage_area %}
@@ -164,7 +165,7 @@
         </div>
 
     </div>
-
+</div>
 {% endblock content %}
 
 

@@ -1,17 +1,21 @@
-<table class="table">
-<thead><tr><th>Растение</th><th>Синонимы</th><th>Области применения</th><th>Отзывов</th></tr></thead>
+<table class="table" id="plant-table">
+<thead><tr><th class="col_1"><span>Растение</span></th><th class="col_2"><span>Синонимы</span></th><th class="col_3"><span>Области применения</span></th><th class="col_4"><span>Отзывов</span></th></tr></thead>
     <tbody>
     {% for obj in objs %}
 <tr>
-<td>
+<td class="col_1">
      <h5><a href="{{ obj.get_absolute_url }}">{{ obj }}</a></h5>
 </td>
-<td>
+<td class="col_2">
 
-{{ obj.synonyms_text }}
+<ul>
+        {% for synonym in obj.synonyms.all %}
+        <li><a href="{{ obj.get_absolute_url }}">{{ synonym }}</a></li>
+        {% endfor %}
+        </ul>
 </td>
 
-    <td>
+    <td class="col_3">
 
 
 <ul>
@@ -21,7 +25,7 @@
     {% endfor %}
  </ul>
 </td>
-<td>
+<td class="col_4">
     {% if obj.published_comments_count %}
 
     <a href="{{ obj.get_absolute_url }}#comments">{{ obj.published_comments_count }}</a>

@@ -1,6 +1,8 @@
 {% load cache %}
 {% cache cache_duration comments_portlet portlet_type %}
-{% if title and comments %}
+{% if comments %}
+    <div class="comments-portlet">
+    {% if title %}
     <h3>{{ title }}</h3>
     {% endif %}
     {% for comment in comments %}
@@ -34,4 +36,6 @@
 </div>
 </div>
 {% endfor %}
+</div>
+{% endif %}
 {% endcache %}
