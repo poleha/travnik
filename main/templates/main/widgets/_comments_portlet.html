@@ -26,10 +26,10 @@
     <label>Посчитали полезным: </label>{{ comment.comment_mark }}
   </p>
     <p>
-   {% if comment.post.obj.is_drug %}
-       <label>Препарат: </label>
-        {% else %}
-       <label>Тема: </label>
+   {% if comment.post.obj.is_plant %}
+       <label>Растение: </label>
+        {% else  %}
+       <label>Рецепт: </label>
         {% endif %}
     <a href="{{ comment.post.obj.get_absolute_url }}">{{ comment.post.obj }}</a>
 </p>

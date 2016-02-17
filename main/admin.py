@@ -9,19 +9,19 @@ class PostAdminMixin(VersionAdmin):
 
 
 @admin.register(models.Plant)
-class DrugAdmin(AdminImageMixin, PostAdminMixin):
+class PlantAdmin(AdminImageMixin, PostAdminMixin):
     list_filter = ('status', )
     search_fields = ('title', 'alias', 'body')
 
 
 @admin.register(models.Recipe)
-class DrugAdmin(AdminImageMixin, PostAdminMixin):
+class RecipeAdmin(AdminImageMixin, PostAdminMixin):
     list_filter = ('status', )
     search_fields = ('title', 'alias', 'body')
 
 
 @admin.register(models.UsageArea)
-class DrugAdmin(AdminImageMixin, PostAdminMixin):
+class UsageAreaAdmin(AdminImageMixin, PostAdminMixin):
     list_filter = ('status', )
     search_fields = ('title', 'alias')
 

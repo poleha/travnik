@@ -44,8 +44,8 @@ class PostListFilterMixin(super_views.SuperPostListFilterMixin, PostViewMixin):
             data = self.request.GET
         if self.model == models.Plant:
             if not hasattr(self, '_plant_filter_form'):
-                self._drug_filter_form = forms.PlantFilterForm(data)
-            return self._drug_filter_form
+                self._post_filter_form = forms.PlantFilterForm(data)
+            return self._post_filter_form
         elif self.model == models.Recipe:
             if not hasattr(self, '_recipe_filter_form'):
                 self._cosmetics_filter_form = forms.RecipeFilterForm(data)
