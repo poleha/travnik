@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/var/www/medavi/venv/bin/python
 import os
 import sys
 
