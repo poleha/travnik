@@ -554,6 +554,8 @@
                     var innerForm = frm.find('#comment-form-inner');
                     var button = frm.find('.btn');
                     button.attr('disabled', 'disabled');
+                    var inputs = frm.find('input, textarea');
+                    inputs.attr('disabled', 'disabled');
                     $.ajax({
                         type: 'POST',
                         url: frm.attr('action'),
@@ -569,11 +571,13 @@
                             else {
                                 innerForm.html(data.comment_form);
                                 button.removeAttr('disabled');
+                                inputs.removeAttr('disabled');
                             }
 
                         },
                         error: function (data) {
                             button.removeAttr('disabled');
+                            inputs.removeAttr('disabled');
                         }
                     });
 
