@@ -150,6 +150,9 @@ class Plant(Post):
     def type_str(self):
         return 'Растение'
 
+    def __str__(self):
+        return self.title.title()
+
     @property
     def thumb110(self):
         try:
