@@ -61,7 +61,7 @@ class PostFilterForm(forms.Form):
         post_type = self.Meta.post_type
         if alphabet:
             alph = ()
-            letters = digits + ascii_lowercase + 'абвгдеёжзийклмнопрстуфхцчшщъыбэюя'
+            letters = digits + ascii_lowercase + 'абвгдеёжзийклмнопрстуфхцчшщэюя'
             for letter in letters:
                 posts = Post.objects.get_available().filter(post_type=post_type, title__istartswith=letter)
                 count = posts.count()
