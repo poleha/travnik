@@ -1,3 +1,22 @@
+.font_roboto_bold {
+  font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 700;
+}
+
+.font_open_sans_regular {
+font-family: 'Open Sans';
+font-style: normal;
+font-weight: 400;
+}
+
+.font_open_sans_bold {
+font-family: 'Open Sans', sans-serif;
+font-style: normal;
+font-weight: 700;
+}
+
+
 ul, li {
 
 list-style-type: none !important;
@@ -8,18 +27,6 @@ td, tr, th {
   border: none !important;
 }
 
-
-table {
- font-family: 'Open Sans', sans-serif;
-  font-weight:500;
-
-  th {
-
-    border-bottom: 1px solid #528177;
-
-  }
-
-}
 
 
 
@@ -485,8 +492,7 @@ padding-top: 10px;
 
   .post-title {
     font-size: 18px;
-    font-family: 'Roboto', sans-serif;
-    font-weight: bold;
+    .font_roboto_bold;
     color: #57857c;
   }
 
@@ -525,7 +531,7 @@ ul {
 body{
     margin: 0;
     padding: 0;
-    font-family: 'Open Sans', sans-serif;
+    .font_open_sans_regular;
     font-size: 14px;
 }
 
@@ -583,8 +589,7 @@ body{
     font-size: 14px;
 
     label {
-      font-family: 'Open Sans', sans-serif;
-      font-weight: bold;
+      .font_open_sans_bold;
       color: #fff;
       font-size: 14px;
       padding: 15px 0;
@@ -604,7 +609,7 @@ body{
   .guest {
      color: #528177;
     text-decoration: underline;
-    font-family: 'Open Sans', sans-serif;
+    .font_open_sans_regular;
     padding-bottom: 3px;
 
   }
@@ -618,6 +623,21 @@ body{
     padding: 15px 0;
     }
 
+  h3 {
+    .font_open_sans_bold;
+    font-size: 14px;
+    text-align: center;
+  }
+
+label {
+  font-size: 0.9em;
+}
+.line {
+  width: 108px;
+    background-color: #528177;
+    height: 1px;
+    margin: 10px 0 26px 30px;
+  }
 }
 
 
@@ -629,8 +649,7 @@ body{
 
   .title {
    h1 {
-  font-family: 'Open Sans', sans-serif;
-  font-weight: bold;
+  .font_open_sans_bold;
   font-size: 15px;
   color: #fff;
   padding: 10px 0 15px;
@@ -664,7 +683,7 @@ body{
         box-shadow: 2px 3px 5px #295248;
         font-size: 14px;
         color: #FFF;
-        font-family: 'Open Sans', sans-serif;
+        .font_open_sans_regular;
         border: medium none;
         cursor: pointer;
         text-align: center;
@@ -778,12 +797,13 @@ body{
     border-bottom: 1px solid #528177 !important;
     border-right: 1px solid #528177 !important;
     border-left: 1px solid #528177 !important;
-
-
-
   }
 
-    span {
+  th {
+    .font_open_sans_bold;
+  }
+
+    p {
     border-bottom: 1px solid #528177;
 }
 
@@ -797,3 +817,28 @@ body{
 
   }
 
+#search-block {
+
+  #autocomplete-suggestions {
+    .box-shadow-mixin;
+  position: absolute;
+  overflow: hidden;
+  background-color: white;
+  z-index: 10;
+  width: 100%;
+
+  .autocomplete-suggestion {
+    margin-left: 5px;
+    &:hover {
+    background-color: #f1f1f3;
+
+
+    }
+  }
+
+  }
+
+
+
+
+}
