@@ -380,6 +380,9 @@ USER_ROLES = (
 
 BASE_TEMPLATE = 'main/base/base.html'
 
+EMAIL_IS_REQUIRED_FOR_COMMENT = False
 
 #***************
 EXCLUDE_FROM_MINIFYING = ('^admin/',)
+
+

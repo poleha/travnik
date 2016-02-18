@@ -99,7 +99,8 @@ class SuperComment(SuperModel, CachedModelMixin, MPTTModel, class_with_published
         abstract = True
 
     username = models.CharField(max_length=256, verbose_name='Имя')
-    email = models.EmailField(verbose_name='E-Mail')
+    email = models.EmailField(verbose_name='E-Mail', null=not settings.EMAIL_IS_REQUIRED_FOR_COMMENT,
+                              blank=not settings.EMAIL_IS_REQUIRED_FOR_COMMENT)
     body = models.TextField(verbose_name='Сообщение')
     user = models.ForeignKey(User, null=True, blank=True, related_name='comments', db_index=True)
     ip = models.CharField(max_length=300, db_index=True)
@@ -425,10 +426,10 @@ class SuperComment(SuperModel, CachedModelMixin, MPTTModel, class_with_published
             return self.session_key == session_key or self.ip == ip
 
     def send_confirmation_mail(self, user=None, request=None):
-        Mail = import_string(settings.BASE_MAIL_CLASS)
         to = self.email
-        if to in (settings.AUTO_APPROVE_EMAILS + settings.AUTO_DONT_APPROVE_EMAILS):
+        if not to or (to in (settings.AUTO_APPROVE_EMAILS + settings.AUTO_DONT_APPROVE_EMAILS)):
             return
+        Mail = import_string(settings.BASE_MAIL_CLASS)
         if not user and request:
             user = request.user
         if request:
