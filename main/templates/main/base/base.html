@@ -63,7 +63,9 @@
 
 <div class="row">
 <div class="col-lg-2 col-md-3 col-sm-3 hidden-xs" id="sidebar-left">
-{% block sidebar_left %}{% endblock sidebar_left %}
+{% block sidebar_left %}
+{% best_comments 'Популярные сообщения' %}
+{% endblock sidebar_left %}
 </div>
 <div class="col-lg-8 col-md-9 col-sm-9 col-xs-12" id="middle-section">
 {% block breadcrumbs %}
@@ -84,7 +86,6 @@
 {% if user.is_regular %}
 {% get_contact_form %}
 {% endif %}
-{% best_comments 'Популярные сообщения' %}
  </div>
 </div>
 
