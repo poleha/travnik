@@ -96,14 +96,14 @@ with open('load.csv', 'r') as file:
                 synonym.delete()
                 print('Synonym {} deleted for plant with code {} and title {}'.format(synonym_text, plant.code, plant.title))
 
-            for synonym_text in synonyms:
-                existing_synonyms = plant.synonyms.all().values_list('synonym', flat=True)
-                if not synonym_text in existing_synonyms:
-                    try:
-                        models.Synonym.objects.create(plant=plant, synonym=synonym_text)
-                    except ValidationError as e:
-                        print(e)
-                    print('Added synonym {} for plant {} with code {}'.format(synonym_text, plant.title, plant.code))
+        for synonym_text in synonyms:
+            existing_synonyms = plant.synonyms.all().values_list('synonym', flat=True)
+            if not synonym_text in existing_synonyms:
+                try:
+                    models.Synonym.objects.create(plant=plant, synonym=synonym_text)
+                except ValidationError as e:
+                    print(e)
+                print('Added synonym {} for plant {} with code {}'.format(synonym_text, plant.title, plant.code))
 
 
         for usage_area_key in usage_area_keys:

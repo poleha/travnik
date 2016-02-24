@@ -7,12 +7,15 @@ from super_model import models as super_models
 class PostAdminMixin(VersionAdmin):
     readonly_fields = ['post_type']
 
+class PlantSynonymsInline(admin.TabularInline):
+    model = models.Synonym
+    extra = 3
 
 @admin.register(models.Plant)
 class PlantAdmin(AdminImageMixin, PostAdminMixin):
     list_filter = ('status', )
     search_fields = ('title', 'alias', 'body')
-
+    inlines = (PlantSynonymsInline, )
 
 @admin.register(models.Recipe)
 class RecipeAdmin(AdminImageMixin, PostAdminMixin):
