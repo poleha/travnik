@@ -50,15 +50,19 @@ with open('load.csv', 'r') as file:
         line_num += 1
         line_as_list = line.split(';')
 
-        if not (3 <= len(line_as_list) <= 4):
+        if not (4 <= len(line_as_list) <= 5):
             print('List lenght error in line {}'.format(line_num))
             continue
 
         line_as_list = [elem.strip() for elem in line_as_list]
         code = line_as_list[0]
         plant_title = line_as_list[1].lower()
-        usage_area_keys = line_as_list[2].split(',')
-        usage_area_keys = [int(elem.strip()) for elem in usage_area_keys]
+        usage_area_keys = line_as_list[4].split(',')
+        try:
+            usage_area_keys = [int(elem.strip()) for elem in usage_area_keys if elem]
+        except:
+            print(usage_area_keys)
+            raise Exception
         usage_area_keys = set(usage_area_keys)
 
         try:
@@ -82,15 +86,12 @@ with open('load.csv', 'r') as file:
             plant.save()
             print('Plant created "{0}" in line {1}'.format(plant.title, line_num))
 
-        if len(line_as_list) == 4:
-            synonyms = line_as_list[3].split(',')
-            synonyms = [elem.strip().lower() for elem in synonyms]
-            synonyms = set(synonyms)
-        else:
-            synonyms = []
+        synonyms = line_as_list[2].split(',')
+        synonyms = [elem.strip().lower() for elem in synonyms if elem.lower() != plant.title.lower()]
+        synonyms = set(synonyms)
 
         for synonym in plant.synonyms.all():
-            if synonym.synonym not in synonyms:
+            if synonym.synonym not in synonyms or synonym.synonym.lower() == plant.title.lower():
                 synonym_text = synonym.synonym
                 synonym.delete()
                 print('Synonym {} deleted for plant with code {} and title {}'.format(synonym_text, plant.code, plant.title))
@@ -98,7 +99,10 @@ with open('load.csv', 'r') as file:
             for synonym_text in synonyms:
                 existing_synonyms = plant.synonyms.all().values_list('synonym', flat=True)
                 if not synonym_text in existing_synonyms:
-                    models.Synonym.objects.create(plant=plant, synonym=synonym_text)
+                    try:
+                        models.Synonym.objects.create(plant=plant, synonym=synonym_text)
+                    except ValidationError as e:
+                        print(e)
                     print('Added synonym {} for plant {} with code {}'.format(synonym_text, plant.title, plant.code))
 
 
@@ -106,7 +110,7 @@ with open('load.csv', 'r') as file:
             try:
                 usage_area = models.UsageArea.objects.get(code=usage_area_key)
             except:
-                print('Usage area not found {}'.format(usage_area_key))
+                print('Usage area not found {} on line {}'.format(usage_area_key, line_num))
                 continue
             if usage_area.status != POST_STATUS_PUBLISHED:
                 usage_area.status = POST_STATUS_PUBLISHED
@@ -120,3 +124,9 @@ with open('load.csv', 'r') as file:
             if usage_area.code not in usage_area_keys:
                 plant.usage_areas.remove(usage_area)
                 print('Usage area with code {} and title {} removed for plant {}'.format(usage_area.code, usage_area.title, plant.title))
+
+        wikipedia_link = line_as_list[3].lower().strip()
+
+        if plant.wikipedia_link != wikipedia_link:
+            plant.wikipedia_link = wikipedia_link
+            plant.save()

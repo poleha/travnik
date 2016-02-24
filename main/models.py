@@ -143,6 +143,7 @@ class Plant(Post):
     image = ImageField(verbose_name='Изображение', upload_to='plant', blank=True, null=True, max_length=300)
     usage_areas = models.ManyToManyField('UsageArea', verbose_name='Области применения', blank=True, related_name='plants')
     short_body = models.TextField(verbose_name='Анонс', blank=True)
+    wikipedia_link = models.TextField(blank=True, verbose_name='Страница на wikipedia')
     code = models.PositiveIntegerField()
 
     objects = super_models.PostManager()

@@ -60,7 +60,7 @@ def breadcrumbs(context):
 
     if url_name in ['post-detail-alias', 'post-detail-alias-comment', 'post-detail-pk', 'post-detail-pk-comment']:
         obj = context['obj']
-        breadcrumbs_list.append(Breadcrumb(title=obj.title, href=obj.get_absolute_url()))
+        breadcrumbs_list.append(Breadcrumb(title=obj.title.title(), href=obj.get_absolute_url()))
 
     elif url_name == 'user-profile':
         user = context['user']
