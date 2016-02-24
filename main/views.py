@@ -13,6 +13,7 @@ from haystack.query import SearchQuerySet
 from super_model import helper as super_helper
 from django.db.models.aggregates import Count
 from django.http.response import HttpResponseRedirect
+from django.db.models import Q
 
 
 class PostViewMixin(super_views.SuperPostViewMixin):
@@ -141,7 +142,7 @@ class AutocompleteView(generic.View):
         q = request.POST.get('q', '').strip()
 
         if len(q) > 2:
-            post_queryset = models.Post.objects.get_available().filter(title__icontains=q).annotate(
+            post_queryset = models.Post.objects.get_available().filter(~Q(plant=None), ~Q(recipe=None), title__icontains=q).annotate(
                 comment_count=Count('comments')).order_by('-comment_count')[:5]
             objects = [post.obj for post in post_queryset]
             synonym_queryset = models.Synonym.objects.filter(synonym__icontains=q).annotate(
