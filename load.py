@@ -87,7 +87,7 @@ with open('load.csv', 'r') as file:
             print('Plant created "{0}" in line {1}'.format(plant.title, line_num))
 
         synonyms = line_as_list[2].split(',')
-        synonyms = [elem.strip().lower() for elem in synonyms if elem.lower() != plant.title.lower()]
+        synonyms = [elem.strip().lower() for elem in synonyms if elem.lower().strip() != plant.title.lower().strip()]
         synonyms = set(synonyms)
 
         for synonym in plant.synonyms.all():
