@@ -2,16 +2,23 @@ from super_model import forms as super_forms
 from django.conf import settings
 from django import forms
 from . import models
+from django.db.models.aggregates import Count
 
 class PlantFilterForm(super_forms.PostFilterForm):
     class Meta:
         post_type = settings.POST_TYPE_PLANT
 
-    usage_areas = forms.ModelMultipleChoiceField(queryset=models.UsageArea.objects.get_available(), label='Область применения', widget=forms.CheckboxSelectMultiple(), required=False)
+    usage_areas = forms.MultipleChoiceField(choices=(), label='Область применения', widget=forms.CheckboxSelectMultiple(), required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         del self.fields['title']
+        usage_areas = models.UsageArea.objects.get_available().annotate(plant_count=Count('plants'))
+        usage_area_choices = ()
+        for usage_area in usage_areas:
+            usage_area_choices += ((usage_area.pk, "{0}({1})".format(usage_area, usage_area.plant_count)),)
+        self.fields['usage_areas'] = forms.MultipleChoiceField(choices=usage_area_choices, label='Область применения', widget=forms.CheckboxSelectMultiple(), required=False)
+
 
 
 class RecipeFilterForm(super_forms.PostFilterForm):
