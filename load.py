@@ -87,12 +87,11 @@ with open('load.csv', 'r') as file:
             print('Plant created "{0}" in line {1}'.format(plant.title, line_num))
 
         synonyms = line_as_list[2].split(',')
-        synonyms = [elem.strip().lower() for elem in synonyms if elem.lower().strip() != plant.title.lower().strip()]
+        synonyms = [elem.strip().lower() for elem in synonyms if elem.lower().strip() != plant.title.lower().strip() and elem.strip() != ""]
         synonyms = set(synonyms)
 
         for synonym in plant.synonyms.all():
-            if synonym.synonym not in synonyms or synonym.synonym.lower() == plant.title.lower():
-                synonym_text = synonym.synonym
+            if synonym.synonym not in synonyms or synonym.synonym.lower() == plant.title.lower() or synonym.synonym.strip() == "":
                 synonym.delete()
                 print('Synonym {} deleted for plant with code {} and title {}'.format(synonym_text, plant.code, plant.title))
 
@@ -101,10 +100,9 @@ with open('load.csv', 'r') as file:
             if not synonym_text in existing_synonyms:
                 try:
                     models.Synonym.objects.create(plant=plant, synonym=synonym_text)
+                    print('Added synonym {} for plant {} with code {}'.format(synonym_text, plant.title, plant.code))
                 except ValidationError as e:
                     print(e)
-                print('Added synonym {} for plant {} with code {}'.format(synonym_text, plant.title, plant.code))
-
 
         for usage_area_key in usage_area_keys:
             try:

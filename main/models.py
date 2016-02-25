@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models.aggregates import Sum, Count
+from django.db.models.aggregates import Sum
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from allauth.account.models import EmailAddress, EmailConfirmation
@@ -10,6 +10,7 @@ from super_model import models as super_models
 from django.utils.html import strip_tags
 from helper import helper
 from django.utils.html import mark_safe
+from django.forms import ValidationError
 
 
 COMPONENT_TYPE_VITAMIN = 1
@@ -186,6 +187,14 @@ class Synonym(models.Model):
 
     def __str__(self):
         return self.synonym
+
+    def clean(self):
+        if self.synonym.strip() == "":
+            raise ValidationError('Синоним обязателен к заполнению')
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
 
 
 class Recipe(Post):

@@ -142,8 +142,9 @@ class AutocompleteView(generic.View):
         q = request.POST.get('q', '').strip()
 
         if len(q) > 2:
-            post_queryset = models.Post.objects.get_available().filter(~Q(plant=None), ~Q(recipe=None), title__icontains=q).annotate(
-                comment_count=Count('comments')).order_by('-comment_count')[:5]
+            post_queryset = models.Post.objects.get_available().filter(
+                Q(~Q(plant=None) | ~Q(recipe=None)),
+                title__icontains=q).annotate(comment_count=Count('comments')).order_by('-comment_count')[:5]
             objects = [post.obj for post in post_queryset]
             synonym_queryset = models.Synonym.objects.filter(synonym__icontains=q).annotate(
                 comment_count=Count('plant__comments')).order_by('-comment_count')[:5]
