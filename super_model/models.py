@@ -469,7 +469,7 @@ class AbstractModel(SuperModel, CachedModelMixin):
     class Meta:
         abstract = True
         ordering = ('title', )
-    title = models.CharField(max_length=500, verbose_name='Название', db_index=True)
+    title = models.CharField(max_length=500, verbose_name='Название', unique=settings.POST_TITLE_UNIQUE)
 
     def __str__(self):
         return self.title

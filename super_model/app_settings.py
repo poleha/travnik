@@ -20,6 +20,8 @@ class Settings:
 
     EMAIL_IS_REQUIRED_FOR_COMMENT = True
 
+    POST_TITLE_UNIQUE = False
+
     def __getattribute__(self, item):
         if hasattr(project_settings, item):
             return getattr(project_settings, item)

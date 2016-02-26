@@ -138,6 +138,10 @@ class Post(super_models.SuperPost):
     def marks_count(self):
         return History.objects.filter(post=self, history_type=super_models.HISTORY_TYPE_POST_RATED, deleted=False).count()
 
+    def save(self, *args, **kwargs):
+        self.title = helper.trim_title(self.title).lower()
+        super().save(*args, **kwargs)
+
 
 class Plant(Post):
     body = RichTextField(verbose_name='Описание', blank=True)
@@ -192,8 +196,26 @@ class Synonym(models.Model):
         if self.synonym.strip() == "":
             raise ValidationError('Синоним обязателен к заполнению')
 
+        if self.plant.title == self.synonym:
+            raise ValidationError('Синоним "{}" не должен быть равен наименованию'.format(self.synonym))
+
+        """
+        plants = Plant.objects.filter(title=self.synonym).exclude(pk=self.plant.pk)
+        if plants.exists():
+            raise ValidationError('Синоним "{}" уже используется как название растений "{}"'.format(self.synonym, plants.values_list('title', flat=True)))
+
+        plants = Plant.objects.filter(synonyms__synonym=self.synonym).exclude(synonyms__pk=self.pk)
+        if plants.exists():
+            raise ValidationError('Синоним "{}" уже используется как синоним растений "{}"'.format(self.synonym, plants.values_list('title', flat=True)))
+        """
+
+        if self.synonym in self.plant.synonyms.exclude(pk=self.pk).values_list('synonym', flat=True):
+            raise ValidationError('Синоним "{}" уже указан в этом растении'.format(self.synonym))
+
+
     def save(self, *args, **kwargs):
-        self.clean()
+        self.synonym = helper.trim_title(self.synonym).lower()
+        self.full_clean()
         super().save(*args, **kwargs)
 
 

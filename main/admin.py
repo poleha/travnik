@@ -44,7 +44,9 @@ class UserProfileAdmin(AdminImageMixin, VersionAdmin):
     list_filter = ('role', )
     search_fields = ('user__username', )
 
-
+@admin.register(models.Synonym)
+class SynonymAdmin(admin.ModelAdmin):
+    search_fields = ('synonym', 'plant__title')
 
 @admin.register(models.Mail)
 class MailAdmin(VersionAdmin):
