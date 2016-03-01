@@ -43,6 +43,7 @@ with open('usage_areas.csv', 'r') as file:
         if created:
             print('Created usage area {} with code {}'.format(usage_area.title, usage_area.code))
 
+plant_keys = []
 
 with open('load.csv', 'r') as file:
     line_num = 0
@@ -67,6 +68,7 @@ with open('load.csv', 'r') as file:
 
         try:
             code = int(code)
+            plant_keys.append(code)
         except:
             print('Number to int convertion error in plants in line {}'.format(line_num))
             continue
@@ -128,3 +130,10 @@ with open('load.csv', 'r') as file:
         if plant.wikipedia_link != wikipedia_link:
             plant.wikipedia_link = wikipedia_link
             plant.save()
+
+for code in models.Plant.objects.all().values_list('code', flat=True):
+    if code not in plant_keys:
+        plant = models.Plant.objects.get(code=code)
+        txt = "deleted plant title={}, code={}".format(plant.title, plant.code)
+        plant.delete()
+        print(txt)
