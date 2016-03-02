@@ -95,7 +95,7 @@ with open('load.csv', 'r') as file:
         for synonym in plant.synonyms.all():
             if synonym.synonym not in synonyms or synonym.synonym.lower() == plant.title.lower() or synonym.synonym.strip() == "":
                 synonym.delete()
-                print('Synonym {} deleted for plant with code {} and title {}'.format(synonym_text, plant.code, plant.title))
+                print('Synonym {} deleted for plant with code {} and title {}'.format(synonym.synonym, plant.code, plant.title))
 
         for synonym_text in synonyms:
             existing_synonyms = plant.synonyms.all().values_list('synonym', flat=True)

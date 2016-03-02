@@ -186,6 +186,9 @@ class Plant(Post):
 
 
 class Synonym(models.Model):
+    class Meta:
+        ordering = ('synonym', )
+
     synonym = models.CharField(max_length=500, verbose_name='Синоним')
     plant = models.ForeignKey(Plant, verbose_name='Растение', related_name='synonyms')
 
@@ -199,15 +202,13 @@ class Synonym(models.Model):
         if self.plant.title == self.synonym:
             raise ValidationError('Синоним "{}" не должен быть равен наименованию'.format(self.synonym))
 
-        """
         plants = Plant.objects.filter(title=self.synonym).exclude(pk=self.plant.pk)
         if plants.exists():
-            raise ValidationError('Синоним "{}" уже используется как название растений "{}"'.format(self.synonym, plants.values_list('title', flat=True)))
+            raise ValidationError('Синоним "{}" уже используется как название растений'.format(self.synonym))
 
         plants = Plant.objects.filter(synonyms__synonym=self.synonym).exclude(synonyms__pk=self.pk)
         if plants.exists():
             raise ValidationError('Синоним "{}" уже используется как синоним растений "{}"'.format(self.synonym, plants.values_list('title', flat=True)))
-        """
 
         if self.synonym in self.plant.synonyms.exclude(pk=self.pk).values_list('synonym', flat=True):
             raise ValidationError('Синоним "{}" уже указан в этом растении'.format(self.synonym))
