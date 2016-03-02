@@ -11,6 +11,7 @@ from django.utils.html import strip_tags
 from helper import helper
 from django.utils.html import mark_safe
 from django.forms import ValidationError
+from django.db.models import Q
 
 
 COMPONENT_TYPE_VITAMIN = 1
@@ -184,13 +185,41 @@ class Plant(Post):
         except:
             return ''
 
+    @staticmethod
+    def get_plant_by_alias(alias):
+        alias = alias.strip()
+        plants = Plant.objects.filter(Q(Q(alias=alias) | Q(synonyms__alias=alias))).distinct()
+        if plants.exists():
+            return plants[0]
+        else:
+            return None
+
+    @staticmethod
+    def get_plant_by_title(title):
+        title = helper.trim_title(title)
+        plants = Plant.objects.filter(Q(Q(title=title) | Q(synonyms__synonym=title))).distinct()
+        if plants.exists():
+            return plants[0]
+        else:
+            return None
+
+    @staticmethod
+    def get_plant_by_slug(slug):
+        plant = Plant.get_plant_by_alias(slug)
+        if plant is None:
+            plant = Plant.get_plant_by_title(slug)
+        return plant if plant else None
+
+
 
 class Synonym(models.Model):
     class Meta:
         ordering = ('synonym', )
 
     synonym = models.CharField(max_length=500, verbose_name='Синоним')
+    alias = models.CharField(max_length=800, blank=True, verbose_name='Синоним', db_index=True)
     plant = models.ForeignKey(Plant, verbose_name='Растение', related_name='synonyms')
+
 
     def __str__(self):
         return self.synonym
@@ -216,6 +245,7 @@ class Synonym(models.Model):
 
     def save(self, *args, **kwargs):
         self.synonym = helper.trim_title(self.synonym).lower()
+        self.alias = helper.make_alias(self.synonym)
         self.full_clean()
         super().save(*args, **kwargs)
 
