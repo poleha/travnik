@@ -16,7 +16,8 @@ class PlantFilterForm(super_forms.PostFilterForm):
         usage_areas = models.UsageArea.objects.get_available().annotate(plant_count=Count('plants'))
         usage_area_choices = ()
         for usage_area in usage_areas:
-            usage_area_choices += ((usage_area.pk, "{0}({1})".format(usage_area, usage_area.plant_count)),)
+            if usage_area.plant_count > 0:
+                usage_area_choices += ((usage_area.pk, "{0}({1})".format(usage_area, usage_area.plant_count)),)
         self.fields['usage_areas'] = forms.MultipleChoiceField(choices=usage_area_choices, label='Область применения', widget=forms.CheckboxSelectMultiple(), required=False)
 
 
