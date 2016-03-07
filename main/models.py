@@ -290,6 +290,10 @@ class UsageArea(Post):
     def type_str(self):
         return 'Область применения'
 
+    def save(self, *args, **kwargs):
+        self.title = self.title.lower()
+        super().save(*args, **kwargs)
+
 
 class Comment(super_models.SuperComment):
     class Meta:

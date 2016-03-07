@@ -13,7 +13,7 @@ if __name__ == "__main__":
 from main import models
 from super_model.models import POST_STATUS_PUBLISHED
 from django.core.exceptions import ValidationError
-
+from django.db.models import Count
 #models.Plant.objects.all().delete()
 #models.UsageArea.objects.all().delete()
 
@@ -137,3 +137,9 @@ for code in models.Plant.objects.all().values_list('code', flat=True):
         txt = "deleted plant title={}, code={}".format(plant.title, plant.code)
         plant.delete()
         print(txt)
+
+
+for usage_area in models.UsageArea.objects.annotate(plant_count=Count('plants')):
+    if usage_area.plant_count == 0:
+        print('Deleted usage area', usage_area)
+        usage_area.delete()
