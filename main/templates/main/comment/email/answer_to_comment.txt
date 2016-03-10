@@ -1,4 +1,4 @@
 Здравствуйте!
-Получен ответ на Ваш отзыв {{ comment.parent }} на сайте Travnik.ru.
+Получен ответ на Ваш отзыв {{ comment.parent }} на сайте Medavi.ru.
 Чтобы прочитать ответ, пройдите, пожалуйста, по ссылке {{ site_url }}{{ comment.get_absolute_url }}
-Вы можете отписаться от сообщений с сайта Travnik.ru, пройдя по этой ссылке: {{ site_url }}{{ comment.parent.user.user_profile.get_unsubscribe_url }}
+Вы можете отписаться от сообщений с сайта Medavi.ru, пройдя по этой ссылке: {{ site_url }}{{ comment.parent.user.user_profile.get_unsubscribe_url }}
