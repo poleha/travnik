@@ -114,19 +114,18 @@ class PostDetail(super_views.SuperPostDetail):
 
 
 class RecipeCreateFromPostDetail(PostDetail):
-
     @transaction.atomic()
     def post(self, request, *args, **kwargs):
+        user = request.user
+        if not user.is_authenticated:
+            HttpResponseRedirect(self.obj.get_absolute_url())
         self.set_obj()
         self.object_list = self.get_queryset()
         recipe_form = forms.RecipeUserForm(request.POST, plant=self.obj)
         if recipe_form.is_valid():
-            user = request.user
-            if user.is_authenticated():
-                recipe_form.instance.user = user
-                if user.user_profile.can_publish_comment:
-                    recipe_form.instance.status = super_models.POST_STATUS_PUBLISHED
-
+            recipe_form.instance.user = user
+            if user.user_profile.can_publish_comment:
+                recipe_form.instance.status = super_models.POST_STATUS_PUBLISHED
             recipe = recipe_form.save()
             recipe.plants.add(self.obj)
             for plant in recipe.plants.all():

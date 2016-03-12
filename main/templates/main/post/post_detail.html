@@ -159,9 +159,9 @@
     <div id="tabs">
   <ul>
     <li><a href="#tabs-1">Оcтавить отзыв</a></li>
-    {% if obj.is_plant %}<li><a href="#tabs-2">Оставить рецепт</a></li>{% endif %}
+    {% if obj.is_plant and user.is_authenticated %}<li><a href="#tabs-2">Оставить рецепт</a></li>{% endif %}
   </ul>
-    {% if obj.is_plant %}
+    {% if obj.is_plant and user.is_authenticated %}
         <div id="tabs-2">
         <form method="post" id="recipe-form" action="{% url 'create-recipe-from-post-detail' obj.pk %}">
 
