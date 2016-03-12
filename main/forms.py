@@ -46,6 +46,11 @@ class RecipeForm(forms.ModelForm):
 
 
 class RecipeUserForm(forms.ModelForm):
+    def __new__(cls, *args, **kwargs):
+        cls.base_fields['plants'].widget=forms.CheckboxSelectMultiple()
+        cls.base_fields['usage_areas'].widget=forms.CheckboxSelectMultiple()
+        return super().__new__(cls)
+
     class Meta:
         model = models.Recipe
         fields = ('title', 'body', 'usage_areas', 'plants')
@@ -57,6 +62,7 @@ class RecipeUserForm(forms.ModelForm):
         self.fields['plants'].queryset = models.Plant.objects.get_available().exclude(pk=plant.pk)
         self.fields['plants'].label = 'Другие растения'
         self.fields['title'].label = 'Название рецепта'
+        self.fields['body'].required = True
 
     def clean(self):
         super().clean()

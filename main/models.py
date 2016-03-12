@@ -261,12 +261,10 @@ class Synonym(models.Model):
 
 
 class Recipe(Post):
-    body = RichTextField(verbose_name='Рецепт', blank=True)
-    #image = ImageField(verbose_name='Изображение', upload_to='recipe', blank=True, null=True, max_length=300)
+    body = RichTextField(verbose_name='Рецепт', config_name='basic')
     plants = models.ManyToManyField(Plant, verbose_name='Растения', blank=True, related_name='recipes')
     usage_areas = models.ManyToManyField('UsageArea', verbose_name='Области применения', blank=True, related_name='recipes')
     user = models.ForeignKey(User, null=True, blank=True, related_name='recipes', db_index=True)
-    #short_body = models.TextField(verbose_name='Анонс', blank=True)
 
     objects = super_models.PostManager()
     alter_alias = True
@@ -274,28 +272,6 @@ class Recipe(Post):
     def type_str(self):
         return 'Рецепт'
 
-    """
-    @property
-    def thumb110(self):
-        try:
-            return get_thumbnail(self.image, '110x200', quality=settings.DEFAULT_THUMBNAIL_QUALITY).url
-        except:
-            return ''
-
-    @property
-    def thumb150(self):
-        try:
-            return get_thumbnail(self.image, '150x300', quality=settings.DEFAULT_THUMBNAIL_QUALITY).url
-        except:
-            return ''
-
-    @property
-    def thumb220(self):
-        try:
-            return get_thumbnail(self.image, '220x400', quality=settings.DEFAULT_THUMBNAIL_QUALITY).url
-        except:
-            return ''
-    """
 
 class UsageArea(Post):
     code = models.PositiveIntegerField()

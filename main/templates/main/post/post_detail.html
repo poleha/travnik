@@ -83,7 +83,10 @@
             <h2>Рецепты:</h2>
                 <ul>
                 {% for recipe in obj.recipes.get_available %}
-                <li><a href="{{ recipe.get_absolute_url }}">{{ recipe }}</a></li>
+                <li>
+                    <div><a href="{{ recipe.get_absolute_url }}">{{ recipe }}</a></div>
+                <div>{{ recipe.body|safe }}</div>
+                </li>
             {% endfor %}
                 </ul>
             {% elif obj.is_recipe or obj.is_usage_area and obj.plants.get_available.exists %}
@@ -149,9 +152,30 @@
                         {% include 'super_model/base/_pager.html' with url=obj.get_absolute_url %}
                     {% endif %}
 {% if not obj.is_usage_area %}
-                    <div>
-                        <h3>Оставьте отзыв:</h3>
-                        <div id="answer-to-block" class="hidden">
+
+
+
+
+    <div id="tabs">
+  <ul>
+    <li><a href="#tabs-1">Оcтавить отзыв</a></li>
+    {% if obj.is_plant %}<li><a href="#tabs-2">Оставить рецепт</a></li>{% endif %}
+  </ul>
+    {% if obj.is_plant %}
+        <div id="tabs-2">
+        <form method="post" id="recipe-form" action="{% url 'create-recipe-from-post-detail' obj.pk %}">
+
+                            {% csrf_token %}
+                            <div id="recipe-form-inner">
+                                {{ recipe_form.media }}
+                                {{ recipe_form.as_p }}
+                            </div>
+                            <input class="btn btn-success" type="submit" value="Отправить">
+                        </form>
+  </div>
+      {% endif %}
+  <div id="tabs-1">
+     <div id="answer-to-block" class="hidden">
                             <label>В ответ на:</label><span id="answer-to-span"></span>
                             <input type="button" id="clean-answer-to" value="Очистить">
                         </div>
@@ -164,21 +188,10 @@
                             </div>
                             <input class="btn btn-success" type="submit" value="Отправить">
                         </form>
+  </div>
 
-                    </div>
+</div>
 
-    <div>
-
-    <form method="post" id="recipe-form" action="{% url 'create-recipe-from-post-detail' obj.pk %}">
-                            {% csrf_token %}
-                            <div id="recipe-form-inner">
-                                {{ recipe_form.as_p }}
-                            </div>
-                            <input class="btn btn-success" type="submit" value="Отправить">
-                        </form>
-
-
-    </div>
 
 
     {% endif %}
@@ -193,9 +206,17 @@
 
 {% block bottom_scripts %}
         {{ block.super }}
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
     {% compress js %}
         <script>
             $(function () {
+
+    $( "#tabs" ).tabs();
+
+
                 $(document).on('click', '.comment-mark-button', function (e) {
                     var level = $(this).closest('.single-comment').find('.comment-level').val();
                     var pk = $(this).closest('.single-comment').find('.comment-pk').val();

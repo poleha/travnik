@@ -128,8 +128,8 @@ def metatags(context):
             metatags_dict['description'] = "Информация о лекарственном растении {0}.".format(obj.title)
         elif obj.is_recipe:
             metatags_dict['title'] = '{0} | Medavi.ru'.format(obj.title.title())
-            metatags_dict['keywords'] = "{0}, рецепт, отзывы, {1}".format(obj.title, obj.title, obj.plant.title)
-            metatags_dict['description'] = "Рецепт {0} с использованием лекарственного растения {1}.".format(obj.title, obj.plant.title)
+            metatags_dict['keywords'] = "{0}, рецепт, отзывы, {1}".format(obj.title, obj.title, ', '.join(obj.plants.get_available().values_list('title', flat=True)))
+            metatags_dict['description'] = "Рецепт {0} с использованием лекарственных растений {1}.".format(obj.title, ', '.join(obj.plants.get_available().values_list('title', flat=True)))
 
         if 'page' in request.GET or url_name == 'post-detail-pk-comment':
             metatags_dict['canonical'] = obj.get_absolute_url()

@@ -386,3 +386,18 @@ EMAIL_IS_REQUIRED_FOR_COMMENT = False
 
 #***************
 EXCLUDE_FROM_MINIFYING = ('^admin/',)
+
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        #'height': 300,
+        #'width': 300,
+    },
+    'basic': {
+        'toolbar': 'Basic',
+        'height': 200,
+        'width':  700,
+
+    },
+}
