@@ -3,6 +3,8 @@ from django.conf import settings
 from django import forms
 from . import models
 from django.db.models.aggregates import Count
+from django.forms import ValidationError
+from helper.helper import trim_title
 
 class PlantFilterForm(super_forms.PostFilterForm):
     class Meta:
@@ -43,11 +45,38 @@ class RecipeForm(forms.ModelForm):
         exclude = ('post_type', 'created', 'updated', 'published')
 
 
+class RecipeUserForm(forms.ModelForm):
+    class Meta:
+        model = models.Recipe
+        fields = ('title', 'body', 'usage_areas', 'plants')
+
+    def __init__(self, *args, **kwargs):
+        plant = kwargs.pop('plant')
+        self.plant = plant
+        super().__init__(*args, **kwargs)
+        self.fields['plants'].queryset = models.Plant.objects.get_available().exclude(pk=plant.pk)
+        self.fields['plants'].label = 'Другие растения'
+        self.fields['title'].label = 'Название рецепта'
+
+    def clean(self):
+        super().clean()
+        plants = self.cleaned_data.get('plants', None)
+        if plants:
+            plants = list(plants)
+            plants.append(self.plant)
+            for plant in plants:
+                title = self.cleaned_data.get('title', None)
+                if title:
+                    title = trim_title(title)
+                    existing_recipes = models.Recipe.objects.filter(title__iexact=title, plants=plant).exclude(pk=self.instance.pk)
+                    if existing_recipes.exists():
+                        raise ValidationError('Рецепт с таким названием уже существует для растения {}'.format(plant))
+
+
 class UsageAreaForm(forms.ModelForm):
     class Meta:
         model = models.UsageArea
         exclude = ('post_type', 'created', 'updated', 'published')
-
 
 
 class CommentForm(super_forms.SuperCommentForm):

@@ -21,6 +21,7 @@ urlpatterns = [
     url(r'^usage_area/create/$', views.PostCreate.as_view(), name='usage_area-create', kwargs={'post_type': 'usage_area'}),
     url(r'^usage_area/update/(?P<pk>\d+)/$', views.PostUpdate.as_view(), name='usage_area-update', kwargs={'post_type': 'usage_area'}),
 
+    url(r'^post/(?P<pk>\d+)/create_recipe$', views.RecipeCreateFromPostDetail.as_view(), name='create-recipe-from-post-detail'),
 
     url(r'^comment/get_for_answer_block_ajax/$', views.CommentGetForAnswerToBlockAjax.as_view(), name='comment-get-for-answer-block-ajax'),
     url(r'^comment/update/(?P<pk>\d+)/$', views.CommentUpdate.as_view(), name='comment-update'),

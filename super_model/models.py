@@ -504,11 +504,16 @@ class PostManager(models.manager.BaseManager.from_queryset(PostQueryset)):
 class SuperPost(AbstractModel, class_with_published_mixin(POST_STATUS_PUBLISHED)):
     class Meta:
         abstract = True
+
+    # TODO create my own meta SuperMeta
+    can_be_rated = False
+    use_alias = True
+    alter_alias = False
+
     alias = models.CharField(max_length=800, blank=True, verbose_name='Синоним', db_index=True)
     status = models.IntegerField(choices=POST_STATUSES, verbose_name='Статус', default=POST_STATUS_PROJECT, db_index=True)
     post_type = models.IntegerField(choices=settings.POST_TYPES, verbose_name='Вид записи', db_index=True )
 
-    can_be_rated = False
 
     objects = PostManager()
 
@@ -534,8 +539,8 @@ class SuperPost(AbstractModel, class_with_published_mixin(POST_STATUS_PUBLISHED)
     def last_modified(self):
         History = import_string(settings.BASE_HISTORY_CLASS)
         try:
-            latest_created = History.objects.filter(post=self).latest('created').created
-            latest_updated = History.objects.filter(post=self).exclude(updated=None).latest('updated').updated
+            latest_created = History.objects.filter(post=self, history_type=HISTORY_TYPE_POST_CREATED).latest('created').created
+            latest_updated = History.objects.filter(post=self, history_type=HISTORY_TYPE_POST_SAVED).latest('created').created
             latest_updated = latest_updated if latest_updated is not None else latest_created
 
             if latest_created is None:
@@ -566,7 +571,18 @@ class SuperPost(AbstractModel, class_with_published_mixin(POST_STATUS_PUBLISHED)
 
 
     def make_alias(self):
-        return helper.make_alias(self.title)
+        BASE_POST_CLASS = import_string(settings.BASE_POST_CLASS)
+        alias = helper.make_alias(self.title)
+        if self.alter_alias:
+            alias_is_busy = True
+            k = 0
+            while alias_is_busy:
+                alias_is_busy = BASE_POST_CLASS.objects.filter(alias=alias).exclude(pk=self.pk)
+                if alias_is_busy:
+                    alias += '_' + str(k)
+                    k += 1
+        return alias
+
 
     def clean(self):
         if self.alias:
@@ -578,17 +594,19 @@ class SuperPost(AbstractModel, class_with_published_mixin(POST_STATUS_PUBLISHED)
             result = re.match('[a-z0-9_\-]{1,}', self.alias)
             if not result:
                 raise ValidationError('Недопустимые символы в синониме')
+
     def save(self, *args, **kwargs):
         self.clean()
         self.title = helper.trim_title(self.title)
         #saved_version = self.saved_version
-        if hasattr(self, 'title') and self.title and not self.alias:
-            self.alias = self.make_alias()
-        if self.alias:
-            BASE_POST_CLASS = import_string(settings.BASE_POST_CLASS)
-            alias_is_busy = BASE_POST_CLASS.objects.filter(alias=self.alias).exclude(pk=self.pk)
-            if alias_is_busy:
-                raise ValidationError('Синоним {0} занят'.format(self.alias))
+        if self.use_alias:
+            if hasattr(self, 'title') and self.title and not self.alias:
+                self.alias = self.make_alias()
+            if self.alias:
+                BASE_POST_CLASS = import_string(settings.BASE_POST_CLASS)
+                alias_is_busy = BASE_POST_CLASS.objects.filter(alias=self.alias).exclude(pk=self.pk)
+                if alias_is_busy:
+                    raise ValidationError('Синоним {0} занят'.format(self.alias))
 
         self.post_type = self.get_post_type()
         super().save(*args, **kwargs)

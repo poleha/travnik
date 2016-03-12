@@ -14,6 +14,7 @@ from super_model import helper as super_helper
 from django.db.models.aggregates import Count
 from django.http.response import HttpResponseRedirect
 from django.db.models import Q
+from django.db import transaction
 
 
 class PostViewMixin(super_views.SuperPostViewMixin):
@@ -103,6 +104,38 @@ class PostDetail(super_views.SuperPostDetail):
     @cached_view(test=super_models.request_with_empty_guest)
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, recipe_form=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if recipe_form is None:
+            recipe_form = forms.RecipeUserForm(plant=self.obj)
+        context['recipe_form'] = recipe_form
+        return context
+
+
+class RecipeCreateFromPostDetail(PostDetail):
+
+    @transaction.atomic()
+    def post(self, request, *args, **kwargs):
+        self.set_obj()
+        self.object_list = self.get_queryset()
+        recipe_form = forms.RecipeUserForm(request.POST, plant=self.obj)
+        if recipe_form.is_valid():
+            user = request.user
+            if user.is_authenticated():
+                recipe_form.instance.user = user
+                if user.user_profile.can_publish_comment:
+                    recipe_form.instance.status = super_models.POST_STATUS_PUBLISHED
+
+            recipe = recipe_form.save()
+            recipe.plants.add(self.obj)
+            for plant in recipe.plants.all():
+                models.History.save_history(history_type=super_models.HISTORY_TYPE_POST_SAVED, post=plant)
+                plant.full_invalidate_cache()
+            # TODO it should be recipe page
+            return HttpResponseRedirect(self.obj.get_absolute_url())
+        else:
+            return self.render_to_response(self.get_context_data(recipe_form=recipe_form))
 
 
 class CommentGetForAnswerToBlockAjax(generic.TemplateView):

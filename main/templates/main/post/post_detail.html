@@ -166,6 +166,21 @@
                         </form>
 
                     </div>
+
+    <div>
+
+    <form method="post" id="recipe-form" action="{% url 'create-recipe-from-post-detail' obj.pk %}">
+                            {% csrf_token %}
+                            <div id="recipe-form-inner">
+                                {{ recipe_form.as_p }}
+                            </div>
+                            <input class="btn btn-success" type="submit" value="Отправить">
+                        </form>
+
+
+    </div>
+
+
     {% endif %}
             </div>
 

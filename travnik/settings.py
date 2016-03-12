@@ -386,6 +386,3 @@ EMAIL_IS_REQUIRED_FOR_COMMENT = False
 
 #***************
 EXCLUDE_FROM_MINIFYING = ('^admin/',)
-
-
-POST_TITLE_UNIQUE = True
