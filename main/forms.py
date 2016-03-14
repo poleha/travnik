@@ -39,18 +39,26 @@ class PlantForm(forms.ModelForm):
         exclude = ('post_type', 'created', 'updated', 'published')
 
 
-class RecipeForm(forms.ModelForm):
-    class Meta:
-        model = models.Recipe
-        exclude = ('post_type', 'created', 'updated', 'published')
-
-
-class RecipeUserForm(forms.ModelForm):
+class BaseRecipeForm(forms.ModelForm):
     def __new__(cls, *args, **kwargs):
         cls.base_fields['plants'].widget=forms.CheckboxSelectMultiple()
         cls.base_fields['usage_areas'].widget=forms.CheckboxSelectMultiple()
         return super().__new__(cls)
 
+
+class RecipeForm(BaseRecipeForm):
+    class Meta:
+        model = models.Recipe
+        exclude = ('post_type', 'created', 'updated', 'published')
+
+
+class RecipeUserUpdateForm(BaseRecipeForm):
+    class Meta:
+        model = models.Recipe
+        fields = ('title', 'body', 'usage_areas', 'plants')
+
+
+class RecipeUserForm(BaseRecipeForm):
     class Meta:
         model = models.Recipe
         fields = ('title', 'body', 'usage_areas', 'plants')

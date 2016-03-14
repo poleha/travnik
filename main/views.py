@@ -83,7 +83,11 @@ class PostCreateUpdateMixin(super_views.restrict_by_role_mixin(settings.USER_ROL
         if self.model == models.Plant:
             return forms.PlantForm
         elif self.model == models.Recipe:
-            return forms.RecipeForm
+            user = self.request.user
+            if user.is_regular:
+                return forms.RecipeUserUpdateForm
+            else:
+                return forms.RecipeForm
         elif self.model == models.UsageArea:
             return forms.UsageAreaForm
 

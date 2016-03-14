@@ -13,7 +13,7 @@
     {% if obj.is_plant %}
         {{ obj.synonyms_text }}
     {% endif %}
-        {% if user.is_admin or user.is_author %}
+        {% if user.is_admin or user.is_author or obj.user == user %}
             <a href="{{ obj.update_url }}">Редактировать</a>
 
         {% endif %}
@@ -81,14 +81,14 @@
                 {% if obj.is_plant or obj.is_usage_area %}
             {% if obj.recipes.get_available.exists %}
             <h2>Рецепты:</h2>
-                <ul>
                 {% for recipe in obj.recipes.get_available %}
-                <li>
-                    <div><a href="{{ recipe.get_absolute_url }}">{{ recipe }}</a></div>
-                <div>{{ recipe.body|safe }}</div>
-                </li>
+                <div class="related-recipe">
+                    <div class="recipe-title"><a href="{{ recipe.get_absolute_url }}">{{ recipe }}</a></div>
+                <div class="recipe-body">{{ recipe.body|safe }}</div>
+                <div class="line"></div>
+                </div>
             {% endfor %}
-                </ul>
+            {% endif %}
             {% elif obj.is_recipe or obj.is_usage_area and obj.plants.get_available.exists %}
                 <h2>Растения:</h2>
                 <ul>
@@ -96,7 +96,6 @@
                 <li><a href="{{ plant.get_absolute_url }}">{{ plant }}</a></li>
                 {% endfor %}
                </ul>
-            {% endif %}
             {% endif %}
 
             {% if not obj.is_usage_area and obj.usage_areas.get_available.exists %}
@@ -156,13 +155,14 @@
 
 
 
-    <div id="tabs">
+    <div id="comment-form-tabs">
   <ul>
     <li><a href="#tabs-1">Оcтавить отзыв</a></li>
-    {% if obj.is_plant and user.is_authenticated %}<li><a href="#tabs-2">Оставить рецепт</a></li>{% endif %}
+    {% if obj.is_plant %}<li><a href="#tabs-2">Оставить рецепт</a></li>{% endif %}
   </ul>
-    {% if obj.is_plant and user.is_authenticated %}
+    {% if obj.is_plant %}
         <div id="tabs-2">
+        {% if user.is_authenticated %}
         <form method="post" id="recipe-form" action="{% url 'create-recipe-from-post-detail' obj.pk %}">
 
                             {% csrf_token %}
@@ -172,6 +172,9 @@
                             </div>
                             <input class="btn btn-success" type="submit" value="Отправить">
                         </form>
+            {% else %}
+            <div id="comment-form-guest-tab-block">Для того, чтобы оставлять рецепты, необходимо <a href="{% url 'signup' %}">зарегистрироваться</a> или <a href="{% url 'login' %}">войти</a> под Вашей учетной записью.</div>
+            {% endif %}
   </div>
       {% endif %}
   <div id="tabs-1">
@@ -214,7 +217,7 @@
         <script>
             $(function () {
 
-    $( "#tabs" ).tabs();
+    $( "#comment-form-tabs" ).tabs();
 
 
                 $(document).on('click', '.comment-mark-button', function (e) {
