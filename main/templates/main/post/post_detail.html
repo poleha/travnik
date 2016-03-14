@@ -441,12 +441,49 @@
 
                             if (data.status == 1) {
                                 if (!data.published) {
-                                    alert('Ваш отзыв будет опубликован после проверки модератором');
+                                    alert('Ваш отзыв будет опубликован после проверки модератором. Спасибо!');
                                 }
                                 location.href = data.href;
                             }
                             else {
                                 innerForm.html(data.comment_form);
+                                button.removeAttr('disabled');
+                                inputs.removeAttr('disabled');
+                            }
+
+                        },
+                        error: function (data) {
+                            button.removeAttr('disabled');
+                            inputs.removeAttr('disabled');
+                        }
+                    });
+
+                    e.preventDefault();
+                });
+
+
+                 $(document).on('submit', '#recipe-form', function (e) {
+                    var frm = $('#recipe-form');
+                    var innerForm = frm.find('#recipe-form-inner');
+                    var button = frm.find('.btn');
+                    var inputs = frm.find('input, textarea');
+                    var formData = frm.serialize();
+                    button.attr('disabled', 'disabled');
+                    inputs.attr('disabled', 'disabled');
+                    $.ajax({
+                        type: 'POST',
+                        url: frm.attr('action'),
+                        data: formData,
+                        success: function (data) {
+
+                            if (data.status == 1) {
+                                if (!data.published) {
+                                    alert('Ваш репепт будет опубликован после проверки модератором. Спасибо!');
+                                }
+                                location.href = data.href;
+                            }
+                            else {
+                                innerForm.html(data.recipe_form);
                                 button.removeAttr('disabled');
                                 inputs.removeAttr('disabled');
                             }

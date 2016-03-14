@@ -135,10 +135,14 @@ class RecipeCreateFromPostDetail(PostDetail):
             for plant in recipe.plants.all():
                 models.History.save_history(history_type=super_models.HISTORY_TYPE_POST_SAVED, post=plant)
                 plant.full_invalidate_cache()
-            # TODO it should be recipe page
-            return HttpResponseRedirect(self.obj.get_absolute_url())
+            return JsonResponse({
+                    'status': 1,
+                    'published': recipe.status == super_models.POST_STATUS_PUBLISHED,
+                    'href': recipe.get_absolute_url()
+                })
         else:
-            return self.render_to_response(self.get_context_data(recipe_form=recipe_form))
+            return JsonResponse({'recipe_form': recipe_form.as_p(), 'status': 2})
+            #return self.render_to_response(self.get_context_data(recipe_form=recipe_form))
 
 
 class CommentGetForAnswerToBlockAjax(generic.TemplateView):
