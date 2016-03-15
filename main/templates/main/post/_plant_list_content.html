@@ -26,17 +26,22 @@
  </ul>
 </td>
 <td class="col_4">
+    <div class="main-recipes-count">
     {% if obj.published_recipes_count %}
     <label>Рецептов:</label><a href="{{ obj.get_absolute_url }}#recipes">{{ obj.published_recipes_count }}</a>
     {% else %}
     <a href="{{ obj.get_absolute_url }}#comments">Пока нет рецептов</a>
     {% endif %}
+    </div>
+<div class="main-comments-count">
     {% if obj.published_comments_count %}
+
 
     <label>Отзывов:</label><a href="{{ obj.get_absolute_url }}#comments">{{ obj.published_comments_count }}</a>
     {% else %}
    <a href="{{ obj.get_absolute_url }}#comments">Пока нет отзывов</a>
     {% endif %}
+    </div>
 </td>
 </tr>
    {% endfor %}
