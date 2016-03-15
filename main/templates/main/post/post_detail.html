@@ -20,7 +20,7 @@
         {% if not obj.is_usage_area %}
             <div class="post-top-block">
 
-                {% if user.is_regular %}
+                {% if obj.is_plant and user.is_regular %}
                 <div id="post-mark-block>">
                         <div id="current-post-mark-block" class="{{ show_your_mark_block_cls }}">
                             <label>Ваша оценка: </label><span id="current-post-mark"> {{ mark }}</span>
@@ -42,10 +42,34 @@
                     </div>
 {% endif %}
 
+
+                    {% if obj.is_recipe and user.is_regular %}
+         {% if can_mark %}
+         <input class="user-post-unmark-button btn btn-cancel hidden" type="button" id="user-post-unmark-button" value='Отозвать оценку'>
+         <input class="user-post-mark-button btn btn-success" type="button" id="user-post-mark-button" value='Рецепт полезен'>
+         <input class="user-post-uncomplain-button btn btn-cancel hidden" type="button" id="user-post-uncomplain-button" value='Отозвать жалобу'>
+         <input class="user-post-complain-button btn btn-danger" type="button" id="user-post-complain-button" value='Пожаловаться на рецепт'>
+        {% elif can_unmark %}
+        <input class="user-post-unmark-button btn btn-cancel" type="button" id="user-post-unmark-button" value='Отозвать оценку'>
+        <input class="user-post-mark-button btn btn-success hidden" type="button" id="user-post-mark-button" value='Рецепт полезен'>
+        <input class="user-post-uncomplain-button btn btn-cancel hidden" type="button" id="user-post-uncomplain-button" value='Отозвать жалобу'>
+        <input class="user-post-complain-button btn btn-danger hidden" type="button" id="user-post-complain-button" value='Пожаловаться на рецепт'>
+
+
+        {% elif can_uncomplain %}
+        <input class="user-post-unmark-button btn btn-cancel hidden" type="button" id="user-post-unmark-button" value='Отозвать оценку'>
+        <input class="user-post-mark-button btn btn-success hidden" type="button" id="user-post-mark-button" value='Рецепт полезен'>
+        <input class="user-post-uncomplain-button btn btn-cancel" type="button" id="user-post-uncomplain-button" value='Отозвать жалобу'>
+        <input class="user-post-complain-button btn btn-danger hidden" type="button" id="user-post-complain-button" value='Пожаловаться на рецепт'>
+
+
+        {% endif %}
+        {% endif %}
+                    {% if obj.is_plant %}
                     <div>
                         <label>Средняя оценка: </label><span id="post-average-mark">{{ obj.average_mark }}</span>(количество оценок: <span id="post-marks-count">{{ obj.marks_count }})</span>
                     </div>
-
+                    {% endif %}
                     <div>
                         <label>Количество отзывов: </label><span>{{ obj.published_comments_count }}</span>
                     </div>
@@ -568,9 +592,9 @@
                 });
 
 
-                $(document).on('click', '.blog-mark-button', function (e) {
+                $(document).on('click', '.user-post-mark-button', function (e) {
                     var pk = $('#post-pk').val();
-                    var actionData = {'action': 'post-mark', 'mark': 0, 'pk': pk};
+                    var actionData = {'action': 'user-post-mark', 'pk': pk};
                     $('.blog-mark-button').attr('disabled', 'disabled');
                     $.ajax({
                         type: 'POST',
@@ -597,9 +621,9 @@
                 });
 
 
-                $(document).on('click', '.blog-unmark-button', function (e) {
+                $(document).on('click', '.user-post-unmark-button', function (e) {
                     var pk = $('#post-pk').val();
-                    var actionData = {'action': 'post-unmark', 'mark': 0, 'pk': pk};
+                    var actionData = {'action': 'user-post-unmark', 'pk': pk};
                     $('.blog-unmark-button').attr('disabled', 'disabled');
                     $.ajax({
                         type: 'POST',

@@ -165,6 +165,62 @@ class HistoryAjaxSave(generic.View):
                     return JsonResponse({'saved': True})
             return JsonResponse({'saved': False})
 
+        elif action == 'user-post-mark':
+            post = Post.objects.get(pk=pk)
+            h = History.save_history(history_type=models.HISTORY_TYPE_USER_POST_RATED, post=post, user=request.user, ip=ip, session_key=session_key)
+            data = {}
+            if h:
+                data['saved'] = True
+            else:
+                data['saved'] = False
+            data = {'marks_count': post.user_marks_count}
+            return JsonResponse(data)
+
+        elif action == 'user-post-unmark':
+            post = Post.objects.get(pk=pk)
+            if request.user.is_authenticated():
+                hs = History.objects.filter(user=user, history_type=models.HISTORY_TYPE_USER_POST_RATED, post=post, deleted=False)
+            else:
+                hs = History.objects.filter(session_key=session_key, history_type=models.HISTORY_TYPE_USER_POST_RATED, post=post, user=None, deleted=False)
+            data = {}
+            if hs.exists():
+                for h in hs:
+                    h.deleted = True
+                    h.save()
+                data['saved'] = True
+            else:
+                data['saved'] = False
+            data = {'marks_count': post.user_marks_count}
+            return JsonResponse(data)
+
+        elif action == 'user-post-complain':
+            post = Post.objects.get(pk=pk)
+            h = History.save_history(history_type=models.HISTORY_TYPE_USER_POST_COMPLAINT, post=post, user=request.user, ip=ip, session_key=session_key)
+            data = {}
+            if h:
+                data['saved'] = True
+            else:
+                data['saved'] = False
+            data = {'complains_count': post.user_complain_count}
+            return JsonResponse(data)
+
+        elif action == 'user-post-uncomplain':
+            post = Post.objects.get(pk=pk)
+            if request.user.is_authenticated():
+                hs = History.objects.filter(user=user, history_type=models.HISTORY_TYPE_USER_POST_COMPLAINT, post=post, deleted=False)
+            else:
+                hs = History.objects.filter(session_key=session_key, history_type=models.HISTORY_TYPE_USER_POST_COMPLAINT, post=post, user=None, deleted=False)
+            data = {}
+            if hs.exists():
+                for h in hs:
+                    h.deleted = True
+                    h.save()
+                data['saved'] = True
+            else:
+                data['saved'] = False
+            data = {'complains_count': post.user_complain_count}
+            return JsonResponse(data)
+
 
 class SuperListView(generic.ListView):
     pages_to_show = settings.PAGES_TO_SHOW_FOR_LIST_VIEW
@@ -507,14 +563,22 @@ class SuperPostDetail(SuperListView):
         context['comment_form'] = comment_form
         comments_options_form = self.comment_options_form(self.request.GET)
         context['comments_options_form'] = comments_options_form
-        context['mark'] = self.post.obj.get_mark_by_request(request)
+
 
         if self.obj.can_be_rated:
             user_mark = self.obj.get_mark_by_request(request)
-            if user_mark == 0:
-                context['can_mark_blog'] = True
-            else:
-                context['can_mark_blog'] = False
+            # TODO сделать нормально
+            if self.obj.rate_type == 'stars':
+                context['mark'] = self.post.obj.get_mark_by_request(request)
+                if user_mark == 0:
+                    context['can_mark'] = True
+                else:
+                    context['can_mark'] = False
+            elif self.obj.rate_type == 'votes':
+                context['can_mark'] = self.obj.show_do_action_button(models.HISTORY_TYPE_USER_POST_RATED, request)
+                context['can_unmark'] = self.obj.show_undo_action_button(models.HISTORY_TYPE_USER_POST_RATED, request)
+                context['can_complain'] = self.obj.show_do_action_button(models.HISTORY_TYPE_USER_POST_COMPLAINT, request)
+                context['can_unmplain'] = self.obj.show_undo_action_button(models.HISTORY_TYPE_USER_POST_COMPLAINT, request)
 
 
         #visibility

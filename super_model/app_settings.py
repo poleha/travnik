@@ -29,6 +29,8 @@ class Settings:
     HISTORY_TYPE_POST_SAVED = 5
     HISTORY_TYPE_POST_RATED = 6
     HISTORY_TYPE_COMMENT_COMPLAINT = 7
+    HISTORY_TYPE_USER_POST_RATED = 8
+    HISTORY_TYPE_USER_POST_COMPLAINT = 9
 
     HISTORY_TYPES = (
         (HISTORY_TYPE_COMMENT_CREATED, 'Комментарий создан'),
@@ -38,6 +40,8 @@ class Settings:
         (HISTORY_TYPE_POST_SAVED, 'Материал сохранен'),
         (HISTORY_TYPE_POST_RATED, 'Материал оценен'),
         (HISTORY_TYPE_COMMENT_COMPLAINT, 'Жалоба на комментарий'),
+        (HISTORY_TYPE_USER_POST_RATED, 'Пользовательский материал оценен'),
+        (HISTORY_TYPE_USER_POST_COMPLAINT, 'Жалоба на пользовательский материал'),
 
     )
 
@@ -49,6 +53,8 @@ class Settings:
         HISTORY_TYPE_POST_SAVED: 0,
         HISTORY_TYPE_POST_RATED: 1,
         HISTORY_TYPE_COMMENT_COMPLAINT: 0,
+        HISTORY_TYPE_USER_POST_RATED: 1,
+        HISTORY_TYPE_USER_POST_COMPLAINT: 0,
         }
 
 
