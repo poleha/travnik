@@ -43,6 +43,16 @@ class BaseRecipeForm(forms.ModelForm):
     def __new__(cls, *args, **kwargs):
         cls.base_fields['plants'].widget=forms.CheckboxSelectMultiple()
         cls.base_fields['usage_areas'].widget=forms.CheckboxSelectMultiple()
+
+        plants = models.Plant.objects.get_available()
+        plants_choices = ()
+        for plant in plants:
+            synonyms_list = plant.synonyms.all().values_list('synonym', flat=True)
+            if synonyms_list:
+                plants_choices += ((plant.pk, "{0}({1})".format(plant, ", ".join(synonyms_list))),)
+            else:
+                plants_choices += ((plant.pk, plant),)
+        cls.base_fields['plants'].choices = plants_choices
         return super().__new__(cls)
 
 
@@ -69,7 +79,8 @@ class RecipeUserForm(BaseRecipeForm):
         super().__init__(*args, **kwargs)
         self.fields['plants'].queryset = models.Plant.objects.get_available().exclude(pk=plant.pk)
         self.fields['plants'].label = 'Другие растения'
-        self.fields['title'].label = 'Название рецепта'
+        self.fields['title'].label = ''
+        self.fields['title'].widget.attrs['placeholder'] = 'Название рецепта'
         self.fields['body'].required = True
 
     def clean(self):
