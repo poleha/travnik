@@ -1,5 +1,5 @@
 <table class="table" id="plant-table">
-<thead><tr><th class="col_1"><p>Растение</p></th><th class="col_2"><p>Синонимы</p></th><th class="col_3"><p>Области применения</p></th><th class="col_4"><p>Отзывов</p></th></tr></thead>
+<thead><tr><th class="col_1"><p>Растение</p></th><th class="col_2"><p>Синонимы</p></th><th class="col_3"><p>Области применения</p></th><th class="col_4"><p>Рецептов/Отзывов</p></th></tr></thead>
     <tbody>
     {% for obj in objs %}
 <tr>
@@ -26,9 +26,14 @@
  </ul>
 </td>
 <td class="col_4">
+    {% if obj.published_recipes_count %}
+    <label>Рецептов:</label><a href="{{ obj.get_absolute_url }}#recipes">{{ obj.published_recipes_count }}</a>
+    {% else %}
+    <a href="{{ obj.get_absolute_url }}#comments">Пока нет рецептов</a>
+    {% endif %}
     {% if obj.published_comments_count %}
 
-    <a href="{{ obj.get_absolute_url }}#comments">{{ obj.published_comments_count }}</a>
+    <label>Отзывов:</label><a href="{{ obj.get_absolute_url }}#comments">{{ obj.published_comments_count }}</a>
     {% else %}
    <a href="{{ obj.get_absolute_url }}#comments">Пока нет отзывов</a>
     {% endif %}

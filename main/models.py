@@ -169,6 +169,10 @@ class Plant(Post):
             return ''
 
     @cached_property
+    def published_recipes_count(self):
+        return self.recipes.get_available().count()
+
+    @cached_property
     def synonyms_text(self):
         return mark_safe(', '.join(self.synonyms.values_list('synonym', flat=True)))
 

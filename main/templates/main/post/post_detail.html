@@ -80,6 +80,7 @@
             <div id="post-related-list">
                 {% if obj.is_plant or obj.is_usage_area %}
             {% if obj.recipes.get_available.exists %}
+            <div id="recipes">
             <h2>Рецепты:</h2>
                 {% for recipe in obj.recipes.get_available %}
                 <div class="related-recipe">
@@ -88,6 +89,7 @@
                 <div class="line"></div>
                 </div>
             {% endfor %}
+            </div>
             {% endif %}
             {% elif obj.is_recipe or obj.is_usage_area and obj.plants.get_available.exists %}
                 <h2>Растения:</h2>
