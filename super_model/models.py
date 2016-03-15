@@ -23,6 +23,20 @@ from super_model.helper import generate_key
 from django.db.models.aggregates import Count, Sum
 from . import fix
 
+
+HISTORY_TYPE_COMMENT_CREATED = settings.HISTORY_TYPE_COMMENT_CREATED
+HISTORY_TYPE_COMMENT_SAVED = settings.HISTORY_TYPE_COMMENT_SAVED
+HISTORY_TYPE_COMMENT_RATED = settings.HISTORY_TYPE_COMMENT_RATED
+HISTORY_TYPE_POST_CREATED = settings.HISTORY_TYPE_POST_CREATED
+HISTORY_TYPE_POST_SAVED = settings.HISTORY_TYPE_POST_SAVED
+HISTORY_TYPE_POST_RATED = settings.HISTORY_TYPE_POST_RATED
+HISTORY_TYPE_COMMENT_COMPLAINT = settings.HISTORY_TYPE_COMMENT_COMPLAINT
+
+HISTORY_TYPES = settings.HISTORY_TYPES
+
+HISTORY_TYPES_POINTS = settings.HISTORY_TYPES_POINTS
+
+
 class SuperModel(models.Model):
     created = models.DateTimeField(blank=True, verbose_name='Время создания', db_index=True)
     updated = models.DateTimeField(blank=True, null=True, verbose_name='Время изменения', db_index=True)
@@ -614,8 +628,6 @@ class SuperPost(AbstractModel, class_with_published_mixin(POST_STATUS_PUBLISHED)
         History.save_history(history_type=HISTORY_TYPE_POST_CREATED, post=self)
 
 
-
-
 class SuperUserProfile(SuperModel, CachedModelMixin):
     class Meta:
         abstract = True
@@ -663,13 +675,13 @@ class SuperUserProfile(SuperModel, CachedModelMixin):
 
     def _karm_history(self):
         History = import_string(settings.BASE_HISTORY_CLASS)
-        hists = History.objects.filter(author=self.user, history_type=HISTORY_TYPE_COMMENT_RATED, deleted=False)
+        hists = History.objects.filter(author=self.user, history_type=HISTORY_TYPE_COMMENT_RATED, deleted=False, post__status=POST_STATUS_PUBLISHED)
         return hists
 
 
     def _activity_history(self):
         History = import_string(settings.BASE_HISTORY_CLASS)
-        return History.objects.filter(user=self.user, user_points__gt=0, deleted=False)
+        return History.objects.filter(user=self.user, user_points__gt=0, deleted=False, post__status=POST_STATUS_PUBLISHED)
 
     @cached_property
     def activity_history(self):
@@ -691,7 +703,6 @@ class SuperUserProfile(SuperModel, CachedModelMixin):
         except:
             karm = 0
         return karm if karm is not None else 0
-
 
 
 def is_regular(self):
@@ -752,42 +763,6 @@ AnonymousUser.image = None
 AnonymousUser.email_confirmed = False
 AnonymousUser.karm = 0
 AnonymousUser.activity = 0
-
-
-HISTORY_TYPE_COMMENT_CREATED = 1
-HISTORY_TYPE_COMMENT_SAVED = 2
-HISTORY_TYPE_COMMENT_RATED = 3
-HISTORY_TYPE_POST_CREATED = 4
-HISTORY_TYPE_POST_SAVED = 5
-HISTORY_TYPE_POST_RATED = 6
-HISTORY_TYPE_COMMENT_COMPLAINT = 7
-#HISTORY_TYPE_POST_COMPLAINT = 8
-#HISTORY_TYPE_BLOG_RATED = 8
-
-HISTORY_TYPES = (
-    (HISTORY_TYPE_COMMENT_CREATED, 'Комментарий создан'),
-    (HISTORY_TYPE_COMMENT_SAVED, 'Комментарий сохранен'),
-    (HISTORY_TYPE_COMMENT_RATED, 'Комментарий оценен'),
-    (HISTORY_TYPE_POST_CREATED, 'Материал создан'),
-    (HISTORY_TYPE_POST_SAVED, 'Материал сохранен'),
-    (HISTORY_TYPE_POST_RATED, 'Материал оценен'),
-    (HISTORY_TYPE_COMMENT_COMPLAINT, 'Жалоба на комментарий'),
-    #(HISTORY_TYPE_POST_COMPLAINT, 'Жалоба на материал'),
-    #(HISTORY_TYPE_BLOG_RATED, 'Запись блога оценена'),
-
-)
-
-HISTORY_TYPES_POINTS = {
-HISTORY_TYPE_COMMENT_CREATED: 3,
-HISTORY_TYPE_COMMENT_SAVED: 0,
-HISTORY_TYPE_COMMENT_RATED: 1,
-HISTORY_TYPE_POST_CREATED: 0,
-HISTORY_TYPE_POST_SAVED: 0,
-HISTORY_TYPE_POST_RATED: 1,
-HISTORY_TYPE_COMMENT_COMPLAINT: 0,
-#HISTORY_TYPE_BLOG_RATED: 0,
-}
-
 
 
 class SuperHistory(SuperModel):

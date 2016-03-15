@@ -22,6 +22,36 @@ class Settings:
 
     POST_TITLE_UNIQUE = False
 
+    HISTORY_TYPE_COMMENT_CREATED = 1
+    HISTORY_TYPE_COMMENT_SAVED = 2
+    HISTORY_TYPE_COMMENT_RATED = 3
+    HISTORY_TYPE_POST_CREATED = 4
+    HISTORY_TYPE_POST_SAVED = 5
+    HISTORY_TYPE_POST_RATED = 6
+    HISTORY_TYPE_COMMENT_COMPLAINT = 7
+
+    HISTORY_TYPES = (
+        (HISTORY_TYPE_COMMENT_CREATED, 'Комментарий создан'),
+        (HISTORY_TYPE_COMMENT_SAVED, 'Комментарий сохранен'),
+        (HISTORY_TYPE_COMMENT_RATED, 'Комментарий оценен'),
+        (HISTORY_TYPE_POST_CREATED, 'Материал создан'),
+        (HISTORY_TYPE_POST_SAVED, 'Материал сохранен'),
+        (HISTORY_TYPE_POST_RATED, 'Материал оценен'),
+        (HISTORY_TYPE_COMMENT_COMPLAINT, 'Жалоба на комментарий'),
+
+    )
+
+    HISTORY_TYPES_POINTS = {
+        HISTORY_TYPE_COMMENT_CREATED: 3,
+        HISTORY_TYPE_COMMENT_SAVED: 0,
+        HISTORY_TYPE_COMMENT_RATED: 1,
+        HISTORY_TYPE_POST_CREATED: 0,
+        HISTORY_TYPE_POST_SAVED: 0,
+        HISTORY_TYPE_POST_RATED: 1,
+        HISTORY_TYPE_COMMENT_COMPLAINT: 0,
+        }
+
+
     def __getattribute__(self, item):
         if hasattr(project_settings, item):
             return getattr(project_settings, item)

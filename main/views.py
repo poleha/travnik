@@ -15,6 +15,7 @@ from django.db.models.aggregates import Count
 from django.http.response import HttpResponseRedirect
 from django.db.models import Q
 from django.db import transaction
+from super_model.helper import set_and_get_session_key
 
 
 class PostViewMixin(super_views.SuperPostViewMixin):
@@ -127,13 +128,22 @@ class RecipeCreateFromPostDetail(PostDetail):
         self.object_list = self.get_queryset()
         recipe_form = forms.RecipeUserForm(request.POST, plant=self.obj)
         if recipe_form.is_valid():
+            ip = request.client_ip
+            session_key = set_and_get_session_key(request.session)
             recipe_form.instance.user = user
             if user.user_profile.can_publish_comment:
                 recipe_form.instance.status = super_models.POST_STATUS_PUBLISHED
             recipe = recipe_form.save()
+
+            h = models.History.objects.get(post=recipe, history_type=super_models.HISTORY_TYPE_POST_CREATED)
+            h.ip = ip
+            h.session_key = session_key
+            h.user = user
+            h.save()
+
             recipe.plants.add(self.obj)
             for plant in recipe.plants.all():
-                models.History.save_history(history_type=super_models.HISTORY_TYPE_POST_SAVED, post=plant)
+                models.History.save_history(history_type=super_models.HISTORY_TYPE_POST_SAVED, post=plant, user=user, ip=ip, session_key=session_key)
                 plant.full_invalidate_cache()
             return JsonResponse({
                     'status': 1,
@@ -219,3 +229,26 @@ class CommentUpdate(generic.UpdateView):
         form.instance.session_key = super_helper.set_and_get_session_key(request.session)
         comment = form.save()
         return HttpResponseRedirect(comment.get_absolute_url())
+
+
+class UserRecipesView(super_views.SuperListView):
+    template_name = 'user/user_recipes.html'
+    context_object_name = 'recipes'
+    paginate_by = 50
+
+    @cached_view(timeout= 60 * 60 * 24, test=super_models.request_with_empty_guest)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        pk = self.kwargs['pk']
+        user = models.User.objects.get(pk=pk)
+        return user.recipes.get_available().order_by('-created')
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = self.kwargs['pk']
+        user = models.User.objects.get(pk=pk)
+        context['current_user'] = user
+        return context

@@ -1,0 +1,32 @@
+{% extends base_template %}
+{% load main_tags %}
+{% block content %}
+{% user_detail current_user%}
+<a class="btn btn-menu" href="{% url 'user-comments' current_user.pk %}">Отзывы</a>
+<a class="btn btn-menu active" href="{% url 'user-recipes' current_user.pk %}">Рецепты</a>
+<a class="btn btn-menu" href="{% url 'user-karma' current_user.pk %}">Карма</a>
+<a class="btn btn-menu" href="{% url 'user-activity' current_user.pk %}">Активность</a>
+
+
+ <div>
+ <h2>Отзывы</h2>
+ <table class="table table-bordered">
+ <thead>
+ <tr>
+     <th>Дата</th><th>Рецепт</th><th>Оценка</th>
+ </tr>
+ </thead>
+ <tbody>
+     {% for recipe in recipes %}
+<tr>
+<td>{{ recipe.created }}</td>
+<td><a href="{{ recipe.get_absolute_url }}">{{ recipe }}</a></td>
+<td>{{ recipe.mark }}</td>
+</tr>
+
+ {% endfor %}
+ </tbody>
+ </table>
+ </div>
+{% include 'super_model/base/_pager.html' %}
+{% endblock content %}
