@@ -2,8 +2,7 @@
 {% load main_tags %}
 {% block content %}
 {% user_detail current_user %}
-<a class="btn btn-menu" href="{% url 'user-comments' current_user.pk %}">Отзывы</a>
-<a class="btn btn-menu" href="{% url 'user-karma' current_user.pk %}">Карма</a>
-<a class="btn btn-menu" href="{% url 'user-activity' current_user.pk %}">Активность</a>
+{% include 'main/user/_user_profile_top_menu.html' %}
+
 
 {% endblock content %}

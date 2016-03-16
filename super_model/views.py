@@ -173,7 +173,7 @@ class HistoryAjaxSave(generic.View):
                 data['saved'] = True
             else:
                 data['saved'] = False
-            data = {'marks_count': post.user_marks_count}
+            data['marks_count'] = post.user_marks_count
             return JsonResponse(data)
 
         elif action == 'user-post-unmark':
@@ -190,7 +190,7 @@ class HistoryAjaxSave(generic.View):
                 data['saved'] = True
             else:
                 data['saved'] = False
-            data = {'marks_count': post.user_marks_count}
+            data['marks_count'] = post.user_marks_count
             return JsonResponse(data)
 
         elif action == 'user-post-complain':
@@ -201,7 +201,7 @@ class HistoryAjaxSave(generic.View):
                 data['saved'] = True
             else:
                 data['saved'] = False
-            data = {'complains_count': post.user_complain_count}
+            data['complain_count'] = post.complain_count
             return JsonResponse(data)
 
         elif action == 'user-post-uncomplain':
@@ -218,7 +218,7 @@ class HistoryAjaxSave(generic.View):
                 data['saved'] = True
             else:
                 data['saved'] = False
-            data = {'complains_count': post.user_complain_count}
+            data['complain_count'] = post.complain_count
             return JsonResponse(data)
 
 
@@ -504,7 +504,6 @@ class SuperPostDetail(SuperListView):
 
         return comments
 
-
     def get(self, request, *args, **kwargs):
         self.set_obj()
         self.set_comment_page()
@@ -566,9 +565,9 @@ class SuperPostDetail(SuperListView):
 
 
         if self.obj.can_be_rated:
-            user_mark = self.obj.get_mark_by_request(request)
             # TODO сделать нормально
             if self.obj.rate_type == 'stars':
+                user_mark = self.obj.get_mark_by_request(request)
                 context['mark'] = self.post.obj.get_mark_by_request(request)
                 if user_mark == 0:
                     context['can_mark'] = True
@@ -582,11 +581,12 @@ class SuperPostDetail(SuperListView):
 
 
         #visibility
-        if context['mark']:
+        mark = context.get('mark', None)
+        if mark:
             if user.is_authenticated():
                 hist_exists = History.objects.filter(history_type=models.HISTORY_TYPE_POST_RATED, user=user, post=self.post, deleted=False).exists()
             else:
-                hist_exists = History.objects.filter(history_type=models.HISTORY_TYPE_POST_RATED, session_key=getattr(request.session, settings.SUPER_MODEL_KEY_NAME), post=self.post, deleted=False).exists()
+                hist_exists = History.objects.filter(history_type=models.HISTORY_TYPE_POST_RATED, session_key=request.session.get(settings.SUPER_MODEL_KEY_NAME, None), post=self.post, deleted=False).exists()
             if hist_exists:
                 show_your_mark_block_cls = ''
                 show_make_mark_block_cls = 'hidden'
@@ -687,6 +687,28 @@ class CommentShowMarkedUsersAjax(generic.TemplateView):
         user_pks = History.objects.filter(~Q(user=None), history_type=models.HISTORY_TYPE_COMMENT_RATED, comment=comment, deleted=False).values_list('user', flat=True)
         context['users'] = models.User.objects.filter(pk__in=user_pks)
         context['guest_count'] = History.objects.filter(user=None, history_type=models.HISTORY_TYPE_COMMENT_RATED, comment=comment, deleted=False).count()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        return self.render_to_response(self.get_context_data(**kwargs))
+
+
+class PostShowMarkedUsersAjax(generic.TemplateView):
+    template_name = 'super_model/post/_post_show_marked_users_ajax.html'
+
+    @csrf_exempt
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        request = self.request
+        pk = request.POST['pk']
+        post = Post.objects.get(pk=pk)
+
+        user_pks = History.objects.filter(~Q(user=None), history_type=models.HISTORY_TYPE_USER_POST_RATED, post=post, deleted=False).values_list('user', flat=True)
+        context['users'] = models.User.objects.filter(pk__in=user_pks)
+        context['guest_count'] = History.objects.filter(user=None, history_type=models.HISTORY_TYPE_USER_POST_RATED, post=post, deleted=False).count()
         return context
 
     def post(self, request, *args, **kwargs):

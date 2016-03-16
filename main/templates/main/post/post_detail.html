@@ -64,6 +64,28 @@
 
 
         {% endif %}
+                        
+    <div class="post-all-marks-block">
+
+    <div class="post-current-complain" id="post-current-complain">Жалоб: <span class="post-current-complain-span" id="post-current-complain-span">{{ obj.complain_count }}</span></div>
+
+        <div class="post-mark-block">
+        <span class="post-current-mark" id="post-current-mark">Рецепт сочли полезным: <span class="post-current-mark-span" id="post-current-mark-span">{{ obj.user_marks_count }}</span></span>
+{% if obj.user_marks_count %}
+    <span class="post-show-marked-buttons">
+<input type="button" value="?" class="post-show-marked-users btn">
+<input type="button" value="x" class="post-hide-marked-users btn hidden">
+</span>
+
+{% endif %}
+<div class="post-show-marked"></div>
+    </div>
+
+</div>
+                    
+                        
+                        
+                        
         {% endif %}
                     {% if obj.is_plant %}
                     <div>
@@ -563,7 +585,11 @@
 
                     var pk = $('#post-pk').val();
                     var actionData = {'action': 'post-unmark', 'pk': pk}
-                    $('#cancel-mark-button').attr('disabled', 'disabled');
+                    $('#user-post-mark-button').removeAttr('disabled');
+                        $('#user-post-complain-button').removeAttr('disabled');
+                        $('#user-post-unmark-button').removeAttr('disabled');
+                        $('#user-post-uncomplain-button').removeAttr('disabled');
+
                     $.ajax({
                         type: 'POST',
                         url: '{% url 'history-ajax-save' %}',
@@ -592,20 +618,27 @@
                 });
 
 
-                $(document).on('click', '.user-post-mark-button', function (e) {
+                $(document).on('click', '#user-post-mark-button', function (e) {
                     var pk = $('#post-pk').val();
                     var actionData = {'action': 'user-post-mark', 'pk': pk};
-                    $('.blog-mark-button').attr('disabled', 'disabled');
+                    $('#user-post-mark-button').attr('disabled', 'disabled');
+                        $('#user-post-complain-button').attr('disabled', 'disabled');
+                        $('#user-post-unmark-button').attr('disabled', 'disabled');
+                        $('#user-post-uncomplain-button').attr('disabled', 'disabled');
                     $.ajax({
                         type: 'POST',
                         url: '{% url 'history-ajax-save' %}',
                         data: actionData,
                         success: function (data) {
-                         $('.blog-mark-button').removeAttr('disabled');
+                        $('#user-post-mark-button').removeAttr('disabled');
+                        $('#user-post-complain-button').removeAttr('disabled');
+                        $('#user-post-unmark-button').removeAttr('disabled');
+                        $('#user-post-uncomplain-button').removeAttr('disabled');
                          if (data.saved) {
-                            $('.blog-current-mark-span').html(data['marks_count']);
-                            $('.blog-mark-button').addClass('hidden');
-                            $('.blog-unmark-button').removeClass('hidden');
+                            $('#post-current-mark-span').html(data['marks_count']);
+                            $('#user-post-mark-button').addClass('hidden');
+                            $('#user-post-complain-button').addClass('hidden');
+                            $('#user-post-unmark-button').removeClass('hidden');
                         }
                             else {
                                 alert('Действие не засчитано');
@@ -613,7 +646,10 @@
 
                         },
                         error: function (data) {
-                        $('.blog-mark-button').removeAttr('disabled');
+                        $('#user-post-mark-button').removeAttr('disabled');
+                        $('#user-post-complain-button').removeAttr('disabled');
+                        $('#user-post-unmark-button').removeAttr('disabled');
+                        $('#user-post-uncomplain-button').removeAttr('disabled');
 
                         }
                     });
@@ -621,32 +657,125 @@
                 });
 
 
-                $(document).on('click', '.user-post-unmark-button', function (e) {
+                $(document).on('click', '#user-post-unmark-button', function (e) {
                     var pk = $('#post-pk').val();
                     var actionData = {'action': 'user-post-unmark', 'pk': pk};
-                    $('.blog-unmark-button').attr('disabled', 'disabled');
+                    $('#user-post-mark-button').attr('disabled', 'disabled');
+                        $('#user-post-complain-button').attr('disabled', 'disabled');
+                        $('#user-post-unmark-button').attr('disabled', 'disabled');
+                        $('#user-post-uncomplain-button').attr('disabled', 'disabled');
                     $.ajax({
                         type: 'POST',
                         url: '{% url 'history-ajax-save' %}',
                         data: actionData,
                         success: function (data) {
-                            $('.blog-unmark-button').removeAttr('disabled');
-                            if (data.saved) {
-                                $('.blog-current-mark-span').html(data['marks_count']);
-                                $('.blog-mark-button').removeClass('hidden');
-                                $('.blog-unmark-button').addClass('hidden');
-                            }
+                        $('#user-post-mark-button').removeAttr('disabled');
+                        $('#user-post-complain-button').removeAttr('disabled');
+                        $('#user-post-unmark-button').removeAttr('disabled');
+                        $('#user-post-uncomplain-button').removeAttr('disabled');
+                         if (data.saved) {
+                            $('#post-current-mark-span').html(data['marks_count']);
+                            $('#user-post-mark-button').removeClass('hidden');
+                            $('#user-post-complain-button').removeClass('hidden');
+                            $('#user-post-unmark-button').addClass('hidden');
+                        }
                             else {
                                 alert('Действие не засчитано');
                             }
 
                         },
                         error: function (data) {
-                        $('.blog-unmark-button').removeAttr('disabled');
+                       $('#user-post-mark-button').removeAttr('disabled');
+                        $('#user-post-complain-button').removeAttr('disabled');
+                        $('#user-post-unmark-button').removeAttr('disabled');
+                        $('#user-post-uncomplain-button').removeAttr('disabled');
+
                         }
                     });
 
                 });
+
+
+
+                $(document).on('click', '#user-post-complain-button', function (e) {
+                    var pk = $('#post-pk').val();
+                    var actionData = {'action': 'user-post-complain', 'pk': pk};
+                    $('#user-post-mark-button').attr('disabled', 'disabled');
+                        $('#user-post-complain-button').attr('disabled', 'disabled');
+                        $('#user-post-unmark-button').attr('disabled', 'disabled');
+                        $('#user-post-uncomplain-button').attr('disabled', 'disabled');
+                    $.ajax({
+                        type: 'POST',
+                        url: '{% url 'history-ajax-save' %}',
+                        data: actionData,
+                        success: function (data) {
+                            $('#user-post-mark-button').removeAttr('disabled');
+                        $('#user-post-complain-button').removeAttr('disabled');
+                        $('#user-post-unmark-button').removeAttr('disabled');
+                        $('#user-post-uncomplain-button').removeAttr('disabled');
+                         if (data.saved) {
+                            $('#post-current-complain-span').html(data['complain_count']);
+                            $('#user-post-mark-button').addClass('hidden');
+                            $('#user-post-complain-button').addClass('hidden');
+                            $('#user-post-uncomplain-button').removeClass('hidden');
+                        }
+                            else {
+                                alert('Действие не засчитано');
+                            }
+
+                        },
+                        error: function (data) {
+                        $('#user-post-mark-button').removeAttr('disabled');
+                        $('#user-post-complain-button').removeAttr('disabled');
+                        $('#user-post-unmark-button').removeAttr('disabled');
+                        $('#user-post-uncomplain-button').removeAttr('disabled');
+
+                        }
+                    });
+
+                });
+
+
+                $(document).on('click', '#user-post-uncomplain-button', function (e) {
+                    var pk = $('#post-pk').val();
+                    var actionData = {'action': 'user-post-uncomplain', 'pk': pk};
+                    $('#user-post-mark-button').attr('disabled', 'disabled');
+                        $('#user-post-complain-button').attr('disabled', 'disabled');
+                        $('#user-post-unmark-button').attr('disabled', 'disabled');
+                        $('#user-post-uncomplain-button').attr('disabled', 'disabled');
+                    $.ajax({
+                        type: 'POST',
+                        url: '{% url 'history-ajax-save' %}',
+                        data: actionData,
+                        success: function (data) {
+                            $('#user-post-mark-button').removeAttr('disabled');
+                        $('#user-post-complain-button').removeAttr('disabled');
+                        $('#user-post-unmark-button').removeAttr('disabled');
+                        $('#user-post-uncomplain-button').removeAttr('disabled');
+                         if (data.saved) {
+                            $('#post-current-complain-span').html(data['complain_count']);
+                            $('#user-post-mark-button').removeClass('hidden');
+                            $('#user-post-complain-button').removeClass('hidden');
+                            $('#user-post-uncomplain-button').addClass('hidden');
+                        }
+                            else {
+                                alert('Действие не засчитано');
+                            }
+
+                        },
+                        error: function (data) {
+                       $('#user-post-mark-button').removeAttr('disabled');
+                        $('#user-post-complain-button').removeAttr('disabled');
+                        $('#user-post-unmark-button').removeAttr('disabled');
+                        $('#user-post-uncomplain-button').removeAttr('disabled');
+
+                        }
+                    });
+
+                });
+
+
+
 
 
                 $(document).on('click', '.comment-show-marked-users, .comment-hide-marked-users', function (e) {
@@ -686,6 +815,46 @@
                     }
 
                 });
+
+
+                 $(document).on('click', '.post-show-marked-users, .post-hide-marked-users', function (e) {
+
+                    var postBlock = $(this).closest('#full-post');
+                    //var cls = $(this).attr('class');
+                    var pk = postBlock.find('#post-pk').val();
+                    var resultBlock = postBlock.find('.post-show-marked');
+                    var showButton = postBlock.find('.post-show-marked-users')
+                    var hideButton = postBlock.find('.post-hide-marked-users')
+                    var markBlock = postBlock.find('.post-mark-block');
+
+
+                    if ($(this).hasClass('post-show-marked-users')) {
+
+                        $.ajax({
+                            type: 'POST',
+                            url: '{% url 'post-show-marked-users-ajax' %}',
+                            data: {'pk': pk},
+                            success: function (data) {
+                                resultBlock.html(data);
+                                showButton.addClass('hidden');
+                                hideButton.removeClass('hidden');
+                                markBlock.addClass('on-top');
+                            },
+                            error: function (data) {
+
+                            }
+                        });
+
+                    }
+                    else {
+                        resultBlock.html('');
+                        showButton.removeClass('hidden');
+                        hideButton.addClass('hidden');
+                        markBlock.removeClass('on-top');
+                    }
+
+                });
+
 
             });
 

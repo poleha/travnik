@@ -32,7 +32,7 @@ HISTORY_TYPE_POST_SAVED = settings.HISTORY_TYPE_POST_SAVED
 HISTORY_TYPE_POST_RATED = settings.HISTORY_TYPE_POST_RATED
 HISTORY_TYPE_COMMENT_COMPLAINT = settings.HISTORY_TYPE_COMMENT_COMPLAINT
 HISTORY_TYPE_USER_POST_RATED = settings.HISTORY_TYPE_USER_POST_RATED
-HISTORY_TYPE_USER_POST_COMPLAINT = settings.HISTORY_TYPE_COMMENT_COMPLAINT
+HISTORY_TYPE_USER_POST_COMPLAINT = settings.HISTORY_TYPE_USER_POST_COMPLAINT
 
 
 HISTORY_TYPES = settings.HISTORY_TYPES
@@ -528,7 +528,7 @@ class SuperPost(AbstractModel, ModelPublishedByUser, class_with_published_mixin(
         abstract = True
 
     # TODO create my own meta SuperMeta
-    can_be_rated = False
+    can_be_rated = True
     use_alias = True
     alter_alias = False
 
@@ -977,6 +977,7 @@ class SuperHistory(SuperModel):
                 h = History.objects.create(history_type=history_type, post=post, user=user, comment=comment, ip=ip,
                                        user_points=History.get_points(history_type),
                                        author=post.user, session_key=session_key)
+                return h
 
 
     @classmethod
@@ -1092,6 +1093,7 @@ class SuperHistory(SuperModel):
 
         if self.post:
             self.post.obj.full_invalidate_cache()
+            self.post.full_invalidate_cache()
             #invalidate_obj(self.post.obj)
 
 
@@ -1126,7 +1128,7 @@ class SuperHistory(SuperModel):
 
         if post:
             post.obj.full_invalidate_cache()
-            #invalidate_obj(post.obj)
+            post.full_invalidate_cache()
 
         if user:
             user.user_profile.full_invalidate_cache()

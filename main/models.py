@@ -272,6 +272,7 @@ class Recipe(Post):
 
     objects = super_models.PostManager()
     alter_alias = True
+    rate_type = 'votes'
 
     def type_str(self):
         return 'Рецепт'

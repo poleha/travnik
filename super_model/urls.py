@@ -10,6 +10,7 @@ url(r'^get_ajax_login_form/$', views.GetAjaxLoginFormView.as_view(), name='get-a
 url(r'^ajax_login/$', views.AjaxLoginView.as_view(), name='ajax-login'),
 url(r'^comment/get_tiny_ajax/$', views.CommentGetTinyAjax.as_view(), name='comment-get-tiny-ajax'),
 url(r'^comment/show_marked_users_ajax/$', views.CommentShowMarkedUsersAjax.as_view(), name='comment-show-marked-users-ajax'),
+url(r'^post/show_marked_users_ajax/$', views.PostShowMarkedUsersAjax.as_view(), name='post-show-marked-users-ajax'),
 url(r'^unsubscribe/(?P<email>[0-9a-zA-Z.\-_@]+)/(?P<key>[0-9A-Za-z]+)/$', views.UnsubscribeView.as_view(), name='unsubscribe'),
 url(r'^user_profile/$', views.UserProfileView.as_view(), name='user-profile'),
 url(r'^user/(?P<pk>\d+)/$', views.UserDetailView.as_view(), name='user-detail'),

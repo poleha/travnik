@@ -243,7 +243,7 @@ class UserRecipesView(super_views.SuperListView):
     def get_queryset(self):
         pk = self.kwargs['pk']
         user = models.User.objects.get(pk=pk)
-        return user.recipes.get_available().order_by('-created')
+        return models.Recipe.objects.get_available().filter(user=user)
 
 
     def get_context_data(self, **kwargs):
