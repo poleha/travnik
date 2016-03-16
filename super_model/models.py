@@ -595,6 +595,20 @@ class SuperPost(AbstractModel, ModelPublishedByUser, class_with_published_mixin(
             date = None
         return date
 
+    @property
+    def status_text(self):
+        if self.status == POST_STATUS_PUBLISHED:
+            return 'Опубликован'
+        elif self.status == POST_STATUS_PROJECT:
+            return 'Проект'
+
+    @property
+    def is_project(self):
+        return self.status == POST_STATUS_PROJECT
+
+    @property
+    def is_published(self):
+        return self.status == POST_STATUS_PUBLISHED
 
     def make_alias(self):
         BASE_POST_CLASS = import_string(settings.BASE_POST_CLASS)

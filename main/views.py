@@ -16,6 +16,7 @@ from django.http.response import HttpResponseRedirect
 from django.db.models import Q
 from django.db import transaction
 from super_model.helper import set_and_get_session_key
+from django.core.urlresolvers import reverse_lazy
 
 
 class PostViewMixin(super_views.SuperPostViewMixin):
@@ -79,7 +80,7 @@ class PostListAjax(PostListFilterMixin):
         return self.render_to_response(self.get_context_data(**kwargs))
 
 
-class PostCreateUpdateMixin(super_views.restrict_by_role_mixin(settings.USER_ROLE_ADMIN), PostViewMixin):
+class PostCreateUpdateMixin(PostViewMixin):
     def get_form_class(self):
         if self.model == models.Plant:
             return forms.PlantForm
@@ -93,12 +94,24 @@ class PostCreateUpdateMixin(super_views.restrict_by_role_mixin(settings.USER_ROL
             return forms.UsageAreaForm
 
 
-class PostCreate(PostCreateUpdateMixin, generic.CreateView):
+class PostCreate(super_views.restrict_by_role_mixin(settings.USER_ROLE_ADMIN), PostCreateUpdateMixin, generic.CreateView):
     template_name ='main/post/post_create.html'
 
 
-class PostUpdate(PostCreateUpdateMixin, generic.UpdateView):
+class PostUpdate(super_views.restrict_by_role_mixin(settings.USER_ROLE_ADMIN), PostCreateUpdateMixin, generic.UpdateView):
     template_name ='main/post/post_create.html'
+
+class RecipeUserUpdate(PostCreateUpdateMixin, generic.UpdateView):
+    template_name ='main/post/post_create.html'
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.user == request.user:
+            return super().get(request, *args, **kwargs)
+        elif request.user.is_authenticated():
+            return HttpResponseRedirect(self.object.get_absolute_url())
+        else:
+            return HttpResponseRedirect(reverse_lazy('login'))
 
 
 class PostDetail(super_views.SuperPostDetail):
@@ -243,7 +256,10 @@ class UserRecipesView(super_views.SuperListView):
     def get_queryset(self):
         pk = self.kwargs['pk']
         user = models.User.objects.get(pk=pk)
-        return models.Recipe.objects.get_available().filter(user=user)
+        recipes = models.Recipe.objects.filter(user=user)
+        if not self.request.user == user:
+            recipes = recipes.get_available()
+        return recipes
 
 
     def get_context_data(self, **kwargs):

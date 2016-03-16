@@ -13,14 +13,17 @@
     {% if obj.is_plant %}
         {{ obj.synonyms_text }}
     {% endif %}
-        {% if user.is_admin or user.is_author or obj.user == user %}
+        {% if user.is_admin %}
             <a href="{{ obj.update_url }}">Редактировать</a>
+           {% elif obj.user == user %}
+            <a href="{% url 'recipe-user-update' obj.pk %}">Редактировать</a>
+            {% if obj.is_project %}<div>{{ obj.status_text }}</div>{% endif %}
 
         {% endif %}
         {% if not obj.is_usage_area %}
             <div class="post-top-block">
 
-                {% if obj.is_plant and user.is_regular %}
+                {% if obj.is_plant and user.is_regular and obj.is_published %}
                 <div id="post-mark-block>">
                         <div id="current-post-mark-block" class="{{ show_your_mark_block_cls }}">
                             <label>Ваша оценка: </label><span id="current-post-mark"> {{ mark }}</span>
@@ -43,7 +46,7 @@
 {% endif %}
 
 
-                    {% if obj.is_recipe and user.is_regular %}
+                    {% if obj.is_recipe and user.is_regular and obj.is_published %}
          {% if can_mark %}
          <input class="user-post-unmark-button btn btn-cancel hidden" type="button" id="user-post-unmark-button" value='Отозвать оценку'>
          <input class="user-post-mark-button btn btn-success" type="button" id="user-post-mark-button" value='Рецепт полезен'>
@@ -87,6 +90,7 @@
                         
                         
         {% endif %}
+                    {% if obj.is_published %}
                     {% if obj.is_plant %}
                     <div>
                         <label>Средняя оценка: </label><span id="post-average-mark">{{ obj.average_mark }}</span>(количество оценок: <span id="post-marks-count">{{ obj.marks_count }})</span>
@@ -101,7 +105,7 @@
                         </div>
                     {% endif %}
                     <a href="#comment-form" class="btn btn-success">Оставить отзыв</a>
-
+                    {% endif %}
             </div>
 
 
@@ -163,7 +167,7 @@
 
             </div>
 
-
+{% if obj.is_published %}
 {% if not obj.is_usage_area %}
 
                     <div id="comment-filter-form">
@@ -198,11 +202,13 @@
                     {% if paginator.num_pages > 1 %}
                         {% include 'super_model/base/_pager.html' with url=obj.get_absolute_url %}
                     {% endif %}
+            {% endif %}
+
 {% if not obj.is_usage_area %}
 
 
 
-
+{% if obj.is_published %}
     <div id="comment-form-tabs">
   <ul>
     <li><a href="#tabs-1">Оcтавить отзыв</a></li>
@@ -244,7 +250,7 @@
 </div>
 
 
-
+ {% endif %}
     {% endif %}
             </div>
 
