@@ -63,7 +63,8 @@
 
 <div class="row">
 <div class="col-lg-2 col-md-3 col-sm-3 hidden-xs" id="sidebar-left">
-{% block sidebar_left %}
+    {% block sidebar_left %}
+{% best_posts 'Популярные рецепты' %}
 {% best_comments 'Популярные сообщения' %}
 {% endblock sidebar_left %}
 </div>
@@ -81,6 +82,7 @@
 <div class="col-lg-2 hidden-md hidden-sm hidden-xs" id="sidebar-right">
 {% block sidebar_right %}
 {% user_menu %}
+ {% recent_posts 'Новые рецепты' %}
  {% recent_comments 'Новые сообщения' %}
 {% endblock sidebar_right %}
 {% if user.is_regular %}

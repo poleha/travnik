@@ -3,7 +3,7 @@ from super_model.templatetags import super_model as super_tags
 from django.core.urlresolvers import reverse_lazy
 from super_model.forms import SuperSearchForm
 from collections import namedtuple
-
+from main import models
 
 register = template.Library()
 
@@ -16,6 +16,10 @@ get_comment = register.inclusion_tag('main/widgets/_get_comment.html', takes_con
 recent_comments = register.inclusion_tag('main/widgets/_comments_portlet.html')(super_tags.recent_comments)
 
 best_comments = register.inclusion_tag('main/widgets/_comments_portlet.html')(super_tags.best_comments)
+
+recent_posts = register.inclusion_tag('main/widgets/_posts_portlet.html')(super_tags.recent_posts_maker(models.Recipe))
+
+best_posts = register.inclusion_tag('main/widgets/_posts_portlet.html')(super_tags.best_posts_maker(models.Recipe, days=30))
 
 """
 @register.inclusion_tag('main/widgets/_top_menu.html', takes_context=True)

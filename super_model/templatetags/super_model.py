@@ -62,10 +62,40 @@ def recent_comments(title=None):
 def best_comments(title=None):
     res = {}
     date = timezone.now() - timedelta(days=settings.BEST_COMMENTS_DAYS)
-    comments = Comment.objects.filter(history_comment__history_type=models.HISTORY_TYPE_COMMENT_RATED, created__gte=date).annotate(hist_count=Count('history_comment')).order_by('-hist_count')[:10]
+    comments = Comment.objects.get_available().filter(history_comment__history_type=models.HISTORY_TYPE_COMMENT_RATED, created__gte=date).annotate(hist_count=Count('history_comment')).order_by('-hist_count')[:10]
 
     res['comments'] = comments
     res['portlet_type'] = 'best_comments'
     res['cache_duration'] = 60 * 60 * 24
-    res['title']  = title
+    res['title'] = title
     return res
+
+
+def recent_posts_maker(post_type):
+    def recent_posts(title=None):
+        res = {}
+        objs = post_type.objects.get_available().order_by('-created')[:10]
+        res['objs'] = objs
+        res['portlet_type'] = 'recent_posts'
+        res['cache_duration'] = 60 * 60 * 2
+        res['title']  = title
+        return res
+    return recent_posts
+
+
+def best_posts_maker(post_type, days=30):
+    def best_posts(title=None):
+        res = {}
+        date = timezone.now() - timedelta(days=days)
+        if post_type.rate_type == 'stars':
+            history_type = models.HISTORY_TYPE_POST_RATED
+        else:
+            history_type = models.HISTORY_TYPE_USER_POST_RATED
+        objs = post_type.objects.get_available().filter(history_post__history_type=history_type, created__gte=date).annotate(hist_count=Count('history_post')).order_by('-hist_count')[:10]
+
+        res['objs'] = objs
+        res['portlet_type'] = 'best_posts'
+        res['cache_duration'] = 60 * 60 * 24
+        res['title']  = title
+        return res
+    return best_posts
