@@ -117,20 +117,20 @@
          {% if can_mark %}
          <input class="comment-unmark-button btn btn-cancel hidden" type="button" id="comment-unmark-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Отозвать оценку'>
          <input class="comment-mark-button btn btn-success" type="button" id="comment-mark-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Отзыв полезен'>
-         <input class="comment-uncomplain-button btn btn-cancel hidden" type="button" id="comment-uncomplain-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Отозвать жалобу'>
-         <input class="comment-complain-button btn btn-danger" type="button" id="comment-complain-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Пожаловаться на отзыв'>
+         <input class="comment-uncomplain-button btn btn-cancel hidden" type="button" id="comment-uncomplain-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Отозвать оценку'>
+         <input class="comment-complain-button btn btn-danger" type="button" id="comment-complain-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Отзыв бесполезен'>
         {% elif can_unmark %}
         <input class="comment-unmark-button btn btn-cancel" type="button" id="comment-unmark-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Отозвать оценку'>
         <input class="comment-mark-button btn btn-success hidden" type="button" id="comment-mark-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Отзыв полезен'>
-        <input class="comment-uncomplain-button btn btn-cancel hidden" type="button" id="comment-uncomplain-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Отозвать жалобу'>
-        <input class="comment-complain-button btn btn-danger hidden" type="button" id="comment-complain-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Пожаловаться на отзыв'>
+        <input class="comment-uncomplain-button btn btn-cancel hidden" type="button" id="comment-uncomplain-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Отозвать оценку'>
+        <input class="comment-complain-button btn btn-danger hidden" type="button" id="comment-complain-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Отзыв бесполезен'>
 
 
         {% elif can_uncomplain %}
         <input class="comment-unmark-button btn btn-cancel hidden" type="button" id="comment-unmark-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Отозвать оценку'>
         <input class="comment-mark-button btn btn-success hidden" type="button" id="comment-mark-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Отзыв полезен'>
-        <input class="comment-uncomplain-button btn btn-cancel" type="button" id="comment-uncomplain-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Отозвать жалобу'>
-        <input class="comment-complain-button btn btn-danger hidden" type="button" id="comment-complain-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Пожаловаться на отзыв'>
+        <input class="comment-uncomplain-button btn btn-cancel" type="button" id="comment-uncomplain-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Отозвать оценку'>
+        <input class="comment-complain-button btn btn-danger hidden" type="button" id="comment-complain-button-level-{{ comment.get_tree_level }}-pk-{{ comment.pk }}" value='Отзыв бесполезен'>
 
 
         {% endif %}

@@ -14,10 +14,10 @@
         {{ obj.synonyms_text }}
     {% endif %}
         {% if user.is_admin %}
-            <a href="{{ obj.update_url }}">Редактировать</a>
-           {% elif obj.user == user %}
-            <a href="{% url 'recipe-user-update' obj.pk %}">Редактировать</a>
-            {% if obj.is_project %}<div>{{ obj.status_text }}</div>{% endif %}
+            <a class="post-edit-link" href="{{ obj.update_url }}">Редактировать</a>
+           {% elif obj.is_recipe and obj.user == user %}
+            <a class="post-edit-link" href="{% url 'recipe-user-update' obj.pk %}">Редактировать</a>
+            {% if obj.is_project %}<div class="post-status"><label>Статус: </label>{{ obj.status_text }}</div>{% endif %}
 
         {% endif %}
         {% if not obj.is_usage_area %}
@@ -50,27 +50,27 @@
          {% if can_mark %}
          <input class="user-post-unmark-button btn btn-cancel hidden" type="button" id="user-post-unmark-button" value='Отозвать оценку'>
          <input class="user-post-mark-button btn btn-success" type="button" id="user-post-mark-button" value='Рецепт полезен'>
-         <input class="user-post-uncomplain-button btn btn-cancel hidden" type="button" id="user-post-uncomplain-button" value='Отозвать жалобу'>
-         <input class="user-post-complain-button btn btn-danger" type="button" id="user-post-complain-button" value='Пожаловаться на рецепт'>
+         <input class="user-post-uncomplain-button btn btn-cancel hidden" type="button" id="user-post-uncomplain-button" value='Отозвать оценку'>
+         <input class="user-post-complain-button btn btn-danger" type="button" id="user-post-complain-button" value='Рецепт бесполезен'>
         {% elif can_unmark %}
         <input class="user-post-unmark-button btn btn-cancel" type="button" id="user-post-unmark-button" value='Отозвать оценку'>
         <input class="user-post-mark-button btn btn-success hidden" type="button" id="user-post-mark-button" value='Рецепт полезен'>
-        <input class="user-post-uncomplain-button btn btn-cancel hidden" type="button" id="user-post-uncomplain-button" value='Отозвать жалобу'>
-        <input class="user-post-complain-button btn btn-danger hidden" type="button" id="user-post-complain-button" value='Пожаловаться на рецепт'>
+        <input class="user-post-uncomplain-button btn btn-cancel hidden" type="button" id="user-post-uncomplain-button" value='Отозвать оценку'>
+        <input class="user-post-complain-button btn btn-danger hidden" type="button" id="user-post-complain-button" value='Рецепт бесполезен'>
 
 
         {% elif can_uncomplain %}
         <input class="user-post-unmark-button btn btn-cancel hidden" type="button" id="user-post-unmark-button" value='Отозвать оценку'>
         <input class="user-post-mark-button btn btn-success hidden" type="button" id="user-post-mark-button" value='Рецепт полезен'>
-        <input class="user-post-uncomplain-button btn btn-cancel" type="button" id="user-post-uncomplain-button" value='Отозвать жалобу'>
-        <input class="user-post-complain-button btn btn-danger hidden" type="button" id="user-post-complain-button" value='Пожаловаться на рецепт'>
+        <input class="user-post-uncomplain-button btn btn-cancel" type="button" id="user-post-uncomplain-button" value='Отозвать оценку'>
+        <input class="user-post-complain-button btn btn-danger hidden" type="button" id="user-post-complain-button" value='Рецепт бесполезен'>
 
 
         {% endif %}
                         
     <div class="post-all-marks-block">
 
-    <div class="post-current-complain" id="post-current-complain">Жалоб: <span class="post-current-complain-span" id="post-current-complain-span">{{ obj.complain_count }}</span></div>
+    <div class="post-current-complain" id="post-current-complain">Рецепт сочли бесполезным: <span class="post-current-complain-span" id="post-current-complain-span">{{ obj.complain_count }}</span></div>
 
         <div class="post-mark-block">
         <span class="post-current-mark" id="post-current-mark">Рецепт сочли полезным: <span class="post-current-mark-span" id="post-current-mark-span">{{ obj.user_marks_count }}</span></span>
