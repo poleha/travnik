@@ -1,0 +1,8 @@
+{% if recipes %}
+<div id="pending-recipes">
+<h3>Рецепты на рассмотрении</h3>
+    {% for recipe in recipes %}
+<a href="{{ recipe.get_absolute_url }}">{{ recipe }}</a>
+{% endfor %}
+</div>
+{% endif %}

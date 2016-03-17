@@ -81,7 +81,11 @@
 
 <div class="col-lg-2 hidden-md hidden-sm hidden-xs" id="sidebar-right">
 {% block sidebar_right %}
-{% user_menu %}
+{% if user.is_authenticated %}
+    {% pending_recipes user %}
+{% pending_comments user %}
+    {% user_menu %}
+{% endif %}
  {% recent_posts 'Новые рецепты' %}
  {% recent_comments 'Новые сообщения' %}
 {% endblock sidebar_right %}

@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse_lazy
 from super_model.forms import SuperSearchForm
 from collections import namedtuple
 from main import models
+from super_model import models as super_models
 
 register = template.Library()
 
@@ -161,3 +162,11 @@ def metatags(context):
 def user_detail(user):
     return {'user': user}
 
+
+@register.inclusion_tag('main/widgets/_pending_comments.html')
+def pending_comments(user):
+    return {'comments': models.Comment.objects.filter(user=user, status=super_models.COMMENT_STATUS_PENDING_APPROVAL)}
+
+@register.inclusion_tag('main/widgets/_pending_recipes.html')
+def pending_recipes(user):
+    return {'recipes': models.Recipe.objects.filter(status=super_models.POST_STATUS_PROJECT, user=user)}
