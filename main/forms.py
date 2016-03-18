@@ -53,6 +53,8 @@ class BaseRecipeForm(forms.ModelForm):
             else:
                 plants_choices += ((plant.pk, plant),)
         cls.base_fields['plants'].choices = plants_choices
+        cls.base_fields['plants'].required = False
+        cls.base_fields['usage_areas'].required = True
         return super().__new__(cls)
 
 
