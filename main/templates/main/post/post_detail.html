@@ -122,7 +122,11 @@
                             {% if obj.show_body_label %}
                                 <h4>{% get_verbose_field_name obj 'body' %}:</h4>
                             {% endif %}
+                            {% if obj.is_plant %}
                             {{ obj.body|safe }}
+                            {% else %}
+                             {{ obj.body|replace_nbsp|safe }}
+                            {% endif %}
                         </div>
                     {% endif %}
 
@@ -135,7 +139,7 @@
                 {% for recipe in obj.recipes.get_available %}
                 <div class="related-recipe">
                     <div class="recipe-title"><a href="{{ recipe.get_absolute_url }}">{{ recipe }}</a></div>
-                <div class="recipe-body">{{ recipe.body|safe }}</div>
+                <div class="recipe-body">{{ recipe.body|replace_nbsp|safe }}</div>
                 <div class="line"></div>
                 </div>
             {% endfor %}

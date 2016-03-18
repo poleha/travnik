@@ -77,3 +77,8 @@ def none_as_empty(value):
         return value
     else:
         return ''
+
+
+@register.filter(name='replace_nbsp')
+def replace_nbsp(text):
+    return text.replace('&nbsp;', ' ')
