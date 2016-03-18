@@ -40,6 +40,8 @@ class PlantForm(forms.ModelForm):
 
 
 class BaseRecipeForm(forms.ModelForm):
+    required_css_class = 'required'
+
     def __new__(cls, *args, **kwargs):
         cls.base_fields['plants'].widget=forms.CheckboxSelectMultiple()
         cls.base_fields['usage_areas'].widget=forms.CheckboxSelectMultiple()
@@ -82,7 +84,7 @@ class RecipeUserForm(BaseRecipeForm):
         self.fields['plants'].queryset = models.Plant.objects.get_available().exclude(pk=plant.pk)
         self.fields['plants'].label = 'Другие растения'
         self.fields['title'].label = ''
-        self.fields['title'].widget.attrs['placeholder'] = 'Название рецепта'
+        self.fields['title'].widget.attrs['placeholder'] = 'Название рецепта*'
         self.fields['body'].required = True
 
     def clean(self):
