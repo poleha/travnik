@@ -106,7 +106,7 @@ class RecipeUserUpdate(PostCreateUpdateMixin, generic.UpdateView):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-        if self.object.user == request.user:
+        if self.object.user == request.user and self.object.is_project:
             return super().get(request, *args, **kwargs)
         elif request.user.is_authenticated():
             return HttpResponseRedirect(self.object.get_absolute_url())

@@ -15,7 +15,7 @@
     {% endif %}
         {% if user.is_admin %}
             <a class="post-edit-link" href="{{ obj.update_url }}">Редактировать</a>
-           {% elif obj.is_recipe and obj.user == user %}
+           {% elif obj.is_recipe and obj.user == user and obj.is_project %}
             <a class="post-edit-link" href="{% url 'recipe-user-update' obj.pk %}">Редактировать</a>
             {% if obj.is_project %}<div class="post-status"><label>Статус: </label>{{ obj.status_text }}</div>{% endif %}
 
