@@ -561,20 +561,12 @@ class SuperPost(AbstractModel, ModelPublishedByUser, class_with_published_mixin(
 
         return mark
 
-
     @cached_property
     def last_modified(self):
         History = import_string(settings.BASE_HISTORY_CLASS)
         try:
-            latest_created = History.objects.filter(post=self, history_type=HISTORY_TYPE_POST_CREATED).latest('created').created
-            latest_updated = History.objects.filter(post=self, history_type=HISTORY_TYPE_POST_SAVED).latest('created').created
-            latest_updated = latest_updated if latest_updated is not None else latest_created
-
-            if latest_created is None:
-                raise Exception
-
-            return max(latest_created, latest_updated)
-
+            latest_history = History.objects.filter(post=self).latest('created').created
+            return latest_history
         except:
             if self.updated:
                 return self.updated
