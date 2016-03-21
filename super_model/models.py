@@ -531,6 +531,7 @@ class SuperPost(AbstractModel, ModelPublishedByUser, class_with_published_mixin(
     can_be_rated = True
     use_alias = True
     alter_alias = False
+    recreate_alias_on_save = False
 
     rate_type = 'stars'
     #rate_type = 'votes'
@@ -736,7 +737,7 @@ class SuperPost(AbstractModel, ModelPublishedByUser, class_with_published_mixin(
         self.title = helper.trim_title(self.title)
         #saved_version = self.saved_version
         if self.use_alias:
-            if hasattr(self, 'title') and self.title and not self.alias:
+            if hasattr(self, 'title') and self.title and (self.recreate_alias_on_save or not self.alias):
                 self.alias = self.make_alias()
             if self.alias:
                 BASE_POST_CLASS = import_string(settings.BASE_POST_CLASS)
