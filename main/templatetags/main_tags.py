@@ -65,7 +65,7 @@ def breadcrumbs(context):
 
     if url_name in ['post-detail-alias', 'post-detail-alias-comment', 'post-detail-pk', 'post-detail-pk-comment']:
         obj = context['obj']
-        breadcrumbs_list.append(Breadcrumb(title=obj.title.title(), href=obj.get_absolute_url()))
+        breadcrumbs_list.append(Breadcrumb(title=str(obj), href=obj.get_absolute_url()))
 
     elif url_name == 'user-profile':
         user = context['user']
@@ -128,11 +128,11 @@ def metatags(context):
     elif url_name in ['post-detail-alias', 'post-detail-alias-comment', 'post-detail-pk', 'post-detail-pk-comment', 'post-detail-pk-comment']:
         obj = context['obj']
         if obj.is_plant:
-            metatags_dict['title'] = '{0} | Medavi.ru'.format(obj.title.title())
+            metatags_dict['title'] = '{0} | Medavi.ru'.format(str(obj))
             metatags_dict['keywords'] = "{0}, растение, рецепты, отзывы".format(obj.title, obj.title)
             metatags_dict['description'] = "Информация о лекарственном растении {0}.".format(obj.title)
         elif obj.is_recipe:
-            metatags_dict['title'] = '{0} | Medavi.ru'.format(obj.title.title())
+            metatags_dict['title'] = '{0} | Medavi.ru'.format(str(obj))
             metatags_dict['keywords'] = "{0}, рецепт, отзывы, {1}".format(obj.title, obj.title, ', '.join(obj.plants.get_available().values_list('title', flat=True)))
             metatags_dict['description'] = "Рецепт {0} с использованием лекарственных растений {1}.".format(obj.title, ', '.join(obj.plants.get_available().values_list('title', flat=True)))
 
