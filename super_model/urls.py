@@ -27,9 +27,9 @@ url(r'^password_reset/$', views.SuperPasswordResetView.as_view(), name='password
 url(r'^password_reset_done/$', views.SuperPasswordResetDoneView.as_view(), name='password-reset-done'),
 url(r"^password_reset_from_key/(?P<uidb36>[0-9A-Za-z]+)-(?P<key>.+)/$",
     views.SuperPasswordResetFromKeyView.as_view(),
-    name="password-reset-from-key"),
+    name="account_reset_password_from_key"),
 url(r"^password_reset_from_key_done/$", views.SuperPasswordResetFromKeyDoneView.as_view(),
-    name="password-reset-from-key-done"),
+    name="account_reset_password_from_key_done"),
 url(r"^email/$", views.SuperEmailView.as_view(), name="account_email"),
 url(r"^confirm-email/(?P<key>\w+)/$", views.SuperConfirmEmailView.as_view(), name="account_confirm_email"),
 #social

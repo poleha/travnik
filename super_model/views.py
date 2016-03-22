@@ -436,7 +436,7 @@ class SuperPasswordResetDoneView(PasswordResetDoneView):
 
 class SuperPasswordResetFromKeyView(PasswordResetFromKeyView):
     template_name = 'super_model/user/password_reset_from_key.html'
-    success_url = reverse_lazy('password-reset-from-key-done')
+    success_url = reverse_lazy('account_reset_password_from_key_done')
 
 
 class SuperPasswordResetFromKeyDoneView(PasswordResetFromKeyDoneView):
@@ -464,11 +464,15 @@ class SuperEmailView(EmailView):
 
 
 class SuperConfirmEmailView(ConfirmEmailView):
+    # TODO check. I guess this method is not used
     def get_template_names(self):
         if self.request.method == 'POST':
-            return ["main/user/email_confirmed.html"]
+            return ["super_model/user/email_confirmed.html"]
         else:
-            return ["main/user/email_confirm.html"]
+            return ["super_model/user/email_confirm.html"]
+
+    def get_redirect_url(self):
+        return reverse_lazy('main-page')
 
 
 class SuperPostDetail(SuperListView):
