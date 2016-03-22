@@ -33,6 +33,9 @@ urlpatterns = [
     url(r'^autocomplete/$', views.AutocompleteView.as_view(), name='autocomplete'),
 
     url(r'^user/recipes/(?P<pk>\d+)/$', views.UserRecipesView.as_view(), name='user-recipes'),
+
+    url(r'^mission/', views.MissionView.as_view(), name='mission'),
+
 ]
 
 urlpatterns.append(url(r'^(?P<alias>[a-z0-9_\-]{1,})/comment/(?P<comment_pk>\d+)/$', views.PostDetail.as_view(), kwargs={'action': 'comment'}, name='post-detail-alias-comment'))

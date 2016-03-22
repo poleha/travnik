@@ -88,6 +88,9 @@ def breadcrumbs(context):
     elif url_name == 'search':
         breadcrumbs_list.append(Breadcrumb(title="Поиск по сайту", href=reverse_lazy('search')))
 
+    elif url_name == 'mission':
+        breadcrumbs_list.append(Breadcrumb(title="О проекте", href=reverse_lazy('mission')))
+
     return {'breadcrumbs_list': breadcrumbs_list}
 
 
@@ -112,8 +115,8 @@ def metatags(context):
 
     metatags_dict = {}
     metatags_dict['title'] = 'Medavi.ru | Все о лекарственных растениях'
-    metatags_dict['keywords'] = 'лекарственные растения, отзывы, рецепты'
-    metatags_dict['description'] = 'Сайт о лекарственных растениях и обо всем, что с ними связано'
+    metatags_dict['keywords'] = 'лекарственные растения, рецепты, отзывы'
+    metatags_dict['description'] = 'Сайт о лекарственных растениях и обо всем, что с ними связано. Рецепты с лекарственными растениями, отзывы.'
     metatags_dict['canonical'] = ''
 
     if url_name == 'main-page':
@@ -155,6 +158,9 @@ def metatags(context):
 
     elif url_name == 'search':
         metatags_dict['title'] = 'Поиск по сайту | Medavi.ru'
+
+    elif url_name == 'mission':
+        metatags_dict['title'] = 'О проекте | Medavi.ru'
 
     return metatags_dict
 

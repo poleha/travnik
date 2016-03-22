@@ -268,3 +268,6 @@ class UserRecipesView(super_views.SuperListView):
         user = models.User.objects.get(pk=pk)
         context['current_user'] = user
         return context
+
+class MissionView(generic.TemplateView):
+    template_name = 'main/static/mission.html'
