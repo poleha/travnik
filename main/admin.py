@@ -19,7 +19,7 @@ class PlantAdmin(AdminImageMixin, PostAdminMixin):
 
 @admin.register(models.Recipe)
 class RecipeAdmin(AdminImageMixin, PostAdminMixin):
-    list_filter = ('status', )
+    list_filter = ('status', 'user')
     search_fields = ('title', 'alias', 'body')
 
 
