@@ -11,8 +11,9 @@ from django.utils.html import strip_tags
 from helper import helper
 from django.utils.html import mark_safe
 from django.forms import ValidationError
-from django.db.models import Q
+from django.db.models import Q, Max
 from django.contrib.auth.models import User
+
 
 
 COMPONENT_TYPE_VITAMIN = 1
@@ -151,7 +152,7 @@ class Plant(Post):
     usage_areas = models.ManyToManyField('UsageArea', verbose_name='Области применения', blank=True, related_name='plants')
     short_body = models.TextField(verbose_name='Анонс', blank=True)
     wikipedia_link = models.TextField(blank=True, verbose_name='Страница на wikipedia')
-    code = models.PositiveIntegerField()
+    code = models.PositiveIntegerField(unique=True)
 
     objects = super_models.PostManager()
 
@@ -217,8 +218,17 @@ class Plant(Post):
         if existing_plants.exists():
             raise ValidationError('Растение с таким названием уже существует')
 
+    def get_new_code(self):
+        try:
+            max_code = type(self).objects.aggregate(Max('code'))['code_max']
+        except:
+            max_code = 0
+        return max_code
+
     def save(self, *args, **kwargs):
         self.full_clean()
+        if not self.code:
+            self.code = self.get_new_code()
         super().save(*args, **kwargs)
 
 
