@@ -152,7 +152,7 @@ class Plant(Post):
     usage_areas = models.ManyToManyField('UsageArea', verbose_name='Области применения', blank=True, related_name='plants')
     short_body = models.TextField(verbose_name='Анонс', blank=True)
     wikipedia_link = models.TextField(blank=True, verbose_name='Страница на wikipedia')
-    code = models.PositiveIntegerField(unique=True)
+    code = models.PositiveIntegerField(unique=True, blank=True)
 
     objects = super_models.PostManager()
 
@@ -220,10 +220,11 @@ class Plant(Post):
 
     def get_new_code(self):
         try:
-            max_code = type(self).objects.aggregate(Max('code'))['code_max']
+            max_code = type(self).objects.exclude(pk=self.pk).aggregate(Max('code'))['code__max']
         except:
             max_code = 0
-        return max_code
+        code = max_code + 1
+        return code
 
     def save(self, *args, **kwargs):
         self.full_clean()
