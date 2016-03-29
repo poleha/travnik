@@ -29,7 +29,7 @@ try:
 except:
     HOSTNAME = 'localhost'
 
-if HOSTNAME in ['ubuntu']:
+if HOSTNAME in ['ubuntu', 'kulik']:
     DEBUG = True
     COMPRESS_ENABLED = False
     HTML_MINIFY = True
