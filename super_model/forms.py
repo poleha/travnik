@@ -23,6 +23,13 @@ class SuperSearchForm(SearchForm):
         return sqs
 
 class SuperSignupForm(SignupForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            if field_name != 'image':
+                field.widget.attrs['placeholder'] = field.label
+
+
     required_css_class = 'required'
     image = forms.ImageField(label='Изображение', required=False)
     username = fields.UserNameField()
