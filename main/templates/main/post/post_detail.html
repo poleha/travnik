@@ -78,7 +78,8 @@
 
 
                     {% if obj.is_recipe and user.is_regular and obj.is_published %}
-         {% if can_mark %}
+         <div class="recipe-mark-buttons">
+                        {% if can_mark %}
          <input class="user-post-unmark-button btn btn-cancel hidden" type="button" id="user-post-unmark-button" value='Отозвать оценку'>
          <input class="user-post-mark-button btn btn-success" type="button" id="user-post-mark-button" value='Рецепт полезен'>
          <input class="user-post-uncomplain-button btn btn-cancel hidden" type="button" id="user-post-uncomplain-button" value='Отозвать оценку'>
@@ -98,7 +99,7 @@
 
 
         {% endif %}
-                        
+</div>
     <div class="post-all-marks-block">
 
     <div class="post-current-complain" id="post-current-complain">Рецепт сочли бесполезным: <span class="post-current-complain-span" id="post-current-complain-span">{{ obj.complain_count }}</span></div>
