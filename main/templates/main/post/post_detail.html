@@ -2,6 +2,7 @@
 {% load main_tags %}
 {% load helper_tags %}
 {% load compress %}
+{% load staticfiles %}
 {% block content %}
 
 
@@ -12,6 +13,36 @@
         <h1><a class="post-title" href="{{ obj.get_absolute_url }}">{{ obj }}</a></h1>
     {% if obj.is_plant %}
         {{ obj.synonyms_text }}
+
+    {% elif obj.is_recipe %}
+
+        <div class="avatar">
+    {% if obj.user and obj.user.thumb50 %}
+<div>
+<div class="image-wrapper">
+<a class="user" href="{{ obj.user.get_absolute_url }}">
+    <img alt="{{ obj.user }}" class="img-rounded" src="{{ obj.user.thumb50 }}">
+</a>
+</div>
+</div>
+{% else %}
+
+<img alt="Гость" class="img-rounded" src="{% static "main/images/guest.png" %}">
+
+{% endif %}
+</div>
+
+
+ <div class="user-block">
+<div>
+<a class="user" href="{{ obj.user.get_absolute_url }}">{{ obj.user }}</a>
+<span class="user-info-top">
+<a href="{{ obj.user.get_karm_url }}"><span>Карма: </span>{{ obj.user.karm }}</a>
+<a href="{{ obj.user.get_activity_url }}"><span>Активность: </span>{{ obj.user.activity }}</a>
+</span>
+</div>
+</div>
+
     {% endif %}
         {% if user.is_admin %}
             <a class="post-edit-link" href="{{ obj.update_url }}">Редактировать</a>
@@ -96,7 +127,7 @@
                         <label>Средняя оценка: </label><span id="post-average-mark">{{ obj.average_mark }}</span>(количество оценок: <span id="post-marks-count">{{ obj.marks_count }})</span>
                     </div>
                     {% endif %}
-                    <div>
+                    <div class="comment-count">
                         <label>Количество отзывов: </label><span>{{ obj.published_comments_count }}</span>
                     </div>
                     {% if obj.last_comment_date %}
@@ -138,6 +169,38 @@
             <h2>Рецепты:</h2>
                 {% for recipe in obj.recipes.get_available %}
                 <div class="related-recipe">
+
+
+                    <div class="avatar">
+    {% if recipe.user and recipe.user.thumb50 %}
+<div>
+<div class="image-wrapper">
+<a class="user" href="{{ recipe.user.get_absolute_url }}">
+    <img alt="{{ recipe.user }}" class="img-rounded" src="{{ recipe.user.thumb50 }}">
+</a>
+</div>
+</div>
+{% else %}
+
+<img alt="Гость" class="img-rounded" src="{% static "main/images/guest.png" %}">
+
+{% endif %}
+</div>
+
+
+ <div class="user-block">
+<div>
+<a class="user" href="{{ recipe.user.get_absolute_url }}">{{ recipe.user }}</a>
+<span class="user-info-top">
+<a href="{{ recipe.user.get_karm_url }}"><span>Карма: </span>{{ recipe.user.karm }}</a>
+<a href="{{ recipe.user.get_activity_url }}"><span>Активность: </span>{{ recipe.user.activity }}</a>
+</span>
+</div>
+</div>
+
+
+
+
                     <div class="recipe-title"><a href="{{ recipe.get_absolute_url }}">{{ recipe }}</a></div>
                 <div class="recipe-body">{{ recipe.body|replace_nbsp|safe }}</div>
                 <div class="line"></div>
