@@ -161,7 +161,10 @@
                             {% endif %}
                         </div>
                     {% endif %}
+{% if obj.is_recipe %}
+            <div class="recipe-warning">Перед использованием любого рецепта обязательно проконсультируйтесь со специалистом.</div>
 
+            {% endif %}
 
             <div id="post-related-list">
                 {% if obj.is_plant or obj.is_usage_area %}
@@ -204,7 +207,8 @@
 
                     <div class="recipe-title"><a href="{{ recipe.get_absolute_url }}">{{ recipe }}</a></div>
                 <div class="recipe-body">{{ recipe.body|replace_nbsp|safe }}</div>
-                <div class="line"></div>
+                <div class="recipe-warning">Перед использованием любого рецепта обязательно проконсультируйтесь со специалистом.</div>
+                    <div class="line"></div>
                 </div>
             {% endfor %}
             </div>
