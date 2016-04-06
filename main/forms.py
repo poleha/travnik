@@ -42,19 +42,24 @@ class PlantForm(forms.ModelForm):
 class BaseRecipeForm(forms.ModelForm):
     required_css_class = 'required'
 
-    def __new__(cls, *args, **kwargs):
-        cls.base_fields['plants'].widget=forms.CheckboxSelectMultiple()
-        cls.base_fields['usage_areas'].widget=forms.CheckboxSelectMultiple()
-
-        plants = models.Plant.objects.get_available()
+    @staticmethod
+    def create_plant_choices(exclude_plant=None):
         plants_choices = ()
+        plants = models.Plant.objects.get_available()
+        if exclude_plant:
+            plants = plants.exclude(pk=exclude_plant.pk)
         for plant in plants:
             synonyms_list = plant.synonyms.all().values_list('synonym', flat=True)
             if synonyms_list:
                 plants_choices += ((plant.pk, "{0}({1})".format(plant, ", ".join(synonyms_list))),)
             else:
                 plants_choices += ((plant.pk, plant),)
-        cls.base_fields['plants'].choices = plants_choices
+        return plants_choices
+
+    def __new__(cls, *args, **kwargs):
+        cls.base_fields['plants'].widget=forms.CheckboxSelectMultiple()
+        cls.base_fields['usage_areas'].widget=forms.CheckboxSelectMultiple()
+        cls.base_fields['plants'].choices = cls.create_plant_choices()
         cls.base_fields['plants'].required = False
         cls.base_fields['usage_areas'].required = True
         return super().__new__(cls)
@@ -82,6 +87,7 @@ class RecipeUserForm(BaseRecipeForm):
         self.plant = plant
         super().__init__(*args, **kwargs)
         self.fields['plants'].queryset = models.Plant.objects.get_available().exclude(pk=plant.pk)
+        self.fields['plants'].choices = self.create_plant_choices(plant)
         self.fields['plants'].label = 'Другие растения'
         self.fields['title'].label = ''
         self.fields['title'].widget.attrs['placeholder'] = 'Название рецепта*'
