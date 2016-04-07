@@ -173,8 +173,6 @@
             <h2>Рецепты:</h2>
                 {% for recipe in obj.recipes.get_available %}
                 <div class="related-recipe">
-
-
                     <div class="avatar">
     {% if recipe.user and recipe.user.thumb50 %}
 <div>
@@ -207,6 +205,7 @@
 
                     <div class="recipe-title"><a href="{{ recipe.get_absolute_url }}">{{ recipe }}</a></div>
                 <div class="recipe-body">{{ recipe.body|replace_nbsp|safe }}</div>
+                <a class="btn btn-success post-recipe-comment-link" href="{{ recipe.get_absolute_url }}#comments">Оставить отзыв о рецепте (уже оставлено - {{ recipe.published_comments_count }})</a>
                 <div class="recipe-warning">Перед использованием любого рецепта обязательно проконсультируйтесь со специалистом.</div>
                     <div class="line"></div>
                 </div>
