@@ -57,6 +57,7 @@ class Settings:
         HISTORY_TYPE_USER_POST_COMPLAINT: 0,
         }
 
+    COUNT_COMPLAINTS_IN_KARM = False
 
     def __getattribute__(self, item):
         if hasattr(project_settings, item):

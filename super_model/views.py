@@ -578,10 +578,10 @@ class SuperPostDetail(SuperListView):
                 else:
                     context['can_mark'] = False
             elif self.obj.rate_type == 'votes':
-                context['can_mark'] = self.obj.show_do_action_button(models.HISTORY_TYPE_USER_POST_RATED, request)
+                context['can_mark'] = self.obj.show_do_action_button((models.HISTORY_TYPE_USER_POST_RATED, models.HISTORY_TYPE_USER_POST_COMPLAINT), request)
                 context['can_unmark'] = self.obj.show_undo_action_button(models.HISTORY_TYPE_USER_POST_RATED, request)
-                context['can_complain'] = self.obj.show_do_action_button(models.HISTORY_TYPE_USER_POST_COMPLAINT, request)
-                context['can_unmplain'] = self.obj.show_undo_action_button(models.HISTORY_TYPE_USER_POST_COMPLAINT, request)
+                context['can_complain'] = context['can_mark']
+                context['can_uncomplain'] = self.obj.show_undo_action_button(models.HISTORY_TYPE_USER_POST_COMPLAINT, request)
 
 
         #visibility

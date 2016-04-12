@@ -173,7 +173,9 @@ class SuperComment(SuperModel, CachedModelMixin, MPTTModel, ModelPublishedByUser
     @cached_method()
     def hist_exists_by_comment_and_user(self, history_type, user):
         History = import_string(settings.BASE_HISTORY_CLASS)
-        return History.objects.filter(history_type=history_type, comment=self, user=user, deleted=False).exists()
+        if not isinstance(history_type, (list, tuple)):
+            history_type = [history_type]
+        return History.objects.filter(history_type__in=history_type, comment=self, user=user, deleted=False).exists()
 
     def hist_exists_by_request(self, history_type, request):
         History = import_string(settings.BASE_HISTORY_CLASS)
@@ -565,8 +567,11 @@ class SuperPost(AbstractModel, ModelPublishedByUser, class_with_published_mixin(
     def last_modified(self):
         History = import_string(settings.BASE_HISTORY_CLASS)
         try:
-            latest_history = History.objects.filter(post=self).latest('created').created
-            return latest_history
+            latest_history = History.objects.filter(post=self).latest('created')
+            if latest_history.updated:
+                return latest_history.updated
+            else:
+                return latest_history.created
         except:
             if self.updated:
                 return self.updated
@@ -643,10 +648,14 @@ class SuperPost(AbstractModel, ModelPublishedByUser, class_with_published_mixin(
     @cached_method()
     def hist_exists_by_post_and_user(self, history_type, user):
         History = import_string(settings.BASE_HISTORY_CLASS)
-        return History.objects.filter(history_type=history_type, post=self, user=user, deleted=False).exists()
+        if not isinstance(history_type, (list, tuple)):
+            history_type = [history_type]
+        return History.objects.filter(history_type__in=history_type, post=self, user=user, deleted=False).exists()
 
     def hist_exists_by_request(self, history_type, request):
         History = import_string(settings.BASE_HISTORY_CLASS)
+        if not isinstance(history_type, (list, tuple)):
+            history_type = [history_type]
         if request_with_empty_guest(request):
             return False
         user = request.user
@@ -656,7 +665,7 @@ class SuperPost(AbstractModel, ModelPublishedByUser, class_with_published_mixin(
             session_key = getattr(request.session, settings.SUPER_MODEL_KEY_NAME, None)
             if session_key is None:
                 return False
-            hist_exists = History.objects.filter(session_key=session_key, post=self, deleted=False, history_type=history_type).exists()
+            hist_exists = History.objects.filter(session_key=session_key, post=self, deleted=False, history_type__in=history_type).exists()
         return hist_exists
 
     def show_do_action_button(self, history_type, request):
@@ -790,7 +799,16 @@ class SuperUserProfile(SuperModel, CachedModelMixin):
 
     def _karm_history(self):
         History = import_string(settings.BASE_HISTORY_CLASS)
-        hists = History.objects.filter(author=self.user, history_type=HISTORY_TYPE_COMMENT_RATED, deleted=False, post__status=POST_STATUS_PUBLISHED)
+        hists = History.objects.filter(author=self.user, history_type__in=[HISTORY_TYPE_COMMENT_RATED, HISTORY_TYPE_USER_POST_RATED], deleted=False, post__status=POST_STATUS_PUBLISHED)
+        return hists
+
+    def complaint_history(self):
+        return self._complaint_history().order_by('-created')
+
+    def _complaint_history(self):
+        History = import_string(settings.BASE_HISTORY_CLASS)
+        hists = History.objects.filter(author=self.user, history_type__in=[HISTORY_TYPE_COMMENT_COMPLAINT, HISTORY_TYPE_USER_POST_COMPLAINT], deleted=False,
+                                       post__status=POST_STATUS_PUBLISHED)
         return hists
 
 
@@ -806,18 +824,25 @@ class SuperUserProfile(SuperModel, CachedModelMixin):
     def get_user_activity(self):
         try:
             activity = self.activity_history.aggregate(Sum('user_points'))['user_points__sum']
+            if activity is None:
+                activity = 0
         except:
-            activity = ''
+            activity = 0
+
         return activity
 
 
     @cached_property
     def get_user_karm(self):
-        try:
-            karm = self.karm_history().aggregate(Sum('user_points'))['user_points__sum']
-        except:
-            karm = 0
-        return karm if karm is not None else 0
+        karm = self._karm_history().count()
+        if settings.COUNT_COMPLAINTS_IN_KARM:
+            complaints = self._complaint_history().count()
+        else:
+            complaints = 0
+
+        karm = karm - complaints
+
+        return karm
 
 
 def is_regular(self):
@@ -1056,8 +1081,10 @@ class SuperHistory(SuperModel):
     def exists_by_comment(cls, session_key, comment, history_type=None):
         if not session_key:
             return False
+        if history_type and not isinstance(history_type, (list, tuple)):
+            history_type = [history_type]
         if not settings.CACHE_ENABLED or settings.HISTORY_EXISTS_BY_COMMENT_DURATION is None:
-            q = cls.objects.filter(session_key=session_key, comment=comment, deleted=False, history_type=history_type)
+            q = cls.objects.filter(session_key=session_key, comment=comment, deleted=False, history_type__in=history_type)
             return q.exists()
         if not cls.exists(session_key):
             return False
@@ -1065,7 +1092,7 @@ class SuperHistory(SuperModel):
         key = template.format(session_key, comment.pk, history_type)
         res = cache.get(key)
         if res is None:
-            q = cls.objects.filter(session_key=session_key, comment=comment, deleted=False, history_type=history_type).exists()
+            q = cls.objects.filter(session_key=session_key, comment=comment, deleted=False, history_type__in=history_type).exists()
             cache.set(key, res, settings.HISTORY_EXISTS_BY_COMMENT_DURATION)
         return res
 

@@ -423,6 +423,8 @@ HISTORY_TYPES_POINTS = {
     }
 
 
+COUNT_COMPLAINTS_IN_KARM = True
+
 #***************
 EXCLUDE_FROM_MINIFYING = ('^admin/',)
 
