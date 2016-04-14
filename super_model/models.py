@@ -1092,7 +1092,7 @@ class SuperHistory(SuperModel):
         key = template.format(session_key, comment.pk, history_type)
         res = cache.get(key)
         if res is None:
-            q = cls.objects.filter(session_key=session_key, comment=comment, deleted=False, history_type__in=history_type).exists()
+            res = cls.objects.filter(session_key=session_key, comment=comment, deleted=False, history_type__in=history_type).exists()
             cache.set(key, res, settings.HISTORY_EXISTS_BY_COMMENT_DURATION)
         return res
 
