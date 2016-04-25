@@ -16,11 +16,9 @@ from main import models
 plants = models.Plant.objects.get_available()
 
 for plant in plants:
-    print("{}|{}|{}|{}|{}|{}".format(
+    print("{}|{}|{}".format(
         plant.code,
         plant.title,
         ','.join(plant.synonyms.values_list('synonym', flat=True)),
-        plant.wikipedia_link, ','.join(map(str, plant.usage_areas.values_list('code', flat=True))),
-        plant.body
     )
     )
