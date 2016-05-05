@@ -5,6 +5,11 @@
 <tr>
 <td class="col_1">
      <h5><a href="{{ obj.get_absolute_url }}">{{ obj }}</a></h5>
+    {% if obj.thumb110 %}
+    <a href="{{ obj.get_absolute_url }}">
+                        <img alt="{{ obj.title }}" class="img-rounded" src="{{ obj.thumb110 }}">
+                    </a>
+    {% endif %}
 </td>
 <td class="col_2">
 

@@ -13,7 +13,11 @@
         <h1><a class="post-title" href="{{ obj.get_absolute_url }}">{{ obj }}</a></h1>
     {% if obj.is_plant %}
         {{ obj.synonyms_text }}
-
+{% if obj.thumb220 %}
+    <a href="{{ obj.get_absolute_url }}">
+                        <img alt="{{ obj.title }}" class="img-rounded" src="{{ obj.thumb220 }}">
+                    </a>
+    {% endif %}
     {% elif obj.is_recipe %}
 
         <div class="avatar">
