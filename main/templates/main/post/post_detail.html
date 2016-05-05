@@ -12,11 +12,12 @@
 
         <h1><a class="post-title" href="{{ obj.get_absolute_url }}">{{ obj }}</a></h1>
     {% if obj.is_plant %}
-        {{ obj.synonyms_text }}
+        <div class="synonyms">{{ obj.synonyms_text }}</div>
 {% if obj.thumb220 %}
-    <a href="{{ obj.get_absolute_url }}">
+    <div class="plant-image"><a href="{{ obj.get_absolute_url }}">
                         <img alt="{{ obj.title }}" class="img-rounded" src="{{ obj.thumb220 }}">
                     </a>
+    </div>
     {% endif %}
     {% elif obj.is_recipe %}
 
