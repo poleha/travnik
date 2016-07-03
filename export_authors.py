@@ -28,4 +28,4 @@ for user in users:
         soup = BeautifulSoup(recipe.body, "html5lib")
         body = soup.get_text()
         body = body.replace('\n', ' ').replace('\r', '')
-        print("{}|{}|{}|{}|{}".format(user.username, url + user.get_absolute_url(), recipe.title, url + recipe.get_absolute_url(), body))
+        print("{}|{}|{}|{}|{}|{}".format(recipe.id, user.username, url + user.get_absolute_url(), recipe.title, url + recipe.get_absolute_url(), body))
