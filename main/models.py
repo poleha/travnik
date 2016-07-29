@@ -276,6 +276,7 @@ class Recipe(Post):
     body = RichTextField(verbose_name='Рецепт', config_name='basic')
     plants = models.ManyToManyField(Plant, verbose_name='Растения', related_name='recipes')
     usage_areas = models.ManyToManyField('UsageArea', verbose_name='Области применения', related_name='recipes')
+    comment = models.TextField(null=True, blank=True)
     #user = models.ForeignKey(User, null=True, blank=True, related_name='recipes', db_index=True)
 
     objects = super_models.PostManager()

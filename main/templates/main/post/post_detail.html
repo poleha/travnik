@@ -167,6 +167,13 @@
                         </div>
                     {% endif %}
 {% if obj.is_recipe %}
+
+    {% if obj.comment %}
+    <h2>Комментарий Medavi:</h2>
+    {{ obj.comment }}
+    {% endif %}
+
+
             <div class="recipe-warning">Перед использованием любого рецепта обязательно проконсультируйтесь со специалистом.</div>
 
             {% endif %}
