@@ -155,6 +155,8 @@ margin-left: 202px;
 }
 
 .post-top-block {
+  margin-top: 10px;
+
   #cancel-mark-button {
     font-size: 0.8em;
   }
@@ -524,6 +526,12 @@ padding-top: 10px;
   margin-right: 10px;
 
 
+  .synonyms {
+    font-size: 0.9em;
+    margin-bottom: 7px;
+  }
+
+
   .recipe-mark-buttons {
     clear: both;
   }
@@ -554,12 +562,22 @@ padding-top: 10px;
   #post-related-list {
     font-size: 1.1em;
     margin-left: 20px;
+    margin: 10px;
+    border-top: 3px solid #528177;
 
     li {
       color: #57857c;
       list-style-type: disc !important;
     }
 
+    h2 {
+      font-size: 20px;
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 700;
+    color: #57857c;
+
+    }
 
     .related-recipe {
       .recipe-title {
@@ -571,6 +589,8 @@ padding-top: 10px;
     font-weight: 700;
     color: #57857c;
           }
+
+
       margin-bottom: 12px;
 
       }
@@ -745,10 +765,7 @@ body{
     background-position: center center;
     background-repeat: no-repeat;
     position: relative;
-#search-block{
-    padding-top: 32px;
-    float: left;
-}
+
 
 #mission-block {
 float: right;
@@ -840,6 +857,12 @@ a {
 
   }
 
+  .user {
+        color: #528177;
+    text-decoration: underline;
+    padding-bottom: 3px;
+  }
+
   .date {
     font-size: 12px;
   }
@@ -865,6 +888,11 @@ label {
     height: 1px;
     margin: 10px 0 26px 30px;
   }
+
+ p {
+   margin-bottom: 5px;
+ }
+
 }
 
 
@@ -1054,6 +1082,29 @@ label {
   }
 
 #search-block {
+
+    padding-top: 32px;
+    float: left;
+
+
+  #id_q {
+    border: 0;
+    height: 32px;
+    width: 140px;
+    border-radius: 5px;
+    padding: 0 5px;
+  }
+
+  #search-form-submit {
+    background-color: #74cdd0;
+    border: none;
+    cursor: pointer;
+    height: 35px;
+    width: 58px;
+    border-radius: 5px;
+    color: #fff;
+    margin-left: 13px;
+  }
 
   #autocomplete-suggestions {
     .box-shadow-mixin;

@@ -33,7 +33,7 @@
 <td class="col_4">
     <div class="main-recipes-count">
     {% if obj.published_recipes_count %}
-    <label>Рецептов:</label><a href="{{ obj.get_absolute_url }}#recipes">{{ obj.published_recipes_count }}</a>
+    <label>Рецептов:&nbsp</label><a href="{{ obj.get_absolute_url }}#recipes">{{ obj.published_recipes_count }}</a>
     {% else %}
     <a href="{{ obj.get_absolute_url }}#comments">Пока нет рецептов</a>
     {% endif %}

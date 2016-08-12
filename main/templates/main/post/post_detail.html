@@ -22,11 +22,16 @@
     {% elif obj.is_recipe %}
 
         <div class="avatar">
-    {% if obj.user and obj.user.thumb50 %}
+    {% if obj.user %}
 <div>
 <div class="image-wrapper">
 <a class="user" href="{{ obj.user.get_absolute_url }}">
+
+    {% if obj.user.thumb50 %}
     <img alt="{{ obj.user }}" class="img-rounded" src="{{ obj.user.thumb50 }}">
+        {% else %}
+        <img alt="Гость" class="img-rounded" src="{% static "main/images/guest.png" %}">
+     {% endif %}
 </a>
 </div>
 </div>
@@ -186,11 +191,15 @@
                 {% for recipe in obj.recipes.get_available %}
                 <div class="related-recipe">
                     <div class="avatar">
-    {% if recipe.user and recipe.user.thumb50 %}
+    {% if recipe.user %}
 <div>
 <div class="image-wrapper">
 <a class="user" href="{{ recipe.user.get_absolute_url }}">
+    {% if recipe.user.thumb50 %}
     <img alt="{{ recipe.user }}" class="img-rounded" src="{{ recipe.user.thumb50 }}">
+        {% else %}
+        <img alt="Гость" class="img-rounded" src="{% static "main/images/guest.png" %}">
+        {% endif %}
 </a>
 </div>
 </div>

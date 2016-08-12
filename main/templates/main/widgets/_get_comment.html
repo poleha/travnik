@@ -3,11 +3,15 @@
 <div class="single-comment {{ comment_class }}">
 <div class="comment-top">
     <div class="avatar">
-    {% if comment.user and comment.user.thumb50 %}
+    {% if comment.user %}
 <div>
 <div class="image-wrapper">
 <a class="user" href="{{ comment.user.get_absolute_url }}">
+    {% if comment.user.thumb50 %}
     <img alt="{{ comment.user }}" class="img-rounded" src="{{ comment.user.thumb50 }}">
+        {% else %}
+       <img alt="Гость" class="img-rounded" src="{% static "main/images/guest.png" %}">
+        {% endif %}
 </a>
 </div>
 </div>
