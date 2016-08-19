@@ -2,7 +2,7 @@
 <ol class="breadcrumb">
 {% for breadcrumb in breadcrumbs_list %}
 
-<li><a href="{{ breadcrumb.href }}">{{ breadcrumb.title }}</a></li>
+<li><a class="{{ breadcrumb.class_name }}" href="{{ breadcrumb.href }}">{{ breadcrumb.title }}</a></li>
 
 
 {% endfor %}

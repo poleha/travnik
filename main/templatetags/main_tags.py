@@ -49,7 +49,7 @@ def search_form(context):
 
 
 
-Breadcrumb = namedtuple('Breadcrumb', ['title', 'href'])
+Breadcrumb = namedtuple('Breadcrumb', ['title', 'href', 'class_name'])
 
 @register.inclusion_tag('main/widgets/_breadcrumbs.html', takes_context=True)
 def breadcrumbs(context):
@@ -61,35 +61,35 @@ def breadcrumbs(context):
     if url_name == 'plant-list':
         return
 
-    breadcrumbs_list = [Breadcrumb(title='Главная', href=reverse_lazy('plant-list'))]
+    breadcrumbs_list = [Breadcrumb(title='Главная', href=reverse_lazy('plant-list'), class_name='regular')]
 
     if url_name in ['post-detail-alias', 'post-detail-alias-comment', 'post-detail-pk', 'post-detail-pk-comment']:
         obj = context['obj']
-        breadcrumbs_list.append(Breadcrumb(title=str(obj), href=obj.get_absolute_url()))
+        breadcrumbs_list.append(Breadcrumb(title=str(obj), href=obj.get_absolute_url(), class_name='active'))
 
     elif url_name == 'user-profile':
         user = context['user']
-        breadcrumbs_list.append(Breadcrumb(title='Профиль пользователя {0}'.format(user), href=reverse_lazy('user-profile')))
+        breadcrumbs_list.append(Breadcrumb(title='Профиль пользователя {0}'.format(user), href=reverse_lazy('user-profile'), class_name='active'))
 
     elif url_name == 'user-detail':
         user = context['current_user']
-        breadcrumbs_list.append(Breadcrumb(title='Информация о пользователе {0}'.format(user), href=reverse_lazy('user-detail', kwargs={'pk': user.pk})))
+        breadcrumbs_list.append(Breadcrumb(title='Информация о пользователе {0}'.format(user), href=reverse_lazy('user-detail', kwargs={'pk': user.pk}), class_name='active'))
 
     elif url_name in ('user-comments', 'user-karma', 'user-activity'):
         user = context['current_user']
-        breadcrumbs_list.append(Breadcrumb(title='Информация о пользователе {0}'.format(user), href=reverse_lazy('user-detail', kwargs={'pk': user.pk})))
+        breadcrumbs_list.append(Breadcrumb(title='Информация о пользователе {0}'.format(user), href=reverse_lazy('user-detail', kwargs={'pk': user.pk}), class_name='regular'))
         if url_name == 'user-comments':
-            breadcrumbs_list.append(Breadcrumb(title='Сообщения пользователя {0}'.format(user), href=reverse_lazy('user-comments', kwargs={'pk': user.pk})))
+            breadcrumbs_list.append(Breadcrumb(title='Сообщения пользователя {0}'.format(user), href=reverse_lazy('user-comments', kwargs={'pk': user.pk}), class_name='active'))
         elif url_name == 'user-karma':
-            breadcrumbs_list.append(Breadcrumb(title='Карма пользователя {0}'.format(user), href=reverse_lazy('user-karma', kwargs={'pk': user.pk})))
+            breadcrumbs_list.append(Breadcrumb(title='Карма пользователя {0}'.format(user), href=reverse_lazy('user-karma', kwargs={'pk': user.pk}), class_name='active'))
         elif url_name == 'user-activity':
-            breadcrumbs_list.append(Breadcrumb(title='Действия пользователя {0}'.format(user), href=reverse_lazy('user-activity', kwargs={'pk': user.pk})))
+            breadcrumbs_list.append(Breadcrumb(title='Действия пользователя {0}'.format(user), href=reverse_lazy('user-activity', kwargs={'pk': user.pk}), class_name='active'))
 
     elif url_name == 'search':
-        breadcrumbs_list.append(Breadcrumb(title="Поиск по сайту", href=reverse_lazy('search')))
+        breadcrumbs_list.append(Breadcrumb(title="Поиск по сайту", href=reverse_lazy('search'), class_name='active'))
 
     elif url_name == 'mission':
-        breadcrumbs_list.append(Breadcrumb(title="О проекте", href=reverse_lazy('mission')))
+        breadcrumbs_list.append(Breadcrumb(title="О проекте", href=reverse_lazy('mission'), class_name='active'))
 
     return {'breadcrumbs_list': breadcrumbs_list}
 
