@@ -31,9 +31,9 @@ except:
 
 if HOSTNAME in ['ubuntu', 'kulik']:
     DEBUG = True
-    COMPRESS_ENABLED = True
-    HTML_MINIFY = True
-    CACHE_ENABLED = True
+    COMPRESS_ENABLED = False
+    HTML_MINIFY = False
+    CACHE_ENABLED = False
     DEBUG_TOOLBAR = False
 else:
     DEBUG = False
