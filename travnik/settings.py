@@ -31,9 +31,9 @@ except:
 
 if HOSTNAME in ['ubuntu', 'kulik']:
     DEBUG = True
-    COMPRESS_ENABLED = False
+    COMPRESS_ENABLED = True
     HTML_MINIFY = True
-    CACHE_ENABLED = False
+    CACHE_ENABLED = True
     DEBUG_TOOLBAR = False
 else:
     DEBUG = False
@@ -102,8 +102,8 @@ MIDDLEWARE_CLASSES = (
     #'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
     'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
     'main.middleware.PlantSynonymsFallbackMiddleware',
-    'htmlmin.middleware.HtmlMinifyMiddleware',
-    'htmlmin.middleware.MarkRequestMiddleware',
+    #'htmlmin.middleware.HtmlMinifyMiddleware',
+    #'htmlmin.middleware.MarkRequestMiddleware',
 )
 
 ROOT_URLCONF = 'travnik.urls'
