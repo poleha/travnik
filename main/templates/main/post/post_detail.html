@@ -251,13 +251,17 @@
             {% endfor %}
             </div>
             {% endif %}
-            {% elif obj.is_recipe or obj.is_usage_area and obj.plants.get_available.exists %}
+
+                   {% if obj.is_recipe or obj.is_usage_area and obj.plants.get_available.exists %}
                 <h2>Растения:</h2>
                 <ul>
             {% for plant in obj.plants.get_available %}
                 <li><a href="{{ plant.get_absolute_url }}">{{ plant }}</a></li>
                 {% endfor %}
                </ul>
+                       {% endif %}
+
+
             {% endif %}
 
 
@@ -267,14 +271,17 @@
 {% if obj.is_published %}
 {% if not obj.is_usage_area %}
 
-                    <div id="comment-filter-form">
+
+                    <div class="comments">
+                        <h2>Отзывы:</h2>
+
+                     <div class="comment-filter-form">
                         <form method="get">
                             {{ comments_options_form.as_p }}
                             <input type="submit" value="Применить" class="btn btn-success">
                         </form>
                     </div>
-                    <div id="comments">
-                        <h2>Отзывы:</h2>
+
                         {% for comment in comments %}
 
                             <div class="full-comment">
