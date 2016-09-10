@@ -173,6 +173,17 @@
                     {% endif %}
 
 
+             {% if obj.is_recipe or obj.is_usage_area and obj.plants.get_available.exists %}
+                <h2>Растения:</h2>
+                <ul>
+            {% for plant in obj.plants.get_available %}
+                <li><a href="{{ plant.get_absolute_url }}">{{ plant }}</a></li>
+                {% endfor %}
+               </ul>
+                       {% endif %}
+
+
+
                         {% if not obj.is_usage_area and obj.usage_areas.get_available.exists %}
             <h2>Области применения:</h2>
                 <ul>
@@ -252,14 +263,7 @@
             </div>
             {% endif %}
 
-                   {% if obj.is_recipe or obj.is_usage_area and obj.plants.get_available.exists %}
-                <h2>Растения:</h2>
-                <ul>
-            {% for plant in obj.plants.get_available %}
-                <li><a href="{{ plant.get_absolute_url }}">{{ plant }}</a></li>
-                {% endfor %}
-               </ul>
-                       {% endif %}
+
 
 
             {% endif %}
