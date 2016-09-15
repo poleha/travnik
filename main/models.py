@@ -133,7 +133,7 @@ class Post(super_models.SuperPost):
             mark = 0
 
         if mark > 0 and self.marks_count > 0:
-            return round(mark / self.marks_count, 2)
+            return int(round(mark / self.marks_count, 0))
         else:
             return 0
 
