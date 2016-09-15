@@ -7,7 +7,11 @@
 
 
     <div class="row">
+     {% elif obj.is_recipe %}
+    <div id="full-post" itemscope itemtype="http://schema.org/Recipe">
+    {% else %}
     <div id="full-post" itemscope itemtype="http://schema.org/Product">
+    {% endif %}
         <input id="post-pk" type="hidden" value="{{ obj.pk }}">
 
         <h1><span class="post-title" itemprop="name">{{ obj }}</span></h1>
@@ -135,8 +139,11 @@
                         
         {% endif %}
                     {% if obj.is_published %}
+                    <div itemtype="http://schema.org/AggregateRating" itemscope itemprop="aggregateRating">
                     {% if obj.is_plant %}
-                     <div itemtype="http://schema.org/AggregateRating" itemscope itemprop="aggregateRating">
+                    <meta itemprop="worstRating" content="1">
+                        <meta itemprop="bestRating" content="5">
+
                         <div>
                         <label>Средняя оценка: </label><span itemprop="ratingValue" id="post-average-mark">{{ obj.average_mark }}</span>(количество оценок: <span itemprop="ratingCount" id="post-marks-count">{{ obj.marks_count }}</span>)
                     </div>
@@ -144,8 +151,8 @@
                     <div class="comment-count">
                         <label>Количество отзывов: </label><span itemprop="reviewCount">{{ obj.published_comments_count }}</span>
                     </div>
-                     <meta itemprop="worstRating" content="1">
-                    <meta itemprop="bestRating" content="5">
+
+
                     </div>
                     {% if obj.last_comment_date %}
                         <div>
@@ -166,7 +173,12 @@
 
 
                     {% if obj.body %}
+                        {% if obj.is_recipe %}
+                            <div id="post-block" itemprop="recipeInstructions">
+                            {% else %}
                         <div id="post-block" itemprop="description">
+                            {% endif %}
+
                             {% if obj.show_body_label %}
                                 <h4>{% get_verbose_field_name obj 'body' %}:</h4>
                             {% endif %}
@@ -183,7 +195,7 @@
                 <h2>Растения:</h2>
                 <ul>
             {% for plant in obj.plants.get_available %}
-                <li><a href="{{ plant.get_absolute_url }}">{{ plant }}</a></li>
+                <li itemprop="recipeIngredient" ><a href="{{ plant.get_absolute_url }}">{{ plant }}</a></li>
                 {% endfor %}
                </ul>
                        {% endif %}

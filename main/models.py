@@ -123,23 +123,6 @@ class Post(super_models.SuperPost):
             return reverse('post-detail-pk', kwargs={'pk': self.pk})
 
 
-    @cached_property
-    def average_mark(self):
-        try:
-            mark = History.objects.filter(post=self, deleted=False).aggregate(Sum('mark'))['mark__sum']
-            if mark is None:
-                mark = 0
-        except:
-            mark = 0
-
-        if mark > 0 and self.marks_count > 0:
-            return int(round(mark / self.marks_count, 0))
-        else:
-            return 0
-
-    @cached_property
-    def marks_count(self):
-        return History.objects.filter(post=self, history_type=super_models.HISTORY_TYPE_POST_RATED, deleted=False).count()
 
     def save(self, *args, **kwargs):
         self.title = helper.trim_title(self.title).lower()
@@ -158,6 +141,26 @@ class Plant(Post):
 
     def type_str(self):
         return 'Растение'
+
+
+    @cached_property
+    def average_mark(self):
+        try:
+            mark = History.objects.filter(post=self, deleted=False).aggregate(Sum('mark'))['mark__sum']
+            if mark is None:
+                mark = 0
+        except:
+            mark = 0
+
+        if mark > 0 and self.marks_count > 0:
+            return int(round(mark / self.marks_count, 0))
+        else:
+            return 0
+
+    @cached_property
+    def marks_count(self):
+        return History.objects.filter(post=self, history_type=super_models.HISTORY_TYPE_POST_RATED, deleted=False).count()
+
 
     @property
     def thumb110(self):
@@ -283,6 +286,7 @@ class Recipe(Post):
     alter_alias = True
     rate_type = 'votes'
     recreate_alias_on_save = True
+
 
     def type_str(self):
         return 'Рецепт'
