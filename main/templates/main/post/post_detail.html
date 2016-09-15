@@ -15,10 +15,10 @@
         <div class="synonyms">{{ obj.synonyms_text }}</div>
 {% if obj.thumb220 %}
     <div itemscope itemtype="http://schema.org/ImageObject" itemprop="image" class="plant-image"><a href="{{ obj.get_absolute_url }}">
-                        <img alt="{{ obj.title }}" class="img-rounded" src="{{ obj.thumb220 }}">
+                        <img itemprop="contentUrl" alt="{{ obj.title }}" class="img-rounded" src="{{ obj.thumb220 }}">
                     </a>
-    <meta itemprop="description" content="{{ obj }}">
-    <meta itemprop="contentUrl" content="{{ obj.thumb220 }}" />
+              <meta itemprop="name" content="{{ obj.title }}">
+                 <meta itemprop="description" content="{{ obj.title }}">
     </div>
     {% endif %}
     {% elif obj.is_recipe %}
