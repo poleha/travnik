@@ -75,7 +75,6 @@ class Command(BaseCommand):
 
         if visit_head or visit_all:
             urls += (reverse('plant-list'),)
-            urls += (reverse('main-page'),)
             urls += ('/sitemap.xml',)
 
         errors = []
