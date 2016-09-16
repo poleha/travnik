@@ -153,7 +153,7 @@ class Plant(Post):
             mark = 0
 
         if mark > 0 and self.marks_count > 0:
-            return int(round(mark / self.marks_count, 0))
+            return round(mark / self.marks_count, 1)
         else:
             return 0
 
