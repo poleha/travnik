@@ -33,7 +33,7 @@ if HOSTNAME in ['ubuntu', 'kulik']:
     DEBUG = True
     COMPRESS_ENABLED = False
     HTML_MINIFY = False
-    CACHE_ENABLED = False
+    CACHE_ENABLED = True
     DEBUG_TOOLBAR = False
 else:
     DEBUG = False

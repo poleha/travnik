@@ -119,7 +119,7 @@ class PostDetail(super_views.SuperPostDetail):
     comment_form = forms.CommentForm
     comment_options_form = forms.CommentOptionsForm
 
-    @cached_view(test=super_models.request_with_empty_guest)
+    @cached_view(test=super_models.request_with_empty_guest, model_class=models.Post, kwarg='alias')
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 

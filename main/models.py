@@ -37,7 +37,7 @@ class Post(super_models.SuperPost):
         ordering = ['title']
 
     cached_views = (
-        ('travnik_main.views.PostDetail', 'get'),
+        ('main.views.PostDetail', 'get'),
     )
 
     can_be_rated = True
