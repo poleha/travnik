@@ -3,7 +3,7 @@
 #
 
 User-agent: *
-Crawl-delay: 10
+#Crawl-delay: 10
 Disallow: /admin
 Disallow: /search*?
 Sitemap: http://medavi.ru/sitemap.xml
