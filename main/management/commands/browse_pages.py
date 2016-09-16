@@ -74,10 +74,7 @@ class Command(BaseCommand):
         urls = tuple()
 
         if visit_head or visit_all:
-            urls += (reverse('blog-list'),)
-            urls += (reverse('component-list'),)
-            urls += (reverse('drug-list'),)
-            urls += (reverse('cosmetics-list'),)
+            urls += (reverse('plant-list'),)
             urls += (reverse('main-page'),)
             urls += ('/sitemap.xml',)
 
