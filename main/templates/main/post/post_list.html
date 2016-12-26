@@ -7,11 +7,11 @@
 
         <form id="post-list-form" method="get" action="{{ submit_url }}">
 
-    {{   filter_form.as_p }}
-<a class="btn btn-default" href="{{ submit_url }}">Cбросить фильтр</a>
-</form>
+            {{ filter_form.as_p }}
+            <a class="btn btn-default" href="{{ submit_url }}">Cбросить фильтр</a>
+        </form>
 
-</div>
+    </div>
 
 
     {{ block.super }}
@@ -20,105 +20,102 @@
 
 {% block content %}
 
-<div id="post-list">
-{% include list_view_default_template with objs=objs %}
-</div>
+    <div id="post-list">
+        {% include list_view_default_template with objs=objs %}
+    </div>
 
 
 {% endblock content %}
 
 {% block bottom_scripts %}
 
-{{ block.super }}
-{% compress js %}
-<script src='{% static "main/js/history.js/scripts/bundled/html4+html5/jquery.history.js" %}'></script>
-<script>
-$(function() {
+    {{ block.super }}
+    {% compress js %}
+        <script src='{% static "main/js/history.js/scripts/bundled/html4+html5/jquery.history.js" %}'></script>
+        <script>
+            $(function () {
 
 
-   $('#post-list-form').on('submit', function(e) {
+                $('#post-list-form').on('submit', function (e) {
 
-    e.preventDefault();
-    return false;
+                    e.preventDefault();
+                    return false;
 
-});
-
-
- function alphabetChanger(){
-
-  var checkedArr = [];
-
-$('#id_alphabet').find('input:checkbox:checked').each(function(){
-    checkedArr.push($(this).val());
-});
-if (checkedArr.length > 0) {
-    $('#id_title').addClass('hidden').val('').prev('label').addClass('hidden');
+                });
 
 
-}
-    else {
-    $('#id_title').removeClass('hidden').prev('label').removeClass('hidden');
+                function alphabetChanger() {
 
-}
+                    var checkedArr = [];
 
- }
-
-
-
-
-$('#id_alphabet').find('input').change(function(e){
-
-alphabetChanger();
-
-});
+                    $('#id_alphabet').find('input:checkbox:checked').each(function () {
+                        checkedArr.push($(this).val());
+                    });
+                    if (checkedArr.length > 0) {
+                        $('#id_title').addClass('hidden').val('').prev('label').addClass('hidden');
 
 
+                    }
+                    else {
+                        $('#id_title').removeClass('hidden').prev('label').removeClass('hidden');
 
-    $(document).on('change', '#post-list-form input', function (e) {
-        var frm = $('#post-list-form');
-        var url_data_params = '';
-        var cleanParamsArray = [];
-        var paramsArray = frm.serializeArray();
-        paramsArray.forEach(function(param){
-            if (param.value){
-                cleanParamsArray.push(param);
+                    }
 
-            }
-        });
-
-        var url_data = $.param(cleanParamsArray);
-        if (url_data.length > 0){
-            url_data_params = '?' + url_data;
-        }
-        else{
-            url_data_params = url_data;
-        }
-
-        frm.find('input').attr("disabled", true);
-            var title = $(document).find("title").text();
-
-        History.pushState(null, title, window.location.pathname + url_data_params);
-
-            $.ajax({
-            type: 'POST',
-            url: '{{ ajax_submit_url }}',
-            data: url_data,
-            success: function (data) {
-                $('#post-list').html(data);
-                frm.find('input').attr("disabled", false);
-            },
-            error: function (data) {
-            frm.find('input').attr("disabled", false);
-            }
-        });
+                }
 
 
-    });
+                $('#id_alphabet').find('input').change(function (e) {
+
+                    alphabetChanger();
+
+                });
 
 
-alphabetChanger();
-});
+                $(document).on('change', '#post-list-form input', function (e) {
+                    var frm = $('#post-list-form');
+                    var url_data_params = '';
+                    var cleanParamsArray = [];
+                    var paramsArray = frm.serializeArray();
+                    paramsArray.forEach(function (param) {
+                        if (param.value) {
+                            cleanParamsArray.push(param);
 
-</script>
+                        }
+                    });
+
+                    var url_data = $.param(cleanParamsArray);
+                    if (url_data.length > 0) {
+                        url_data_params = '?' + url_data;
+                    }
+                    else {
+                        url_data_params = url_data;
+                    }
+
+                    frm.find('input').attr("disabled", true);
+                    var title = $(document).find("title").text();
+
+                    History.pushState(null, title, window.location.pathname + url_data_params);
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '{{ ajax_submit_url }}',
+                        data: url_data,
+                        success: function (data) {
+                            $('#post-list').html(data);
+                            frm.find('input').attr("disabled", false);
+                        },
+                        error: function (data) {
+                            frm.find('input').attr("disabled", false);
+                        }
+                    });
+
+
+                });
+
+
+                alphabetChanger();
+            });
+
+        </script>
     {% endcompress %}
 {% endblock bottom_scripts %}

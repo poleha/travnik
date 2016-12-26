@@ -1,55 +1,64 @@
 <table class="table" id="plant-table">
-<thead><tr><th class="col_1"><p>Растение</p></th><th class="col_2"><p>Синонимы</p></th><th class="col_3"><p>Области применения</p></th><th class="col_4"><p>Рецептов/Отзывов</p></th></tr></thead>
+    <thead>
+    <tr>
+        <th class="col_1"><p>Растение</p></th>
+        <th class="col_2"><p>Синонимы</p></th>
+        <th class="col_3"><p>Области применения</p></th>
+        <th class="col_4"><p>Рецептов/Отзывов</p></th>
+    </tr>
+    </thead>
     <tbody>
     {% for obj in objs %}
-<tr>
-<td class="col_1">
-     <h5><a href="{{ obj.get_absolute_url }}">{{ obj }}</a></h5>
-    {% if obj.thumb110 %}
-    <a href="{{ obj.get_absolute_url }}">
+        <tr>
+            <td class="col_1">
+                <h5><a href="{{ obj.get_absolute_url }}">{{ obj }}</a></h5>
+                {% if obj.thumb110 %}
+                    <a href="{{ obj.get_absolute_url }}">
                         <img alt="{{ obj.title }}" class="img-rounded" src="{{ obj.thumb110 }}">
                     </a>
-    {% endif %}
-</td>
-<td class="col_2">
+                {% endif %}
+            </td>
+            <td class="col_2">
 
-<ul>
-        {% for synonym in obj.synonyms.all %}
-        <li><a href="{{ obj.get_absolute_url }}">{{ synonym }}</a></li>
-        {% endfor %}
-        </ul>
-</td>
+                <ul>
+                    {% for synonym in obj.synonyms.all %}
+                        <li><a href="{{ obj.get_absolute_url }}">{{ synonym }}</a></li>
+                    {% endfor %}
+                </ul>
+            </td>
 
-    <td class="col_3">
+            <td class="col_3">
 
 
-<ul>
-{% for usage_area in obj.usage_areas.get_available %}
-    <li><a href="{{ usage_area.get_absolute_url }}">{{ usage_area }}</a></li>
+                <ul>
+                    {% for usage_area in obj.usage_areas.get_available %}
+                        <li><a href="{{ usage_area.get_absolute_url }}">{{ usage_area }}</a></li>
 
+                    {% endfor %}
+                </ul>
+            </td>
+            <td class="col_4">
+                <div class="main-recipes-count">
+                    {% if obj.published_recipes_count %}
+                        <label>Рецептов:&nbsp</label>
+                        <a href="{{ obj.get_absolute_url }}#recipes">{{ obj.published_recipes_count }}</a>
+                    {% else %}
+                        <a href="{{ obj.get_absolute_url }}#comments">Пока нет рецептов</a>
+                    {% endif %}
+                </div>
+                <div class="main-comments-count">
+                    {% if obj.published_comments_count %}
+
+
+                        <label>Отзывов:</label>
+                        <a href="{{ obj.get_absolute_url }}#comments">{{ obj.published_comments_count }}</a>
+                    {% else %}
+                        <a href="{{ obj.get_absolute_url }}#comments">Пока нет отзывов</a>
+                    {% endif %}
+                </div>
+            </td>
+        </tr>
     {% endfor %}
- </ul>
-</td>
-<td class="col_4">
-    <div class="main-recipes-count">
-    {% if obj.published_recipes_count %}
-    <label>Рецептов:&nbsp</label><a href="{{ obj.get_absolute_url }}#recipes">{{ obj.published_recipes_count }}</a>
-    {% else %}
-    <a href="{{ obj.get_absolute_url }}#comments">Пока нет рецептов</a>
-    {% endif %}
-    </div>
-<div class="main-comments-count">
-    {% if obj.published_comments_count %}
-
-
-    <label>Отзывов:</label><a href="{{ obj.get_absolute_url }}#comments">{{ obj.published_comments_count }}</a>
-    {% else %}
-   <a href="{{ obj.get_absolute_url }}#comments">Пока нет отзывов</a>
-    {% endif %}
-    </div>
-</td>
-</tr>
-   {% endfor %}
-</tbody>
+    </tbody>
 </table>
- {% include 'super_model/base/_pager.html' %}
+{% include 'super_model/base/_pager.html' %}

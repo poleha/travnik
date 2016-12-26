@@ -1,6 +1,8 @@
 from django.contrib.sitemaps import Sitemap
-from .models import Plant, Recipe, UsageArea
 from django.core.urlresolvers import reverse_lazy
+
+from .models import Plant, Recipe, UsageArea
+
 
 class PostSitemap(Sitemap):
     changefreq = "weekly"
@@ -33,9 +35,10 @@ class UsageAreaSitemap(PostSitemap):
     def items(self):
         return UsageArea.objects.get_available()
 
+
 sitemaps = {
     'plant-detail': PlantSitemap,
     'usage_area-detail': UsageAreaSitemap,
     'recipe-detail': RecipeSitemap,
-    'plant-list' : PlantListSitemap,
+    'plant-list': PlantListSitemap,
 }

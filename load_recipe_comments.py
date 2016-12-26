@@ -8,7 +8,6 @@ if __name__ == "__main__":
 
     execute_from_command_line(sys.argv)
 
-
 from main import models
 
 with open('load_comments.csv') as f:

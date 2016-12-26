@@ -1,4 +1,8 @@
-<a class="btn btn-menu{% if active_menu == 'user-comments' %} active{% endif %}" href="{% url 'user-comments' current_user.pk %}">Отзывы</a>
-<a class="btn btn-menu{% if active_menu == 'user-recipes' %} active{% endif %}" href="{% url 'user-recipes' current_user.pk %}">Рецепты</a>
-<a class="btn btn-menu{% if active_menu == 'user-karma' %} active{% endif %}" href="{% url 'user-karma' current_user.pk %}">Карма</a>
-<a class="btn btn-menu{% if active_menu == 'user-activity' %} active{% endif %}" href="{% url 'user-activity' current_user.pk %}">Активность</a>
+<a class="btn btn-menu{% if active_menu == 'user-comments' %} active{% endif %}"
+   href="{% url 'user-comments' current_user.pk %}">Отзывы</a>
+<a class="btn btn-menu{% if active_menu == 'user-recipes' %} active{% endif %}"
+   href="{% url 'user-recipes' current_user.pk %}">Рецепты</a>
+<a class="btn btn-menu{% if active_menu == 'user-karma' %} active{% endif %}"
+   href="{% url 'user-karma' current_user.pk %}">Карма</a>
+<a class="btn btn-menu{% if active_menu == 'user-activity' %} active{% endif %}"
+   href="{% url 'user-activity' current_user.pk %}">Активность</a>

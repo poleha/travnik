@@ -16,7 +16,6 @@ import socket
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
@@ -42,11 +41,7 @@ else:
     COMPRESS_ENABLED = True
     HTML_MINIFY = True
 
-
 ALLOWED_HOSTS = ['127.0.0.1', 'medavi.ru']
-
-
-
 
 # Application definition
 
@@ -81,9 +76,6 @@ INSTALLED_APPS = (
     'main',
 )
 
-
-
-
 MIDDLEWARE_CLASSES = (
     'django.middleware.http.ConditionalGetMiddleware',
     'django_mobile.middleware.MobileDetectionMiddleware',
@@ -99,11 +91,11 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    #'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
+    # 'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
     'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
     'main.middleware.PlantSynonymsFallbackMiddleware',
-    #'htmlmin.middleware.HtmlMinifyMiddleware',
-    #'htmlmin.middleware.MarkRequestMiddleware',
+    # 'htmlmin.middleware.HtmlMinifyMiddleware',
+    # 'htmlmin.middleware.MarkRequestMiddleware',
 )
 
 ROOT_URLCONF = 'travnik.urls'
@@ -112,7 +104,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'main/templates/main')],
-        #'APP_DIRS': True,
+        # 'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'super_model.context_processors.debug',
@@ -130,7 +122,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'travnik.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 """
@@ -142,18 +133,16 @@ DATABASES = {
 }
 """
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'travnik',
         'USER': 'kulik',
         'PASSWORD': 'ZaX369Exn',
-       'HOST': '127.0.0.1',
-       'PORT': '5432',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
         'CONN_MAX_AGE': 500,
-        },
-
+    },
 
 }
 
@@ -170,7 +159,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 SITE_ID = '1'
 SITE_URL = 'http://medavi.ru'
 DEFAULT_FROM_EMAIL = 'Medavi.ru <info@medavi.ru>'
@@ -184,22 +172,20 @@ MEDIA_URL = '/media/'  # URL для медии в шаблонах
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-
 SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
-#SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+# SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 SESSION_CACHE_ALIAS = "default"
 SESSION_SAVE_EVERY_REQUEST = False
-#SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+# SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 
-#**************<<<<<
+# **************<<<<<
 POST_COMMENTS_PAGE_SIZE = 30
 POST_LIST_PAGE_SIZE = 48
 
 APPEND_SLASH = True
 
-
-#allauth
+# allauth
 LOGIN_REDIRECT_URLNAME = '/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 ACCOUNT_LOGOUT_ON_GET = True
@@ -214,11 +200,10 @@ ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_EMAIL_SUBJECT_PREFIX = ""
 ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = False
 ACCOUNT_USERNAME_REQUIRED = True
-SOCIALACCOUNT_ADAPTER  = "super_model.adapter.SuperSocialAccountAdapter"
+SOCIALACCOUNT_ADAPTER = "super_model.adapter.SuperSocialAccountAdapter"
 ACCOUNT_ADAPTER = "super_model.adapter.SuperAccountAdapter"
 EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/'
 EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = '/'
-
 
 AUTHENTICATION_BACKENDS = (
     # Needed to login by username in Django admin, regardless of `allauth`
@@ -227,7 +212,6 @@ AUTHENTICATION_BACKENDS = (
     # `allauth` specific authentication methods, such as login by e-mail
     'allauth.account.auth_backends.AuthenticationBackend',
 )
-
 
 CACHES = {
     "default": {
@@ -240,12 +224,10 @@ CACHES = {
     }
 }
 
-
 THUMBNAIL_BACKEND = 'super_model.backends.SEOThumbnailBackend'
 THUMBNAIL_PREFIX = 'images/'
 THUMBNAIL_KVSTORE = 'sorl.thumbnail.kvstores.redis_kvstore.KVStore'
 THUMBNAIL_REDIS_DB = 2
-
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -258,9 +240,7 @@ BEST_COMMENTS_DAYS = 100
 
 CKEDITOR_UPLOAD_PATH = "ckeditor_uploads/"
 
-
 if DEBUG_TOOLBAR:
-
     MIDDLEWARE_CLASSES = list(MIDDLEWARE_CLASSES)
     MIDDLEWARE_CLASSES.remove('django.middleware.gzip.GZipMiddleware')
     MIDDLEWARE_CLASSES = tuple(MIDDLEWARE_CLASSES)
@@ -282,35 +262,29 @@ if DEBUG_TOOLBAR:
         'debug_toolbar.panels.redirects.RedirectsPanel',
     ]
 
-
-
     MIDDLEWARE_CLASSES = ('debug_toolbar.middleware.DebugToolbarMiddleware',) + MIDDLEWARE_CLASSES
 
     DEBUG_TOOLBAR_CONFIG = {
-    'SHOW_TOOLBAR_CALLBACK': lambda request: True,
+        'SHOW_TOOLBAR_CALLBACK': lambda request: True,
     }
 
 if CACHE_ENABLED and not DEBUG:
 
     TEMPLATES[0]['OPTIONS']['loaders'] = [
-            #'django_mobile.loader.Loader',
-            ('django.template.loaders.cached.Loader',
-                  [
-                    'django.template.loaders.filesystem.Loader',
-                    'django.template.loaders.app_directories.Loader',
-            ],
-                ),
-        ]
+        # 'django_mobile.loader.Loader',
+        ('django.template.loaders.cached.Loader',
+         [
+             'django.template.loaders.filesystem.Loader',
+             'django.template.loaders.app_directories.Loader',
+         ],
+         ),
+    ]
 else:
-       TEMPLATES[0]['OPTIONS']['loaders'] = [
-                    #'django_mobile.loader.Loader',
-                    'django.template.loaders.filesystem.Loader',
-                    'django.template.loaders.app_directories.Loader',
-        ]
-
-
-
-
+    TEMPLATES[0]['OPTIONS']['loaders'] = [
+        # 'django_mobile.loader.Loader',
+        'django.template.loaders.filesystem.Loader',
+        'django.template.loaders.app_directories.Loader',
+    ]
 
 AUTO_APPROVE_EMAILS = ['approve@approve.me']
 AUTO_DONT_APPROVE_EMAILS = ['dont-approve@dont-approve.me']
@@ -318,7 +292,6 @@ AUTO_DONT_APPROVE_EMAILS = ['dont-approve@dont-approve.me']
 ADMINS = (('Alex Poleha', 'admin@medavi.ru'),)
 
 PUBLISH_COMMENT_WITHOUT_APPROVE_KARM = 20
-
 
 HAYSTACK_CONNECTIONS = {
     'default': {
@@ -328,10 +301,7 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
-
 DEFAULT_THUMBNAIL_QUALITY = 75
-
-
 
 CACHED_METHOD_SPECIAL_CASES = {
     'django.core.handlers.wsgi.WSGIRequest': ('user.pk', 'session.user_key', 'client_ip')
@@ -350,15 +320,11 @@ BASE_MAIL_CLASS = 'main.models.Mail'
 BASE_USER_PROFILE_CLASS = 'main.models.UserProfile'
 BASE_COMMENT_CLASS = 'main.models.Comment'
 
-
 SITE_NAME = 'Medavi.ru'
-
-
 
 POST_TYPE_PLANT = 1
 POST_TYPE_RECIPE = 2
 POST_TYPE_USAGE_AREA = 3
-
 
 POST_TYPES = (
     (POST_TYPE_PLANT, 'Растение'),
@@ -367,7 +333,7 @@ POST_TYPES = (
 
 )
 
-#SUPER_MODEL_KEY_NAME = 'prozdo_key'
+# SUPER_MODEL_KEY_NAME = 'prozdo_key'
 
 
 USER_ROLE_REGULAR = 1
@@ -376,16 +342,15 @@ USER_ROLE_DOCTOR = 3
 USER_ROLE_ADMIN = 33
 
 USER_ROLES = (
-        (USER_ROLE_REGULAR, 'Обычный пользователь'),
-        (USER_ROLE_AUTHOR, 'Автор'),
-        (USER_ROLE_DOCTOR, 'Врач'),
-        (USER_ROLE_ADMIN, 'Админ'),
-    )
+    (USER_ROLE_REGULAR, 'Обычный пользователь'),
+    (USER_ROLE_AUTHOR, 'Автор'),
+    (USER_ROLE_DOCTOR, 'Врач'),
+    (USER_ROLE_ADMIN, 'Админ'),
+)
 
 BASE_TEMPLATE = 'main/base/base.html'
 
 EMAIL_IS_REQUIRED_FOR_COMMENT = False
-
 
 HISTORY_TYPE_COMMENT_CREATED = 1
 HISTORY_TYPE_COMMENT_SAVED = 2
@@ -420,20 +385,18 @@ HISTORY_TYPES_POINTS = {
     HISTORY_TYPE_COMMENT_COMPLAINT: 0,
     HISTORY_TYPE_USER_POST_RATED: 1,
     HISTORY_TYPE_USER_POST_COMPLAINT: 0,
-    }
-
+}
 
 COUNT_COMPLAINTS_IN_KARM = True
 
-#***************
+# ***************
 EXCLUDE_FROM_MINIFYING = ('^admin/',)
-
 
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'full',
-        #'height': 300,
-        #'width': 300,
+        # 'height': 300,
+        # 'width': 300,
     },
     'basic': {
         'toolbar': 'Basic',

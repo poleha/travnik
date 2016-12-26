@@ -9,13 +9,13 @@ if __name__ == "__main__":
 
     execute_from_command_line(sys.argv)
 
-
 from main import models
 from super_model.models import POST_STATUS_PUBLISHED
 from django.core.exceptions import ValidationError
 from django.db.models import Count
-#models.Plant.objects.all().delete()
-#models.UsageArea.objects.all().delete()
+
+# models.Plant.objects.all().delete()
+# models.UsageArea.objects.all().delete()
 
 with open('usage_areas.csv', 'r') as file:
     line_num = 0
@@ -80,8 +80,8 @@ with open('load.csv', 'r') as file:
             continue
 
         if plant.title != plant_title:
-                plant.title = plant_title
-                plant.save()
+            plant.title = plant_title
+            plant.save()
 
         if plant.status != POST_STATUS_PUBLISHED:
             plant.status = POST_STATUS_PUBLISHED
@@ -89,13 +89,15 @@ with open('load.csv', 'r') as file:
             print('Plant created "{0}" in line {1}'.format(plant.title, line_num))
 
         synonyms = line_as_list[2].split(',')
-        synonyms = [elem.strip().lower() for elem in synonyms if elem.lower().strip() != plant.title.lower().strip() and elem.strip() != ""]
+        synonyms = [elem.strip().lower() for elem in synonyms if
+                    elem.lower().strip() != plant.title.lower().strip() and elem.strip() != ""]
         synonyms = set(synonyms)
 
         for synonym in plant.synonyms.all():
             if synonym.synonym not in synonyms or synonym.synonym.lower() == plant.title.lower() or synonym.synonym.strip() == "":
                 synonym.delete()
-                print('Synonym {} deleted for plant with code {} and title {}'.format(synonym.synonym, plant.code, plant.title))
+                print('Synonym {} deleted for plant with code {} and title {}'.format(synonym.synonym, plant.code,
+                                                                                      plant.title))
 
         for synonym_text in synonyms:
             existing_synonyms = plant.synonyms.all().values_list('synonym', flat=True)
@@ -117,13 +119,14 @@ with open('load.csv', 'r') as file:
                 usage_area.save()
             if not usage_area in plant.usage_areas.all():
                 plant.usage_areas.add(usage_area)
-                print('Usage area added "{0}" to plant "{1}" in line:{2}'.format(usage_area.title, plant.title, line_num))
-
+                print(
+                    'Usage area added "{0}" to plant "{1}" in line:{2}'.format(usage_area.title, plant.title, line_num))
 
         for usage_area in plant.usage_areas.all():
             if usage_area.code not in usage_area_keys:
                 plant.usage_areas.remove(usage_area)
-                print('Usage area with code {} and title {} removed for plant {}'.format(usage_area.code, usage_area.title, plant.title))
+                print('Usage area with code {} and title {} removed for plant {}'.format(usage_area.code,
+                                                                                         usage_area.title, plant.title))
 
         wikipedia_link = line_as_list[3].lower().strip()
 
@@ -137,7 +140,6 @@ for code in models.Plant.objects.all().values_list('code', flat=True):
         txt = "deleted plant title={}, code={}".format(plant.title, plant.code)
         plant.delete()
         print(txt)
-
 
 for usage_area in models.UsageArea.objects.annotate(plant_count=Count('plants')):
     if usage_area.plant_count == 0:

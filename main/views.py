@@ -1,28 +1,29 @@
 from django.conf import settings
-from . import models
-from super_model import views as super_views
-from . import forms
-from cache.decorators import cached_view
-from super_model import models as super_models
+from django.core.urlresolvers import reverse_lazy
+from django.db import transaction
+from django.db.models import Q
+from django.db.models.aggregates import Count
+from django.http import JsonResponse
+from django.http.response import HttpResponseRedirect
 from django.views import generic
 from django.views.decorators.csrf import csrf_exempt
-from super_model import forms as super_forms
-from django.http import JsonResponse
 from haystack.generic_views import SearchView as OriginalSearchView
 from haystack.query import SearchQuerySet
+
+from cache.decorators import cached_view
+from super_model import forms as super_forms
 from super_model import helper as super_helper
-from django.db.models.aggregates import Count
-from django.http.response import HttpResponseRedirect
-from django.db.models import Q
-from django.db import transaction
+from super_model import models as super_models
+from super_model import views as super_views
 from super_model.helper import set_and_get_session_key
-from django.core.urlresolvers import reverse_lazy
+from . import forms
+from . import models
 
 
 class PostViewMixin(super_views.SuperPostViewMixin):
     def set_model(self):
         if self.kwargs['post_type'] == 'plant':
-            self.model =  models.Plant
+            self.model = models.Plant
         elif self.kwargs['post_type'] == 'recipe':
             self.model = models.Recipe
         elif self.kwargs['post_type'] == 'usage_area':
@@ -30,7 +31,6 @@ class PostViewMixin(super_views.SuperPostViewMixin):
 
 
 class PostListFilterMixin(super_views.SuperPostListFilterMixin, PostViewMixin):
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.model == models.Plant:
@@ -94,15 +94,18 @@ class PostCreateUpdateMixin(PostViewMixin):
             return forms.UsageAreaForm
 
 
-class PostCreate(super_views.restrict_by_role_mixin(settings.USER_ROLE_ADMIN), PostCreateUpdateMixin, generic.CreateView):
-    template_name ='main/post/post_create.html'
+class PostCreate(super_views.restrict_by_role_mixin(settings.USER_ROLE_ADMIN), PostCreateUpdateMixin,
+                 generic.CreateView):
+    template_name = 'main/post/post_create.html'
 
 
-class PostUpdate(super_views.restrict_by_role_mixin(settings.USER_ROLE_ADMIN), PostCreateUpdateMixin, generic.UpdateView):
-    template_name ='main/post/post_create.html'
+class PostUpdate(super_views.restrict_by_role_mixin(settings.USER_ROLE_ADMIN), PostCreateUpdateMixin,
+                 generic.UpdateView):
+    template_name = 'main/post/post_create.html'
+
 
 class RecipeUserUpdate(PostCreateUpdateMixin, generic.UpdateView):
-    template_name ='main/post/post_create.html'
+    template_name = 'main/post/post_create.html'
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -156,16 +159,17 @@ class RecipeCreateFromPostDetail(PostDetail):
 
             recipe.plants.add(self.obj)
             for plant in recipe.plants.all():
-                models.History.save_history(history_type=super_models.HISTORY_TYPE_POST_SAVED, post=plant, user=user, ip=ip, session_key=session_key)
+                models.History.save_history(history_type=super_models.HISTORY_TYPE_POST_SAVED, post=plant, user=user,
+                                            ip=ip, session_key=session_key)
                 plant.full_invalidate_cache()
             return JsonResponse({
-                    'status': 1,
-                    'published': recipe.status == super_models.POST_STATUS_PUBLISHED,
-                    'href': recipe.get_absolute_url()
-                })
+                'status': 1,
+                'published': recipe.status == super_models.POST_STATUS_PUBLISHED,
+                'href': recipe.get_absolute_url()
+            })
         else:
             return JsonResponse({'recipe_form': recipe_form.as_p(), 'status': 2})
-            #return self.render_to_response(self.get_context_data(recipe_form=recipe_form))
+            # return self.render_to_response(self.get_context_data(recipe_form=recipe_form))
 
 
 class CommentGetForAnswerToBlockAjax(generic.TemplateView):
@@ -185,14 +189,13 @@ class CommentGetForAnswerToBlockAjax(generic.TemplateView):
         return self.render_to_response(self.get_context_data(**kwargs))
 
 
-
 class SearchView(OriginalSearchView):
     queryset = SearchQuerySet().all()
     form_class = super_forms.SuperSearchForm
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        #queryset = queryset.order_by('weight')
+        # queryset = queryset.order_by('weight')
         return queryset
 
 
@@ -211,7 +214,8 @@ class AutocompleteView(generic.View):
             objects = [post.obj for post in post_queryset]
             post_suggestions = [obj.title for obj in objects]
 
-            synonym_queryset = models.Synonym.objects.exclude(synonym__in=post_suggestions).filter(synonym__icontains=q).annotate(
+            synonym_queryset = models.Synonym.objects.exclude(synonym__in=post_suggestions).filter(
+                synonym__icontains=q).annotate(
                 comment_count=Count('plant__comments')).order_by('-comment_count')[:5]
             synonym_suggestions = [synonym.synonym for synonym in synonym_queryset if synonym.plant not in objects]
             suggestions = post_suggestions + synonym_suggestions
@@ -221,6 +225,7 @@ class AutocompleteView(generic.View):
             'results': suggestions
         }
         return JsonResponse(data)
+
 
 class CommentGetTreeAjax(super_views.SuperCommentGetTreeAjax):
     template_name = 'main/widgets/_get_child_comments.html'
@@ -249,7 +254,7 @@ class UserRecipesView(super_views.SuperListView):
     context_object_name = 'recipes'
     paginate_by = 50
 
-    @cached_view(timeout= 60 * 60 * 24, test=super_models.request_with_empty_guest)
+    @cached_view(timeout=60 * 60 * 24, test=super_models.request_with_empty_guest)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
@@ -261,13 +266,13 @@ class UserRecipesView(super_views.SuperListView):
             recipes = recipes.get_available()
         return recipes
 
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         pk = self.kwargs['pk']
         user = models.User.objects.get(pk=pk)
         context['current_user'] = user
         return context
+
 
 class MissionView(generic.TemplateView):
     template_name = 'main/static/mission.html'

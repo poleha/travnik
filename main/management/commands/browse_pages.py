@@ -1,28 +1,31 @@
-from django.core.management.base import BaseCommand
-from main import models
-from super_model import models as super_models
-import requests
-from django.core.urlresolvers import reverse
 import time
-from django.conf import settings
-from django.core.mail import mail_admins
-from cache.decorators import construct_cached_view_key
-from django.core.cache import cache
-from main.views import PostDetail
 from random import shuffle
+
+import requests
+from django.conf import settings
+from django.core.cache import cache
+from django.core.mail import mail_admins
+from django.core.management.base import BaseCommand
+from django.core.urlresolvers import reverse
+
+from cache.decorators import construct_cached_view_key
+from main import models
 from main.models import Post
+from main.views import PostDetail
+from super_model import models as super_models
+
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
         # Positional arguments
-        #parser.add_argument('poll_id', nargs='+', type=int)
+        # parser.add_argument('poll_id', nargs='+', type=int)
 
         # Named (optional) arguments
         parser.add_argument('--full',
-            action='store_true',
-            dest='full',
-            default=False,
-            help='Browse all pages')
+                            action='store_true',
+                            dest='full',
+                            default=False,
+                            help='Browse all pages')
 
         parser.add_argument('--show',
                             action='store_true',
@@ -48,7 +51,6 @@ class Command(BaseCommand):
                             default=False,
                             help='Visit only posts')
 
-
         parser.add_argument('--sleep_time',
                             dest='sleep_time',
                             type=float,
@@ -60,7 +62,6 @@ class Command(BaseCommand):
                             type=int,
                             default=60,
                             help='Max execution time')
-
 
     def handle(self, *args, **options):
         start_time = time.time()
@@ -98,7 +99,7 @@ class Command(BaseCommand):
                         time.sleep(sleep_time)
                     if options['show']:
                         print('Visited url {}, {} of {}. Response code: {}'.format(absolute_url, count, urls_len,
-                                                                               res.status_code))
+                                                                                   res.status_code))
             except:
                 errors.append('{0}-{1}'.format(url, 'EXCEPTION'))
 
@@ -115,11 +116,13 @@ class Command(BaseCommand):
                 absolute_url = url = '{}{}'.format(settings.SITE_URL, post.get_absolute_url())
                 alias = getattr(post, 'alias', None)
                 if alias:
-                    original_key = construct_cached_view_key(PostDetail.get, url=absolute_url, model_class=Post, kwarg='alias',
-                                                alias=post.alias)
+                    original_key = construct_cached_view_key(PostDetail.get, url=absolute_url, model_class=Post,
+                                                             kwarg='alias',
+                                                             alias=post.alias)
                 else:
-                    original_key = construct_cached_view_key(PostDetail.get, url=absolute_url, model_class=Post, kwarg='pk',
-                                                    pk=post.pk)
+                    original_key = construct_cached_view_key(PostDetail.get, url=absolute_url, model_class=Post,
+                                                             kwarg='pk',
+                                                             pk=post.pk)
                 mobile_key = original_key.replace('flavour_None', 'flavour_mobile')
                 full_key = original_key.replace('flavour_None', 'flavour_full')
                 for key in (full_key, mobile_key):

@@ -1,42 +1,42 @@
 {% load cache %}
 {% cache cache_duration comments_portlet portlet_type %}
-{% if comments %}
-    <div class="comments-portlet">
-    {% if title %}
-    <h3>{{ title }}</h3>
+    {% if comments %}
+        <div class="comments-portlet">
+            {% if title %}
+                <h3>{{ title }}</h3>
+            {% endif %}
+            {% for comment in comments %}
+                <div class="portlet-item">
+                    <p>
+                        {% if comment.user.is_authenticated %}
+                            <a class="user" href="{{ comment.user.get_absolute_url }}">{{ comment.user }}</a>
+                        {% else %}
+                            <span class="guest">{{ comment.username }}</span>
+                        {% endif %}
+                    </p>
+                    <p class="date">{{ comment.created }}</p>
+
+
+                    <p class="comment">
+                        <a href="{{ comment.get_absolute_url }}">{{ comment }}</a>
+                    </p>
+
+                    <div class="comments-portlet-bottom">
+                        <p>
+                            <label>Посчитали полезным:&nbsp</label>{{ comment.comment_mark }}
+                        </p>
+                        <p>
+                            {% if comment.post.obj.is_plant %}
+                                <label>Растение: </label>
+                            {% else %}
+                                <label>Рецепт: </label>
+                            {% endif %}
+                            <a href="{{ comment.post.obj.get_absolute_url }}">{{ comment.post.obj }}</a>
+                        </p>
+                    </div>
+                </div>
+                <div class="line"></div>
+            {% endfor %}
+        </div>
     {% endif %}
-    {% for comment in comments %}
-<div class="portlet-item">
-    <p>
-    {% if comment.user.is_authenticated %}
-     <a class="user" href="{{ comment.user.get_absolute_url }}">{{ comment.user }}</a>
-    {% else %}
-        <span class="guest">{{ comment.username }}</span>
-    {% endif %}
-</p>
- <p class="date">{{ comment.created }}</p>
-
-
-    <p class="comment">
-<a href="{{ comment.get_absolute_url }}">{{ comment }}</a>
-</p>
-
-<div class="comments-portlet-bottom">
-<p>
-    <label>Посчитали полезным:&nbsp</label>{{ comment.comment_mark }}
-  </p>
-    <p>
-   {% if comment.post.obj.is_plant %}
-       <label>Растение: </label>
-        {% else  %}
-       <label>Рецепт: </label>
-        {% endif %}
-    <a href="{{ comment.post.obj.get_absolute_url }}">{{ comment.post.obj }}</a>
-</p>
-</div>
-</div>
- <div class="line"></div>
-{% endfor %}
-</div>
-{% endif %}
 {% endcache %}

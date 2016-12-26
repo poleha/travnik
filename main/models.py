@@ -1,20 +1,19 @@
-from django.db import models
-from django.db.models.aggregates import Sum
-from django.conf import settings
-from django.core.urlresolvers import reverse
 from allauth.account.models import EmailAddress, EmailConfirmation
-from sorl.thumbnail import ImageField, get_thumbnail
 from ckeditor.fields import RichTextField
-from cache.decorators import cached_property
-from super_model import models as super_models
-from django.utils.html import strip_tags
-from helper import helper
-from django.utils.html import mark_safe
-from django.forms import ValidationError
-from django.db.models import Q, Max
+from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
+from django.db import models
+from django.db.models import Q, Max
+from django.db.models.aggregates import Sum
+from django.forms import ValidationError
+from django.utils.html import mark_safe
+from django.utils.html import strip_tags
+from sorl.thumbnail import ImageField, get_thumbnail
 
-
+from cache.decorators import cached_property
+from helper import helper
+from super_model import models as super_models
 
 COMPONENT_TYPE_VITAMIN = 1
 COMPONENT_TYPE_MINERAL = 2
@@ -66,28 +65,26 @@ class Post(super_models.SuperPost):
     def is_usage_area(self):
         return self.post_type == settings.POST_TYPE_USAGE_AREA
 
-
     @classmethod
     def ajax_submit_url(cls):
         if cls == Plant:
             return reverse('plant-list-ajax')
-        #elif cls == Recipe:
-        #    return reverse('recipe-list-ajax')
+            # elif cls == Recipe:
+            #    return reverse('recipe-list-ajax')
 
     @classmethod
     def submit_url(cls):
         if cls == Plant:
             return reverse('plant-list')
-        #elif cls == Recipe:
-        #    return reverse('recipe-list')
+            # elif cls == Recipe:
+            #    return reverse('recipe-list')
 
     @classmethod
     def get_list_url(cls):
         if cls == Plant:
             return reverse('plant-list')
-        #elif cls == Recipe:
-        #    return reverse('recipe-list')
-
+            # elif cls == Recipe:
+            #    return reverse('recipe-list')
 
     @property
     def anons(self):
@@ -105,7 +102,6 @@ class Post(super_models.SuperPost):
         elif self.is_usage_area:
             return reverse('usage_area-update', kwargs={'pk': self.pk})
 
-
     @property
     def obj(self):
         if self.post_type == settings.POST_TYPE_PLANT:
@@ -122,8 +118,6 @@ class Post(super_models.SuperPost):
         else:
             return reverse('post-detail-pk', kwargs={'pk': self.pk})
 
-
-
     def save(self, *args, **kwargs):
         self.title = helper.trim_title(self.title).lower()
         super().save(*args, **kwargs)
@@ -132,7 +126,8 @@ class Post(super_models.SuperPost):
 class Plant(Post):
     body = RichTextField(verbose_name='Описание', blank=True)
     image = ImageField(verbose_name='Изображение', upload_to='plant', blank=True, null=True, max_length=300)
-    usage_areas = models.ManyToManyField('UsageArea', verbose_name='Области применения', blank=True, related_name='plants')
+    usage_areas = models.ManyToManyField('UsageArea', verbose_name='Области применения', blank=True,
+                                         related_name='plants')
     short_body = models.TextField(verbose_name='Анонс', blank=True)
     wikipedia_link = models.TextField(blank=True, verbose_name='Страница на wikipedia')
     code = models.PositiveIntegerField(unique=True, blank=True)
@@ -141,7 +136,6 @@ class Plant(Post):
 
     def type_str(self):
         return 'Растение'
-
 
     @cached_property
     def average_mark(self):
@@ -159,8 +153,8 @@ class Plant(Post):
 
     @cached_property
     def marks_count(self):
-        return History.objects.filter(post=self, history_type=super_models.HISTORY_TYPE_POST_RATED, deleted=False).count()
-
+        return History.objects.filter(post=self, history_type=super_models.HISTORY_TYPE_POST_RATED,
+                                      deleted=False).count()
 
     @property
     def thumb110(self):
@@ -236,15 +230,13 @@ class Plant(Post):
         super().save(*args, **kwargs)
 
 
-
 class Synonym(models.Model):
     class Meta:
-        ordering = ('synonym', )
+        ordering = ('synonym',)
 
     synonym = models.CharField(max_length=500, verbose_name='Синоним')
     alias = models.CharField(max_length=800, blank=True, verbose_name='Синоним', db_index=True)
     plant = models.ForeignKey(Plant, verbose_name='Растение', related_name='synonyms')
-
 
     def __str__(self):
         return self.synonym
@@ -262,11 +254,13 @@ class Synonym(models.Model):
 
         plants = Plant.objects.filter(synonyms__synonym=self.synonym).exclude(synonyms__pk=self.pk)
         if plants.exists():
-            raise ValidationError('Синоним "{}" уже используется как синоним растений "{}"'.format(self.synonym, plants.values_list('title', flat=True)))
+            raise ValidationError('Синоним "{}" уже используется как синоним растений "{}"'.format(self.synonym,
+                                                                                                   plants.values_list(
+                                                                                                       'title',
+                                                                                                       flat=True)))
 
         if self.synonym in self.plant.synonyms.exclude(pk=self.pk).values_list('synonym', flat=True):
             raise ValidationError('Синоним "{}" уже указан в этом растении'.format(self.synonym))
-
 
     def save(self, *args, **kwargs):
         self.synonym = helper.trim_title(self.synonym).lower()
@@ -280,13 +274,12 @@ class Recipe(Post):
     plants = models.ManyToManyField(Plant, verbose_name='Растения', related_name='recipes')
     usage_areas = models.ManyToManyField('UsageArea', verbose_name='Области применения', related_name='recipes')
     comment = models.TextField(null=True, blank=True)
-    #user = models.ForeignKey(User, null=True, blank=True, related_name='recipes', db_index=True)
+    # user = models.ForeignKey(User, null=True, blank=True, related_name='recipes', db_index=True)
 
     objects = super_models.PostManager()
     alter_alias = True
     rate_type = 'votes'
     recreate_alias_on_save = True
-
 
     def type_str(self):
         return 'Рецепт'
@@ -306,6 +299,7 @@ class UsageArea(Post):
 class Comment(super_models.SuperComment):
     class Meta:
         ordering = ['-created']
+
     post = models.ForeignKey(Post, related_name='comments', db_index=True)
     consult_required = models.BooleanField(default=False, verbose_name='Нужна консультация провизора', db_index=True)
     old_id = models.PositiveIntegerField(null=True, blank=True)
@@ -327,7 +321,6 @@ class UserProfile(super_models.SuperUserProfile):
         else:
             return False
 
-
     @property
     def thumb50(self):
         try:
@@ -342,7 +335,6 @@ class UserProfile(super_models.SuperUserProfile):
         except:
             return ''
 
+
 class Mail(super_models.SuperMail):
     pass
-
-

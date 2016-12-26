@@ -7,358 +7,388 @@
 
 
     <div class="row">
-     {% if obj.is_recipe %}
-    <div id="full-post" itemscope itemtype="http://schema.org/Recipe">
+    {% if obj.is_recipe %}
+        <div id="full-post" itemscope itemtype="http://schema.org/Recipe">
     {% else %}
-    <div id="full-post" itemscope itemtype="http://schema.org/Product">
+        <div id="full-post" itemscope itemtype="http://schema.org/Product">
     {% endif %}
-        <input id="post-pk" type="hidden" value="{{ obj.pk }}">
+<input id="post-pk" type="hidden" value="{{ obj.pk }}">
 
-        <h1><span class="post-title" itemprop="name">{{ obj }}</span></h1>
-    {% if obj.is_plant %}
-        <div class="synonyms">{{ obj.synonyms_text }}</div>
-{% if obj.thumb220 %}
-    <div itemscope itemtype="http://schema.org/ImageObject" itemprop="image" class="plant-image"><a href="{{ obj.get_absolute_url }}">
-                        <img itemprop="contentUrl" alt="{{ obj.title }}" class="img-rounded" src="{{ obj.thumb220 }}">
+<h1><span class="post-title" itemprop="name">{{ obj }}</span></h1>
+{% if obj.is_plant %}
+    <div class="synonyms">{{ obj.synonyms_text }}</div>
+    {% if obj.thumb220 %}
+        <div itemscope itemtype="http://schema.org/ImageObject" itemprop="image" class="plant-image"><a
+                href="{{ obj.get_absolute_url }}">
+            <img itemprop="contentUrl" alt="{{ obj.title }}" class="img-rounded" src="{{ obj.thumb220 }}">
+        </a>
+            <meta itemprop="name" content="{{ obj.title }}">
+            <meta itemprop="description" content="{{ obj.title }}">
+        </div>
+    {% endif %}
+{% elif obj.is_recipe %}
+
+    <div class="avatar">
+        {% if obj.user %}
+            <div>
+                <div class="image-wrapper">
+                    <a class="user" href="{{ obj.user.get_absolute_url }}">
+
+                        {% if obj.user.thumb50 %}
+                            <img alt="{{ obj.user }}" class="img-rounded" src="{{ obj.user.thumb50 }}">
+                        {% else %}
+                            <img alt="Гость" class="img-rounded" src="{% static "main/images/guest.png" %}">
+                        {% endif %}
                     </a>
-              <meta itemprop="name" content="{{ obj.title }}">
-                 <meta itemprop="description" content="{{ obj.title }}">
-    </div>
-    {% endif %}
-    {% elif obj.is_recipe %}
-
-        <div class="avatar">
-    {% if obj.user %}
-<div>
-<div class="image-wrapper">
-<a class="user" href="{{ obj.user.get_absolute_url }}">
-
-    {% if obj.user.thumb50 %}
-    <img alt="{{ obj.user }}" class="img-rounded" src="{{ obj.user.thumb50 }}">
+                </div>
+            </div>
         {% else %}
-        <img alt="Гость" class="img-rounded" src="{% static "main/images/guest.png" %}">
-     {% endif %}
-</a>
-</div>
-</div>
-{% else %}
 
-<img alt="Гость" class="img-rounded" src="{% static "main/images/guest.png" %}">
+            <img alt="Гость" class="img-rounded" src="{% static "main/images/guest.png" %}">
 
-{% endif %}
-</div>
+        {% endif %}
+    </div>
 
 
- <div class="user-block">
-<div>
-<a class="user" href="{{ obj.user.get_absolute_url }}">{{ obj.user }}</a>
-<span class="user-info-top">
+    <div class="user-block">
+        <div>
+            <a class="user" href="{{ obj.user.get_absolute_url }}">{{ obj.user }}</a>
+            <span class="user-info-top">
 <a href="{{ obj.user.get_karm_url }}"><span>Карма: </span>{{ obj.user.karm }}</a>
 <a href="{{ obj.user.get_activity_url }}"><span>Активность: </span>{{ obj.user.activity }}</a>
 </span>
-</div>
-</div>
+        </div>
+    </div>
 
-    {% endif %}
-        {% if user.is_admin %}
-            <a class="post-edit-link" href="{{ obj.update_url }}">Редактировать</a>
-           {% elif obj.is_recipe and obj.user == user and obj.is_project %}
-            <a class="post-edit-link" href="{% url 'recipe-user-update' obj.pk %}">Редактировать</a>
-            {% if obj.is_project %}<div class="post-status"><label>Статус: </label>{{ obj.status_text }}</div>{% endif %}
-
-        {% endif %}
-        {% if not obj.is_usage_area %}
-            <div class="post-top-block">
-
-                {% if obj.is_plant and user.is_regular and obj.is_published %}
-                <div id="post-mark-block>">
-                        <div id="current-post-mark-block" class="{{ show_your_mark_block_cls }}">
-                            <label>Ваша оценка: </label><span id="current-post-mark"> {{ mark }}</span>
-                        <input type="button" value="Отменить оценку" id="cancel-mark-button" class="btn btn-warning {{ show_your_mark_block_cls }}">
-                        </div>
-
-
-                        <div id="post-mark" class="{{ show_make_mark_block_cls }}">
-
-
-                            <label>Оценить: </label>
-     <a class="star" id="post-mark-1"></a>
-     <a class="star" id="post-mark-2"></a>
-     <a class="star" id="post-mark-3"></a>
-     <a class="star" id="post-mark-4"></a>
-     <a class="star" id="post-mark-5"></a>
-                        </div>
-
-                    </div>
 {% endif %}
+{% if user.is_admin %}
+    <a class="post-edit-link" href="{{ obj.update_url }}">Редактировать</a>
+{% elif obj.is_recipe and obj.user == user and obj.is_project %}
+    <a class="post-edit-link" href="{% url 'recipe-user-update' obj.pk %}">Редактировать</a>
+    {% if obj.is_project %}
+        <div class="post-status"><label>Статус: </label>{{ obj.status_text }}</div>{% endif %}
+
+{% endif %}
+{% if not obj.is_usage_area %}
+    <div class="post-top-block">
+
+        {% if obj.is_plant and user.is_regular and obj.is_published %}
+            <div id="post-mark-block>">
+                <div id="current-post-mark-block" class="{{ show_your_mark_block_cls }}">
+                    <label>Ваша оценка: </label><span id="current-post-mark"> {{ mark }}</span>
+                    <input type="button" value="Отменить оценку" id="cancel-mark-button"
+                           class="btn btn-warning {{ show_your_mark_block_cls }}">
+                </div>
 
 
-                    {% if obj.is_recipe and user.is_regular and obj.is_published %}
-         <div class="recipe-mark-buttons">
-                        {% if can_mark %}
-         <input class="user-post-unmark-button btn btn-cancel hidden" type="button" id="user-post-unmark-button" value='Отозвать оценку'>
-         <input class="user-post-mark-button btn btn-success" type="button" id="user-post-mark-button" value='Рецепт полезен'>
-         <input class="user-post-uncomplain-button btn btn-cancel hidden" type="button" id="user-post-uncomplain-button" value='Отозвать оценку'>
-         <input class="user-post-complain-button btn btn-danger" type="button" id="user-post-complain-button" value='Рецепт бесполезен'>
-        {% elif can_unmark %}
-        <input class="user-post-unmark-button btn btn-cancel" type="button" id="user-post-unmark-button" value='Отозвать оценку'>
-        <input class="user-post-mark-button btn btn-success hidden" type="button" id="user-post-mark-button" value='Рецепт полезен'>
-        <input class="user-post-uncomplain-button btn btn-cancel hidden" type="button" id="user-post-uncomplain-button" value='Отозвать оценку'>
-        <input class="user-post-complain-button btn btn-danger hidden" type="button" id="user-post-complain-button" value='Рецепт бесполезен'>
+                <div id="post-mark" class="{{ show_make_mark_block_cls }}">
 
 
-        {% elif can_uncomplain %}
-        <input class="user-post-unmark-button btn btn-cancel hidden" type="button" id="user-post-unmark-button" value='Отозвать оценку'>
-        <input class="user-post-mark-button btn btn-success hidden" type="button" id="user-post-mark-button" value='Рецепт полезен'>
-        <input class="user-post-uncomplain-button btn btn-cancel" type="button" id="user-post-uncomplain-button" value='Отозвать оценку'>
-        <input class="user-post-complain-button btn btn-danger hidden" type="button" id="user-post-complain-button" value='Рецепт бесполезен'>
+                    <label>Оценить: </label>
+                    <a class="star" id="post-mark-1"></a>
+                    <a class="star" id="post-mark-2"></a>
+                    <a class="star" id="post-mark-3"></a>
+                    <a class="star" id="post-mark-4"></a>
+                    <a class="star" id="post-mark-5"></a>
+                </div>
 
-
+            </div>
         {% endif %}
-</div>
-    <div class="post-all-marks-block">
 
-    <div class="post-current-complain" id="post-current-complain">Рецепт сочли бесполезным: <span class="post-current-complain-span" id="post-current-complain-span">{{ obj.complain_count }}</span></div>
 
-        <div class="post-mark-block">
-        <span class="post-current-mark" id="post-current-mark">Рецепт сочли полезным: <span class="post-current-mark-span" id="post-current-mark-span">{{ obj.user_marks_count }}</span></span>
-{% if obj.user_marks_count %}
-    <span class="post-show-marked-buttons">
+        {% if obj.is_recipe and user.is_regular and obj.is_published %}
+            <div class="recipe-mark-buttons">
+                {% if can_mark %}
+                    <input class="user-post-unmark-button btn btn-cancel hidden" type="button"
+                           id="user-post-unmark-button" value='Отозвать оценку'>
+                    <input class="user-post-mark-button btn btn-success" type="button" id="user-post-mark-button"
+                           value='Рецепт полезен'>
+                    <input class="user-post-uncomplain-button btn btn-cancel hidden" type="button"
+                           id="user-post-uncomplain-button" value='Отозвать оценку'>
+                    <input class="user-post-complain-button btn btn-danger" type="button" id="user-post-complain-button"
+                           value='Рецепт бесполезен'>
+                {% elif can_unmark %}
+                    <input class="user-post-unmark-button btn btn-cancel" type="button" id="user-post-unmark-button"
+                           value='Отозвать оценку'>
+                    <input class="user-post-mark-button btn btn-success hidden" type="button" id="user-post-mark-button"
+                           value='Рецепт полезен'>
+                    <input class="user-post-uncomplain-button btn btn-cancel hidden" type="button"
+                           id="user-post-uncomplain-button" value='Отозвать оценку'>
+                    <input class="user-post-complain-button btn btn-danger hidden" type="button"
+                           id="user-post-complain-button" value='Рецепт бесполезен'>
+
+
+                {% elif can_uncomplain %}
+                    <input class="user-post-unmark-button btn btn-cancel hidden" type="button"
+                           id="user-post-unmark-button" value='Отозвать оценку'>
+                    <input class="user-post-mark-button btn btn-success hidden" type="button" id="user-post-mark-button"
+                           value='Рецепт полезен'>
+                    <input class="user-post-uncomplain-button btn btn-cancel" type="button"
+                           id="user-post-uncomplain-button" value='Отозвать оценку'>
+                    <input class="user-post-complain-button btn btn-danger hidden" type="button"
+                           id="user-post-complain-button" value='Рецепт бесполезен'>
+
+
+                {% endif %}
+            </div>
+            <div class="post-all-marks-block">
+
+                <div class="post-current-complain" id="post-current-complain">Рецепт сочли бесполезным: <span
+                        class="post-current-complain-span"
+                        id="post-current-complain-span">{{ obj.complain_count }}</span></div>
+
+                <div class="post-mark-block">
+                    <span class="post-current-mark" id="post-current-mark">Рецепт сочли полезным: <span
+                            class="post-current-mark-span" id="post-current-mark-span">{{ obj.user_marks_count }}</span></span>
+                    {% if obj.user_marks_count %}
+                        <span class="post-show-marked-buttons">
 <input type="button" value="?" class="post-show-marked-users btn">
 <input type="button" value="x" class="post-hide-marked-users btn hidden">
 </span>
 
-{% endif %}
-<div class="post-show-marked"></div>
-    </div>
-
-</div>
-                    
-                        
-                        
-                        
-        {% endif %}
-                    {% if obj.is_published %}
-                    <div itemtype="http://schema.org/AggregateRating" itemscope itemprop="aggregateRating">
-                    {% if obj.is_plant %}
-                    <meta itemprop="worstRating" content="1">
-                        <meta itemprop="bestRating" content="5">
-
-                        <div>
-                        <label>Средняя оценка: </label><span itemprop="ratingValue" id="post-average-mark">{{ obj.average_mark }}</span>(количество оценок: <span itemprop="ratingCount" id="post-marks-count">{{ obj.marks_count }}</span>)
-                    </div>
                     {% endif %}
-                    <div class="comment-count">
-                        <label>Количество отзывов: </label><span itemprop="reviewCount">{{ obj.published_comments_count }}</span>
-                    </div>
+                    <div class="post-show-marked"></div>
+                </div>
 
-
-                    </div>
-                    {% if obj.last_comment_date %}
-                        <div>
-                            <label>Последний отзыв оставлен: </label><span>{{ obj.last_comment_date }}</span>
-                        </div>
-                    {% endif %}
-                    <a href="#comment-form" class="btn btn-success">Оставить отзыв</a>
-                    {% endif %}
             </div>
 
 
+
+
+        {% endif %}
+        {% if obj.is_published %}
+            <div itemtype="http://schema.org/AggregateRating" itemscope itemprop="aggregateRating">
+                {% if obj.is_plant %}
+                    <meta itemprop="worstRating" content="1">
+                    <meta itemprop="bestRating" content="5">
+
+                    <div>
+                        <label>Средняя оценка: </label><span itemprop="ratingValue"
+                                                             id="post-average-mark">{{ obj.average_mark }}</span>(количество
+                        оценок: <span itemprop="ratingCount" id="post-marks-count">{{ obj.marks_count }}</span>)
+                    </div>
+                {% endif %}
+                <div class="comment-count">
+                    <label>Количество отзывов: </label><span
+                        itemprop="reviewCount">{{ obj.published_comments_count }}</span>
+                </div>
+
+
+            </div>
+            {% if obj.last_comment_date %}
+                <div>
+                    <label>Последний отзыв оставлен: </label><span>{{ obj.last_comment_date }}</span>
+                </div>
+            {% endif %}
+            <a href="#comment-form" class="btn btn-success">Оставить отзыв</a>
+        {% endif %}
+    </div>
+
+
 {% endif %}
 
-        <div class="row">
+<div class="row">
 
-            <div class="col-xs-12">
-
-
-
-                    {% if obj.body %}
-                        {% if obj.is_recipe %}
-                            <div id="post-block" itemprop="recipeInstructions">
-                            {% else %}
-                        <div id="post-block" itemprop="description">
-                            {% endif %}
-
-                            {% if obj.show_body_label %}
-                                <h4>{% get_verbose_field_name obj 'body' %}:</h4>
-                            {% endif %}
-                            {% if obj.is_plant %}
-                            {{ obj.body|safe }}
-                            {% else %}
-                             {{ obj.body|replace_nbsp|safe }}
-                            {% endif %}
-                        </div>
-                    {% endif %}
+    <div class="col-xs-12">
 
 
-             {% if obj.is_recipe or obj.is_usage_area and obj.plants.get_available.exists %}
-                <h2>Растения:</h2>
-                <ul>
-            {% for plant in obj.plants.get_available %}
-                <li itemprop="recipeIngredient" ><a href="{{ plant.get_absolute_url }}">{{ plant }}</a></li>
-                {% endfor %}
-               </ul>
-                       {% endif %}
+        {% if obj.body %}
+            {% if obj.is_recipe %}
+                <div id="post-block" itemprop="recipeInstructions">
+            {% else %}
+                <div id="post-block" itemprop="description">
+            {% endif %}
+
+        {% if obj.show_body_label %}
+            <h4>{% get_verbose_field_name obj 'body' %}:</h4>
+        {% endif %}
+        {% if obj.is_plant %}
+            {{ obj.body|safe }}
+        {% else %}
+            {{ obj.body|replace_nbsp|safe }}
+        {% endif %}
+        </div>
+        {% endif %}
 
 
-
-                        {% if not obj.is_usage_area and obj.usage_areas.get_available.exists %}
-            <h2>Области применения:</h2>
-                <ul>
-            {% for usage_area in obj.usage_areas.get_available %}
-                <li><a href="{{ usage_area.get_absolute_url }}">{{ usage_area }}</a></li>
+        {% if obj.is_recipe or obj.is_usage_area and obj.plants.get_available.exists %}
+            <h2>Растения:</h2>
+            <ul>
+                {% for plant in obj.plants.get_available %}
+                    <li itemprop="recipeIngredient"><a href="{{ plant.get_absolute_url }}">{{ plant }}</a></li>
                 {% endfor %}
             </ul>
-            {% endif %}
-
-            {% if obj.is_plant and obj.wikipedia_link %}
- <div class="wiki-link">
-<a href="{{ obj.wikipedia_link }}">Ссылка на страницу Wikipedia</a>
-</div>
-    {% endif %}
-
-
-{% if obj.is_recipe %}
-
-    {% if obj.comment %}
-    <h2>Комментарий Medavi:</h2>
-    {{ obj.comment }}
-    {% endif %}
-
-
-            <div class="recipe-warning">Перед использованием любого рецепта обязательно проконсультируйтесь со специалистом.</div>
-
-            {% endif %}
-
-            <div id="post-related-list">
-                {% if obj.is_plant or obj.is_usage_area %}
-            {% if obj.recipes.get_available.exists %}
-            <div id="recipes">
-            <h2>Рецепты:</h2>
-                {% for recipe in obj.recipes.get_available %}
-                <div class="related-recipe">
-                    <div class="avatar">
-    {% if recipe.user %}
-<div>
-<div class="image-wrapper">
-<a class="user" href="{{ recipe.user.get_absolute_url }}">
-    {% if recipe.user.thumb50 %}
-    <img alt="{{ recipe.user }}" class="img-rounded" src="{{ recipe.user.thumb50 }}">
-        {% else %}
-        <img alt="Гость" class="img-rounded" src="{% static "main/images/guest.png" %}">
         {% endif %}
-</a>
-</div>
-</div>
-{% else %}
-
-<img alt="Гость" class="img-rounded" src="{% static "main/images/guest.png" %}">
-
-{% endif %}
-</div>
 
 
- <div class="user-block">
-<div>
-<a class="user" href="{{ recipe.user.get_absolute_url }}">{{ recipe.user }}</a>
-<span class="user-info-top">
+
+        {% if not obj.is_usage_area and obj.usage_areas.get_available.exists %}
+            <h2>Области применения:</h2>
+            <ul>
+                {% for usage_area in obj.usage_areas.get_available %}
+                    <li><a href="{{ usage_area.get_absolute_url }}">{{ usage_area }}</a></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if obj.is_plant and obj.wikipedia_link %}
+            <div class="wiki-link">
+                <a href="{{ obj.wikipedia_link }}">Ссылка на страницу Wikipedia</a>
+            </div>
+        {% endif %}
+
+
+        {% if obj.is_recipe %}
+
+            {% if obj.comment %}
+                <h2>Комментарий Medavi:</h2>
+                {{ obj.comment }}
+            {% endif %}
+
+
+            <div class="recipe-warning">Перед использованием любого рецепта обязательно проконсультируйтесь со
+                специалистом.
+            </div>
+
+        {% endif %}
+
+        <div id="post-related-list">
+            {% if obj.is_plant or obj.is_usage_area %}
+                {% if obj.recipes.get_available.exists %}
+                    <div id="recipes">
+                        <h2>Рецепты:</h2>
+                        {% for recipe in obj.recipes.get_available %}
+                            <div class="related-recipe">
+                                <div class="avatar">
+                                    {% if recipe.user %}
+                                        <div>
+                                            <div class="image-wrapper">
+                                                <a class="user" href="{{ recipe.user.get_absolute_url }}">
+                                                    {% if recipe.user.thumb50 %}
+                                                        <img alt="{{ recipe.user }}" class="img-rounded"
+                                                             src="{{ recipe.user.thumb50 }}">
+                                                    {% else %}
+                                                        <img alt="Гость" class="img-rounded"
+                                                             src="{% static "main/images/guest.png" %}">
+                                                    {% endif %}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    {% else %}
+
+                                        <img alt="Гость" class="img-rounded" src="{% static "main/images/guest.png" %}">
+
+                                    {% endif %}
+                                </div>
+
+
+                                <div class="user-block">
+                                    <div>
+                                        <a class="user" href="{{ recipe.user.get_absolute_url }}">{{ recipe.user }}</a>
+                                        <span class="user-info-top">
 <a href="{{ recipe.user.get_karm_url }}"><span>Карма: </span>{{ recipe.user.karm }}</a>
 <a href="{{ recipe.user.get_activity_url }}"><span>Активность: </span>{{ recipe.user.activity }}</a>
 </span>
-</div>
-</div>
+                                    </div>
+                                </div>
+
+
+                                <div class="recipe-title"><a href="{{ recipe.get_absolute_url }}">{{ recipe }}</a></div>
+                                <div class="recipe-body">{{ recipe.body|replace_nbsp|safe }}</div>
+                                <a class="btn btn-success post-recipe-comment-link"
+                                   href="{{ recipe.get_absolute_url }}#comments">Оставить отзыв о рецепте (уже оставлено
+                                    - {{ recipe.published_comments_count }})</a>
+                                <div class="recipe-warning">Перед использованием любого рецепта обязательно
+                                    проконсультируйтесь со специалистом.
+                                </div>
+                                <div class="line"></div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
 
 
 
 
-                    <div class="recipe-title"><a href="{{ recipe.get_absolute_url }}">{{ recipe }}</a></div>
-                <div class="recipe-body">{{ recipe.body|replace_nbsp|safe }}</div>
-                <a class="btn btn-success post-recipe-comment-link" href="{{ recipe.get_absolute_url }}#comments">Оставить отзыв о рецепте (уже оставлено - {{ recipe.published_comments_count }})</a>
-                <div class="recipe-warning">Перед использованием любого рецепта обязательно проконсультируйтесь со специалистом.</div>
-                    <div class="line"></div>
-                </div>
-            {% endfor %}
-            </div>
             {% endif %}
 
 
+        </div>
+
+        {% if obj.is_published %}
+            {% if not obj.is_usage_area %}
 
 
-            {% endif %}
+                <div class="comments">
+                    <h2>Отзывы:</h2>
 
-
-
-            </div>
-
-{% if obj.is_published %}
-{% if not obj.is_usage_area %}
-
-
-                    <div class="comments">
-                        <h2>Отзывы:</h2>
-
-                     <div class="comment-filter-form">
+                    <div class="comment-filter-form">
                         <form method="get">
                             {{ comments_options_form.as_p }}
                             <input type="submit" value="Применить" class="btn btn-success">
                         </form>
                     </div>
 
-                        {% for comment in comments %}
+                    {% for comment in comments %}
 
-                            <div class="full-comment">
-                                {% get_comment comment %}
+                        <div class="full-comment">
+                            {% get_comment comment %}
 
-                                <div class="comment-children-block">
+                            <div class="comment-children-block">
 
 
-                                    {% if show_tree %}
-                                        {% get_child_comments %}
+                                {% if show_tree %}
+                                    {% get_child_comments %}
 
-                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+
+                    {% endfor %}
+                </div>
+
+            {% endif %}
+
+
+            {% if paginator.num_pages > 1 %}
+                {% include 'super_model/base/_pager.html' with url=obj.get_absolute_url %}
+            {% endif %}
+        {% endif %}
+
+        {% if not obj.is_usage_area %}
+
+
+
+            {% if obj.is_published %}
+                <div id="comment-form-tabs">
+                    <ul>
+                        <li><a href="#tabs-1">Оcтавить отзыв</a></li>
+                        {% if obj.is_plant %}
+                            <li><a href="#tabs-2">Оставить рецепт</a></li>{% endif %}
+                    </ul>
+                    {% if obj.is_plant %}
+                        <div id="tabs-2">
+                            {% if user.is_authenticated %}
+                                <form method="post" id="recipe-form"
+                                      action="{% url 'create-recipe-from-post-detail' obj.pk %}">
+
+                                    {% csrf_token %}
+                                    <div id="recipe-form-inner">
+                                        {{ recipe_form.media }}
+                                        {{ recipe_form.as_p }}
+                                    </div>
+                                    <input class="btn btn-success" type="submit" value="Отправить">
+                                </form>
+                            {% else %}
+                                <div id="comment-form-guest-tab-block">Для того, чтобы оставлять рецепты, необходимо <a
+                                        href="{% url 'signup' %}">зарегистрироваться</a> или <a
+                                        href="{% url 'login' %}">войти</a> под Вашей учетной записью.
                                 </div>
-                            </div>
-
-                        {% endfor %}
-                    </div>
-
-            {% endif %}
-
-
-                    {% if paginator.num_pages > 1 %}
-                        {% include 'super_model/base/_pager.html' with url=obj.get_absolute_url %}
+                            {% endif %}
+                        </div>
                     {% endif %}
-            {% endif %}
-
-{% if not obj.is_usage_area %}
-
-
-
-{% if obj.is_published %}
-    <div id="comment-form-tabs">
-  <ul>
-    <li><a href="#tabs-1">Оcтавить отзыв</a></li>
-    {% if obj.is_plant %}<li><a href="#tabs-2">Оставить рецепт</a></li>{% endif %}
-  </ul>
-    {% if obj.is_plant %}
-        <div id="tabs-2">
-        {% if user.is_authenticated %}
-        <form method="post" id="recipe-form" action="{% url 'create-recipe-from-post-detail' obj.pk %}">
-
-                            {% csrf_token %}
-                            <div id="recipe-form-inner">
-                                {{ recipe_form.media }}
-                                {{ recipe_form.as_p }}
-                            </div>
-                            <input class="btn btn-success" type="submit" value="Отправить">
-                        </form>
-            {% else %}
-            <div id="comment-form-guest-tab-block">Для того, чтобы оставлять рецепты, необходимо <a href="{% url 'signup' %}">зарегистрироваться</a> или <a href="{% url 'login' %}">войти</a> под Вашей учетной записью.</div>
-            {% endif %}
-  </div>
-      {% endif %}
-  <div id="tabs-1">
-     <div id="answer-to-block" class="hidden">
+                    <div id="tabs-1">
+                        <div id="answer-to-block" class="hidden">
                             <label>В ответ на:</label><span id="answer-to-span"></span>
                             <input type="button" id="clean-answer-to" value="Очистить">
                         </div>
@@ -371,34 +401,35 @@
                             </div>
                             <input class="btn btn-success" type="submit" value="Отправить">
                         </form>
-  </div>
+                    </div>
 
-</div>
+                </div>
 
 
- {% endif %}
-    {% endif %}
-            </div>
-
+            {% endif %}
+        {% endif %}
         </div>
 
     </div>
+
+</div>
 </div>
 {% endblock content %}
 
 
 {% block bottom_scripts %}
-        {{ block.super }}
+    {{ block.super }}
 
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 
-  <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js" integrity="sha256-xNjb53/rY+WmG+4L6tTl9m6PpqknWZvRt0rO1SRnJzw=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"
+            integrity="sha256-xNjb53/rY+WmG+4L6tTl9m6PpqknWZvRt0rO1SRnJzw=" crossorigin="anonymous"></script>
 
     {% compress js %}
         <script>
             $(function () {
 
-    $( "#comment-form-tabs" ).tabs();
+                $("#comment-form-tabs").tabs();
 
 
                 $(document).on('click', '.comment-mark-button', function (e) {
@@ -490,8 +521,8 @@
                             }
                         },
                         error: function (data) {
-                        toHide.removeAttr('disabled');
-                        toShow.removeAttr('disabled');
+                            toHide.removeAttr('disabled');
+                            toShow.removeAttr('disabled');
                         }
                     });
 
@@ -643,7 +674,7 @@
                 });
 
 
-                 $(document).on('submit', '#recipe-form', function (e) {
+                $(document).on('submit', '#recipe-form', function (e) {
                     var frm = $('#recipe-form');
                     var innerForm = frm.find('#recipe-form-inner');
                     var button = frm.find('.btn');
@@ -691,23 +722,23 @@
                         data: actionData,
                         success: function (data) {
                             $('.star').removeClass('hidden');
-                         if (data.saved) {
-                            $('#post-average-mark').html(data['average_mark']);
-                            $('#post-marks-count').html(data['marks_count']);
-                            $('#current-post-mark-block').removeClass('hidden');
-                            $('#current-post-mark').html(data.mark);
-                            $('#cancel-mark-button').removeClass('hidden');
-                             $('#post-mark').addClass('hidden');
-                            $('#id_post_mark').closest('p').addClass('hidden');
-                            $('#id_post_mark').closest('p').find('select').val('');
-                        }
+                            if (data.saved) {
+                                $('#post-average-mark').html(data['average_mark']);
+                                $('#post-marks-count').html(data['marks_count']);
+                                $('#current-post-mark-block').removeClass('hidden');
+                                $('#current-post-mark').html(data.mark);
+                                $('#cancel-mark-button').removeClass('hidden');
+                                $('#post-mark').addClass('hidden');
+                                $('#id_post_mark').closest('p').addClass('hidden');
+                                $('#id_post_mark').closest('p').find('select').val('');
+                            }
                             else {
                                 alert('Действие не засчитано');
                             }
 
                         },
                         error: function (data) {
-                        $('.star').removeClass('hidden');
+                            $('.star').removeClass('hidden');
                         }
                     });
 
@@ -719,32 +750,32 @@
                     var pk = $('#post-pk').val();
                     var actionData = {'action': 'post-unmark', 'pk': pk}
                     $('#user-post-mark-button').removeAttr('disabled');
-                        $('#user-post-complain-button').removeAttr('disabled');
-                        $('#user-post-unmark-button').removeAttr('disabled');
-                        $('#user-post-uncomplain-button').removeAttr('disabled');
+                    $('#user-post-complain-button').removeAttr('disabled');
+                    $('#user-post-unmark-button').removeAttr('disabled');
+                    $('#user-post-uncomplain-button').removeAttr('disabled');
 
                     $.ajax({
                         type: 'POST',
                         url: '{% url 'history-ajax-save' %}',
                         data: actionData,
                         success: function (data) {
-                         $('#cancel-mark-button').removeAttr('disabled');
+                            $('#cancel-mark-button').removeAttr('disabled');
                             if (data.saved) {
-                            $('#current-post-mark-block').addClass('hidden');
-                            $('#post-mark').removeClass('hidden');
-                            $('#current-post-mark').html('');
-                            $('#cancel-mark-button').addClass('hidden');
+                                $('#current-post-mark-block').addClass('hidden');
+                                $('#post-mark').removeClass('hidden');
+                                $('#current-post-mark').html('');
+                                $('#cancel-mark-button').addClass('hidden');
 
-                            $('#id_post_mark').closest('p').removeClass('hidden');
-                            $('#post-average-mark').html(data['average_mark']);
-                            $('#post-marks-count').html(data['marks_count']);
-                        }
+                                $('#id_post_mark').closest('p').removeClass('hidden');
+                                $('#post-average-mark').html(data['average_mark']);
+                                $('#post-marks-count').html(data['marks_count']);
+                            }
                             else {
                                 alert('Действие не засчитано');
                             }
                         },
                         error: function (data) {
-                        $('#cancel-mark-button').removeAttr('disabled');
+                            $('#cancel-mark-button').removeAttr('disabled');
                         }
                     });
 
@@ -755,34 +786,34 @@
                     var pk = $('#post-pk').val();
                     var actionData = {'action': 'user-post-mark', 'pk': pk};
                     $('#user-post-mark-button').attr('disabled', 'disabled');
-                        $('#user-post-complain-button').attr('disabled', 'disabled');
-                        $('#user-post-unmark-button').attr('disabled', 'disabled');
-                        $('#user-post-uncomplain-button').attr('disabled', 'disabled');
+                    $('#user-post-complain-button').attr('disabled', 'disabled');
+                    $('#user-post-unmark-button').attr('disabled', 'disabled');
+                    $('#user-post-uncomplain-button').attr('disabled', 'disabled');
                     $.ajax({
                         type: 'POST',
                         url: '{% url 'history-ajax-save' %}',
                         data: actionData,
                         success: function (data) {
-                        $('#user-post-mark-button').removeAttr('disabled');
-                        $('#user-post-complain-button').removeAttr('disabled');
-                        $('#user-post-unmark-button').removeAttr('disabled');
-                        $('#user-post-uncomplain-button').removeAttr('disabled');
-                         if (data.saved) {
-                            $('#post-current-mark-span').html(data['marks_count']);
-                            $('#user-post-mark-button').addClass('hidden');
-                            $('#user-post-complain-button').addClass('hidden');
-                            $('#user-post-unmark-button').removeClass('hidden');
-                        }
+                            $('#user-post-mark-button').removeAttr('disabled');
+                            $('#user-post-complain-button').removeAttr('disabled');
+                            $('#user-post-unmark-button').removeAttr('disabled');
+                            $('#user-post-uncomplain-button').removeAttr('disabled');
+                            if (data.saved) {
+                                $('#post-current-mark-span').html(data['marks_count']);
+                                $('#user-post-mark-button').addClass('hidden');
+                                $('#user-post-complain-button').addClass('hidden');
+                                $('#user-post-unmark-button').removeClass('hidden');
+                            }
                             else {
                                 alert('Действие не засчитано');
                             }
 
                         },
                         error: function (data) {
-                        $('#user-post-mark-button').removeAttr('disabled');
-                        $('#user-post-complain-button').removeAttr('disabled');
-                        $('#user-post-unmark-button').removeAttr('disabled');
-                        $('#user-post-uncomplain-button').removeAttr('disabled');
+                            $('#user-post-mark-button').removeAttr('disabled');
+                            $('#user-post-complain-button').removeAttr('disabled');
+                            $('#user-post-unmark-button').removeAttr('disabled');
+                            $('#user-post-uncomplain-button').removeAttr('disabled');
 
                         }
                     });
@@ -794,34 +825,34 @@
                     var pk = $('#post-pk').val();
                     var actionData = {'action': 'user-post-unmark', 'pk': pk};
                     $('#user-post-mark-button').attr('disabled', 'disabled');
-                        $('#user-post-complain-button').attr('disabled', 'disabled');
-                        $('#user-post-unmark-button').attr('disabled', 'disabled');
-                        $('#user-post-uncomplain-button').attr('disabled', 'disabled');
+                    $('#user-post-complain-button').attr('disabled', 'disabled');
+                    $('#user-post-unmark-button').attr('disabled', 'disabled');
+                    $('#user-post-uncomplain-button').attr('disabled', 'disabled');
                     $.ajax({
                         type: 'POST',
                         url: '{% url 'history-ajax-save' %}',
                         data: actionData,
                         success: function (data) {
-                        $('#user-post-mark-button').removeAttr('disabled');
-                        $('#user-post-complain-button').removeAttr('disabled');
-                        $('#user-post-unmark-button').removeAttr('disabled');
-                        $('#user-post-uncomplain-button').removeAttr('disabled');
-                         if (data.saved) {
-                            $('#post-current-mark-span').html(data['marks_count']);
-                            $('#user-post-mark-button').removeClass('hidden');
-                            $('#user-post-complain-button').removeClass('hidden');
-                            $('#user-post-unmark-button').addClass('hidden');
-                        }
+                            $('#user-post-mark-button').removeAttr('disabled');
+                            $('#user-post-complain-button').removeAttr('disabled');
+                            $('#user-post-unmark-button').removeAttr('disabled');
+                            $('#user-post-uncomplain-button').removeAttr('disabled');
+                            if (data.saved) {
+                                $('#post-current-mark-span').html(data['marks_count']);
+                                $('#user-post-mark-button').removeClass('hidden');
+                                $('#user-post-complain-button').removeClass('hidden');
+                                $('#user-post-unmark-button').addClass('hidden');
+                            }
                             else {
                                 alert('Действие не засчитано');
                             }
 
                         },
                         error: function (data) {
-                       $('#user-post-mark-button').removeAttr('disabled');
-                        $('#user-post-complain-button').removeAttr('disabled');
-                        $('#user-post-unmark-button').removeAttr('disabled');
-                        $('#user-post-uncomplain-button').removeAttr('disabled');
+                            $('#user-post-mark-button').removeAttr('disabled');
+                            $('#user-post-complain-button').removeAttr('disabled');
+                            $('#user-post-unmark-button').removeAttr('disabled');
+                            $('#user-post-uncomplain-button').removeAttr('disabled');
 
                         }
                     });
@@ -829,39 +860,38 @@
                 });
 
 
-
                 $(document).on('click', '#user-post-complain-button', function (e) {
                     var pk = $('#post-pk').val();
                     var actionData = {'action': 'user-post-complain', 'pk': pk};
                     $('#user-post-mark-button').attr('disabled', 'disabled');
-                        $('#user-post-complain-button').attr('disabled', 'disabled');
-                        $('#user-post-unmark-button').attr('disabled', 'disabled');
-                        $('#user-post-uncomplain-button').attr('disabled', 'disabled');
+                    $('#user-post-complain-button').attr('disabled', 'disabled');
+                    $('#user-post-unmark-button').attr('disabled', 'disabled');
+                    $('#user-post-uncomplain-button').attr('disabled', 'disabled');
                     $.ajax({
                         type: 'POST',
                         url: '{% url 'history-ajax-save' %}',
                         data: actionData,
                         success: function (data) {
                             $('#user-post-mark-button').removeAttr('disabled');
-                        $('#user-post-complain-button').removeAttr('disabled');
-                        $('#user-post-unmark-button').removeAttr('disabled');
-                        $('#user-post-uncomplain-button').removeAttr('disabled');
-                         if (data.saved) {
-                            $('#post-current-complain-span').html(data['complain_count']);
-                            $('#user-post-mark-button').addClass('hidden');
-                            $('#user-post-complain-button').addClass('hidden');
-                            $('#user-post-uncomplain-button').removeClass('hidden');
-                        }
+                            $('#user-post-complain-button').removeAttr('disabled');
+                            $('#user-post-unmark-button').removeAttr('disabled');
+                            $('#user-post-uncomplain-button').removeAttr('disabled');
+                            if (data.saved) {
+                                $('#post-current-complain-span').html(data['complain_count']);
+                                $('#user-post-mark-button').addClass('hidden');
+                                $('#user-post-complain-button').addClass('hidden');
+                                $('#user-post-uncomplain-button').removeClass('hidden');
+                            }
                             else {
                                 alert('Действие не засчитано');
                             }
 
                         },
                         error: function (data) {
-                        $('#user-post-mark-button').removeAttr('disabled');
-                        $('#user-post-complain-button').removeAttr('disabled');
-                        $('#user-post-unmark-button').removeAttr('disabled');
-                        $('#user-post-uncomplain-button').removeAttr('disabled');
+                            $('#user-post-mark-button').removeAttr('disabled');
+                            $('#user-post-complain-button').removeAttr('disabled');
+                            $('#user-post-unmark-button').removeAttr('disabled');
+                            $('#user-post-uncomplain-button').removeAttr('disabled');
 
                         }
                     });
@@ -873,42 +903,39 @@
                     var pk = $('#post-pk').val();
                     var actionData = {'action': 'user-post-uncomplain', 'pk': pk};
                     $('#user-post-mark-button').attr('disabled', 'disabled');
-                        $('#user-post-complain-button').attr('disabled', 'disabled');
-                        $('#user-post-unmark-button').attr('disabled', 'disabled');
-                        $('#user-post-uncomplain-button').attr('disabled', 'disabled');
+                    $('#user-post-complain-button').attr('disabled', 'disabled');
+                    $('#user-post-unmark-button').attr('disabled', 'disabled');
+                    $('#user-post-uncomplain-button').attr('disabled', 'disabled');
                     $.ajax({
                         type: 'POST',
                         url: '{% url 'history-ajax-save' %}',
                         data: actionData,
                         success: function (data) {
                             $('#user-post-mark-button').removeAttr('disabled');
-                        $('#user-post-complain-button').removeAttr('disabled');
-                        $('#user-post-unmark-button').removeAttr('disabled');
-                        $('#user-post-uncomplain-button').removeAttr('disabled');
-                         if (data.saved) {
-                            $('#post-current-complain-span').html(data['complain_count']);
-                            $('#user-post-mark-button').removeClass('hidden');
-                            $('#user-post-complain-button').removeClass('hidden');
-                            $('#user-post-uncomplain-button').addClass('hidden');
-                        }
+                            $('#user-post-complain-button').removeAttr('disabled');
+                            $('#user-post-unmark-button').removeAttr('disabled');
+                            $('#user-post-uncomplain-button').removeAttr('disabled');
+                            if (data.saved) {
+                                $('#post-current-complain-span').html(data['complain_count']);
+                                $('#user-post-mark-button').removeClass('hidden');
+                                $('#user-post-complain-button').removeClass('hidden');
+                                $('#user-post-uncomplain-button').addClass('hidden');
+                            }
                             else {
                                 alert('Действие не засчитано');
                             }
 
                         },
                         error: function (data) {
-                       $('#user-post-mark-button').removeAttr('disabled');
-                        $('#user-post-complain-button').removeAttr('disabled');
-                        $('#user-post-unmark-button').removeAttr('disabled');
-                        $('#user-post-uncomplain-button').removeAttr('disabled');
+                            $('#user-post-mark-button').removeAttr('disabled');
+                            $('#user-post-complain-button').removeAttr('disabled');
+                            $('#user-post-unmark-button').removeAttr('disabled');
+                            $('#user-post-uncomplain-button').removeAttr('disabled');
 
                         }
                     });
 
                 });
-
-
-
 
 
                 $(document).on('click', '.comment-show-marked-users, .comment-hide-marked-users', function (e) {
@@ -950,7 +977,7 @@
                 });
 
 
-                 $(document).on('click', '.post-show-marked-users, .post-hide-marked-users', function (e) {
+                $(document).on('click', '.post-show-marked-users, .post-hide-marked-users', function (e) {
 
                     var postBlock = $(this).closest('#full-post');
                     //var cls = $(this).attr('class');

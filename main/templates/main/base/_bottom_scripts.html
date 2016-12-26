@@ -1,35 +1,36 @@
 {% load compress %}
-   <script   src="https://code.jquery.com/jquery-1.11.3.min.js" integrity="sha256-7LkWEzqTdpEfELxcZZlS6wAx5Ff13zZ83lYO2/ujj7g=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.11.3.min.js"
+        integrity="sha256-7LkWEzqTdpEfELxcZZlS6wAx5Ff13zZ83lYO2/ujj7g=" crossorigin="anonymous"></script>
 {% compress js %}
-<script>
-$(function () {
+    <script>
+        $(function () {
 
 
-        var frm = $('#contact-form');
-    frm.on('submit', function () {
-        $.ajax({
-            type: frm.attr('method'),
-            url: frm.attr('action'),
-            data: frm.serialize(),
-            success: function (data) {
-                frm.html(data);
-                $("#contact-form-error").html("");
-            },
-            error: function(data) {
-                $("#contact-form-error").html("Ошибка при отправке формы");
-            }
-        });
-        return false;
-    });
+            var frm = $('#contact-form');
+            frm.on('submit', function () {
+                $.ajax({
+                    type: frm.attr('method'),
+                    url: frm.attr('action'),
+                    data: frm.serialize(),
+                    success: function (data) {
+                        frm.html(data);
+                        $("#contact-form-error").html("");
+                    },
+                    error: function (data) {
+                        $("#contact-form-error").html("Ошибка при отправке формы");
+                    }
+                });
+                return false;
+            });
 
 
-    $('#ajax-login-button').click(function(e){
-    var loginForm = $("#ajax-login-form");
-    if (loginForm.length > 0) {
-    $('#login-form-block').html('');
-    }
-    else {
-    $.ajax({
+            $('#ajax-login-button').click(function (e) {
+                var loginForm = $("#ajax-login-form");
+                if (loginForm.length > 0) {
+                    $('#login-form-block').html('');
+                }
+                else {
+                    $.ajax({
                         type: 'POST',
                         url: '{% url 'get-ajax-login-form' %}',
                         success: function (data) {
@@ -40,112 +41,117 @@ $(function () {
                         }
                     });
 
-}
-});
-
-
-$(document).on('submit', '#ajax-login-form', function(e){
-
-    var loginForm = $('#ajax-login-form');
-
-$.ajax({
-                        type: 'POST',
-                        data: loginForm.serialize(),
-                        url: "{% url 'ajax-login' %}",
-                        success: function (data) {
-                        window.location.href = location.href;
-                        },
-                        error: function (data) {
-                        $('#login-form-block').html(data.responseJSON.html);
-                        }
-                    });
-
-
-e.preventDefault();
-
-
-
-});
-
-
-
-$("#id_q").keyup(function (e) {
-    var resultBlock = $('#autocomplete-suggestions');
-
-    $.ajax({
-        type: 'POST',
-        url: '{% url 'autocomplete' %}',
-        data: $("#search-form").serialize(),
-        success: function (data) {
-            resultBlock.html('');
-            if (data.results.length > 0){
-            resultBlock.append('<ul id="autocomplete-suggestions-list"></ul>');
                 }
-        for (var result_index in data.results) {
-            var result = data.results[result_index];
-            $('#autocomplete-suggestions-list').append('<li class="autocomplete-suggestion">' + result + '</li>');
-        }
-
-        },
-        error: function (data) {
-        resultBlock.html('');
-        }
-    });
+            });
 
 
-});
+            $(document).on('submit', '#ajax-login-form', function (e) {
 
-$(document).on('click', '.autocomplete-suggestion', function (e) {
-$("#id_q").val($(this).html());
-$("#search-form").trigger('submit');
+                var loginForm = $('#ajax-login-form');
 
-});
-});
-</script>
+                $.ajax({
+                    type: 'POST',
+                    data: loginForm.serialize(),
+                    url: "{% url 'ajax-login' %}",
+                    success: function (data) {
+                        window.location.href = location.href;
+                    },
+                    error: function (data) {
+                        $('#login-form-block').html(data.responseJSON.html);
+                    }
+                });
+
+
+                e.preventDefault();
+
+
+            });
+
+
+            $("#id_q").keyup(function (e) {
+                var resultBlock = $('#autocomplete-suggestions');
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url 'autocomplete' %}',
+                    data: $("#search-form").serialize(),
+                    success: function (data) {
+                        resultBlock.html('');
+                        if (data.results.length > 0) {
+                            resultBlock.append('<ul id="autocomplete-suggestions-list"></ul>');
+                        }
+                        for (var result_index in data.results) {
+                            var result = data.results[result_index];
+                            $('#autocomplete-suggestions-list').append('<li class="autocomplete-suggestion">' + result + '</li>');
+                        }
+
+                    },
+                    error: function (data) {
+                        resultBlock.html('');
+                    }
+                });
+
+
+            });
+
+            $(document).on('click', '.autocomplete-suggestion', function (e) {
+                $("#id_q").val($(this).html());
+                $("#search-form").trigger('submit');
+
+            });
+        });
+    </script>
 {% endcompress %}
 
 {% if not debug %}
 
-<!-- Yandex.Metrika counter -->
-<script type="text/javascript">
-    (function (d, w, c) {
-        (w[c] = w[c] || []).push(function() {
-            try {
-                w.yaCounter35597995 = new Ya.Metrika({
-                    id:35597995,
-                    clickmap:true,
-                    trackLinks:true,
-                    accurateTrackBounce:true,
-                    webvisor:true
-                });
-            } catch(e) { }
-        });
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript">
+        (function (d, w, c) {
+            (w[c] = w[c] || []).push(function () {
+                try {
+                    w.yaCounter35597995 = new Ya.Metrika({
+                        id: 35597995,
+                        clickmap: true,
+                        trackLinks: true,
+                        accurateTrackBounce: true,
+                        webvisor: true
+                    });
+                } catch (e) {
+                }
+            });
 
-        var n = d.getElementsByTagName("script")[0],
-            s = d.createElement("script"),
-            f = function () { n.parentNode.insertBefore(s, n); };
-        s.type = "text/javascript";
-        s.async = true;
-        s.src = "https://mc.yandex.ru/metrika/watch.js";
+            var n = d.getElementsByTagName("script")[0],
+                s = d.createElement("script"),
+                f = function () {
+                    n.parentNode.insertBefore(s, n);
+                };
+            s.type = "text/javascript";
+            s.async = true;
+            s.src = "https://mc.yandex.ru/metrika/watch.js";
 
-        if (w.opera == "[object Opera]") {
-            d.addEventListener("DOMContentLoaded", f, false);
-        } else { f(); }
-    })(document, window, "yandex_metrika_callbacks");
-</script>
-<noscript><div><img src="https://mc.yandex.ru/watch/35597995" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-<!-- /Yandex.Metrika counter -->
+            if (w.opera == "[object Opera]") {
+                d.addEventListener("DOMContentLoaded", f, false);
+            } else {
+                f();
+            }
+        })(document, window, "yandex_metrika_callbacks");
+    </script>
+    <noscript>
+        <div><img src="https://mc.yandex.ru/watch/35597995" style="position:absolute; left:-9999px;" alt=""/></div>
+    </noscript>
+    <!-- /Yandex.Metrika counter -->
 
     <!-- begin of Top100 code -->
 
-<script id="top100Counter" type="text/javascript" src="http://counter.rambler.ru/top100.jcn?4413399"></script>
-<noscript>
-<a href="http://top100.rambler.ru/navi/4413399/">
-<img src="http://counter.rambler.ru/top100.cnt?4413399" alt="Rambler's Top100" border="0" />
-</a>
+    <script id="top100Counter" type="text/javascript" src="http://counter.rambler.ru/top100.jcn?4413399"></script>
+    <noscript>
+        <a href="http://top100.rambler.ru/navi/4413399/">
+            <img src="http://counter.rambler.ru/top100.cnt?4413399" alt="Rambler's Top100" border="0"/>
+        </a>
 
-</noscript>
-<!-- end of Top100 code -->
+    </noscript>
+    <!-- end of Top100 code -->
 
 
 {% endif %}

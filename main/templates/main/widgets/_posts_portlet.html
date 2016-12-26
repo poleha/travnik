@@ -1,33 +1,33 @@
 {% load cache %}
 {% cache cache_duration posts_portlet portlet_type %}
-{% if objs %}
-    <div class="posts-portlet">
-    {% if title %}
-    <h3>{{ title }}</h3>
+    {% if objs %}
+        <div class="posts-portlet">
+            {% if title %}
+                <h3>{{ title }}</h3>
+            {% endif %}
+            {% for obj in objs %}
+                <div class="portlet-item">
+                    <p>
+                        <a class="user" href="{{ obj.user.get_absolute_url }}">{{ obj.user }}</a>
+                    </p>
+                    <p class="date">{{ obj.created }}</p>
+
+
+                    <p class="post">
+                        <a href="{{ obj.get_absolute_url }}">{{ obj }}</a>
+                    </p>
+
+                    <div class="posts-portlet-bottom">
+                        <p>
+                            <label>Посчитали полезным:&nbsp</label>{{ obj.user_marks_count }}
+                        </p>
+                        <p>
+
+                        </p>
+                    </div>
+                </div>
+                <div class="line"></div>
+            {% endfor %}
+        </div>
     {% endif %}
-    {% for obj in objs %}
-<div class="portlet-item">
-    <p>
-     <a class="user" href="{{ obj.user.get_absolute_url }}">{{ obj.user }}</a>
-</p>
- <p class="date">{{ obj.created }}</p>
-
-
-    <p class="post">
-<a href="{{ obj.get_absolute_url }}">{{ obj }}</a>
-</p>
-
-<div class="posts-portlet-bottom">
-<p>
-    <label>Посчитали полезным:&nbsp</label>{{ obj.user_marks_count }}
-  </p>
-    <p>
-
-</p>
-</div>
-</div>
- <div class="line"></div>
-{% endfor %}
-</div>
-{% endif %}
 {% endcache %}

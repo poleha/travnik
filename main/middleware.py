@@ -1,9 +1,9 @@
 from django import http
+
 from . import models
 
 
 class PlantSynonymsFallbackMiddleware:
-
     # Defined as class-level attributes to be subclassing-friendly.
     response_redirect_class = http.HttpResponsePermanentRedirect
 

@@ -1,15 +1,15 @@
 {% load main_tags %}
 {% for menu_item in menu_items %}
-<div class="col-lg-2 col-md-2 col-sm-2">
-<a class="btn btn-menu {{ menu_item.cls }}" href="{{ menu_item.url }}">{{ menu_item.title }}</a>
-</div>
+    <div class="col-lg-2 col-md-2 col-sm-2">
+        <a class="btn btn-menu {{ menu_item.cls }}" href="{{ menu_item.url }}">{{ menu_item.title }}</a>
+    </div>
 {% endfor %}
 <div class="col-lg-2 col-md-2 col-sm-2" id="search-block">
     <form method="get" action="{% url 'search' %}" id="search-form">
-            {{ search_form.q }}
-<input type="submit" value="Искать">
+        {{ search_form.q }}
+        <input type="submit" value="Искать">
     </form>
-<div id="autocomplete-suggestions"></div>
+    <div id="autocomplete-suggestions"></div>
 </div>
 
 

@@ -1,8 +1,8 @@
 {% if comments %}
-<div id="pending-comments">
-<h3>Сообщения на рассмотрении</h3>
-{% for comment in comments %}
-<div>{{ comment }}</div>
-{% endfor %}
-</div>
+    <div id="pending-comments">
+        <h3>Сообщения на рассмотрении</h3>
+        {% for comment in comments %}
+            <div>{{ comment }}</div>
+        {% endfor %}
+    </div>
 {% endif %}

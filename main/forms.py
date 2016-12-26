@@ -1,16 +1,19 @@
-from super_model import forms as super_forms
-from django.conf import settings
 from django import forms
-from . import models
+from django.conf import settings
 from django.db.models.aggregates import Count
 from django.forms import ValidationError
+
 from helper.helper import trim_title
+from super_model import forms as super_forms
+from . import models
+
 
 class PlantFilterForm(super_forms.PostFilterForm):
     class Meta:
         post_type = settings.POST_TYPE_PLANT
 
-    usage_areas = forms.MultipleChoiceField(choices=(), label='Область применения', widget=forms.CheckboxSelectMultiple(), required=False)
+    usage_areas = forms.MultipleChoiceField(choices=(), label='Область применения',
+                                            widget=forms.CheckboxSelectMultiple(), required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -20,8 +23,8 @@ class PlantFilterForm(super_forms.PostFilterForm):
         for usage_area in usage_areas:
             if usage_area.plant_count > 0:
                 usage_area_choices += ((usage_area.pk, "{0}({1})".format(usage_area, usage_area.plant_count)),)
-        self.fields['usage_areas'] = forms.MultipleChoiceField(choices=usage_area_choices, label='Область применения', widget=forms.CheckboxSelectMultiple(), required=False)
-
+        self.fields['usage_areas'] = forms.MultipleChoiceField(choices=usage_area_choices, label='Область применения',
+                                                               widget=forms.CheckboxSelectMultiple(), required=False)
 
 
 class RecipeFilterForm(super_forms.PostFilterForm):
@@ -57,8 +60,8 @@ class BaseRecipeForm(forms.ModelForm):
         return plants_choices
 
     def __new__(cls, *args, **kwargs):
-        cls.base_fields['plants'].widget=forms.CheckboxSelectMultiple()
-        cls.base_fields['usage_areas'].widget=forms.CheckboxSelectMultiple()
+        cls.base_fields['plants'].widget = forms.CheckboxSelectMultiple()
+        cls.base_fields['usage_areas'].widget = forms.CheckboxSelectMultiple()
         cls.base_fields['plants'].choices = cls.create_plant_choices()
         cls.base_fields['plants'].required = False
         cls.base_fields['usage_areas'].required = True
@@ -103,7 +106,8 @@ class RecipeUserForm(BaseRecipeForm):
                 title = self.cleaned_data.get('title', None)
                 if title:
                     title = trim_title(title)
-                    existing_recipes = models.Recipe.objects.filter(title__iexact=title, plants=plant).exclude(pk=self.instance.pk)
+                    existing_recipes = models.Recipe.objects.filter(title__iexact=title, plants=plant).exclude(
+                        pk=self.instance.pk)
                     if existing_recipes.exists():
                         raise ValidationError('Рецепт с таким названием уже существует для растения {}'.format(plant))
 
@@ -117,15 +121,14 @@ class UsageAreaForm(forms.ModelForm):
 class CommentForm(super_forms.SuperCommentForm):
     class Meta:
         model = models.Comment
-        fields = ('username', 'email', 'body', 'parent' )
+        fields = ('username', 'email', 'body', 'parent')
 
 
 class CommentOptionsForm(super_forms.SuperCommentOptionsForm):
-        show_type_label = 'Вид показа комментариев'
+    show_type_label = 'Вид показа комментариев'
 
 
 class CommentUpdateForm(forms.ModelForm):
     class Meta:
         model = models.Comment
-        fields = ('body', )
-
+        fields = ('body',)

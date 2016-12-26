@@ -1,28 +1,30 @@
 {% extends base_template %}
 {% load main_tags %}
 {% block content %}
-{% user_detail current_user%}
-{% include 'main/user/_user_profile_top_menu.html' with active_menu='user-recipes' %}
+    {% user_detail current_user %}
+    {% include 'main/user/_user_profile_top_menu.html' with active_menu='user-recipes' %}
 
- <div>
- <h2>Рецепты</h2>
- <table class="table table-bordered">
- <thead>
- <tr>
-     <th>Дата</th><th>Рецепт</th><th>Оценка</th>
- </tr>
- </thead>
- <tbody>
-     {% for recipe in recipes %}
-<tr>
-<td>{{ recipe.created }}</td>
-<td><a href="{{ recipe.get_absolute_url }}">{{ recipe }}</a></td>
-<td>{{ recipe.mark }}</td>
-</tr>
+    <div>
+        <h2>Рецепты</h2>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Дата</th>
+                <th>Рецепт</th>
+                <th>Оценка</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for recipe in recipes %}
+                <tr>
+                    <td>{{ recipe.created }}</td>
+                    <td><a href="{{ recipe.get_absolute_url }}">{{ recipe }}</a></td>
+                    <td>{{ recipe.mark }}</td>
+                </tr>
 
- {% endfor %}
- </tbody>
- </table>
- </div>
-{% include 'super_model/base/_pager.html' %}
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% include 'super_model/base/_pager.html' %}
 {% endblock content %}
