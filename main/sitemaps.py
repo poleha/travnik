@@ -4,7 +4,11 @@ from django.core.urlresolvers import reverse_lazy
 from .models import Plant, Recipe, UsageArea
 
 
-class PostSitemap(Sitemap):
+class BaseSitemap(Sitemap):
+    protocol = 'https'
+
+
+class PostSitemap(BaseSitemap):
     changefreq = "weekly"
     priority = 1.0
 
@@ -22,7 +26,7 @@ class RecipeSitemap(PostSitemap):
         return Recipe.objects.get_available()
 
 
-class PlantListSitemap(Sitemap):
+class PlantListSitemap(BaseSitemap):
     def items(self):
         return [self]
 

@@ -6,5 +6,5 @@ User-agent: *
 #Crawl-delay: 10
 Disallow: /admin
 Disallow: /search*?
-Sitemap: http://medavi.ru/sitemap.xml
-Host: medavi.ru
+Sitemap: https://medavi.ru/sitemap.xml
+Host: https://medavi.ru
