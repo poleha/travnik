@@ -34,12 +34,15 @@ if HOSTNAME in ['ubuntu', 'kulik']:
     HTML_MINIFY = False
     CACHE_ENABLED = True
     DEBUG_TOOLBAR = False
+    SITE_URL = 'http://127.0.0.1:8000'
 else:
     DEBUG = False
     DEBUG_TOOLBAR = False
     CACHE_ENABLED = True
     COMPRESS_ENABLED = True
     HTML_MINIFY = True
+    SITE_URL = 'https://medavi.ru'
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 ALLOWED_HOSTS = ['127.0.0.1', 'medavi.ru']
 
@@ -160,7 +163,6 @@ USE_L10N = True
 USE_TZ = True
 
 SITE_ID = '1'
-SITE_URL = 'http://medavi.ru'
 DEFAULT_FROM_EMAIL = 'Medavi.ru <info@medavi.ru>'
 SERVER_EMAIL = 'info@medavi.ru'
 INTERNAL_IPS = ['127.0.0.1']
