@@ -20,7 +20,7 @@ django-reversion==1.10.0
 django-webtest==1.7.8
 elasticsearch==2.2.0
 hiredis==0.2.0
-html5lib==0.9999999
+html5lib==0.999999999
 oauthlib==1.0.3
 psycopg2==2.6.1
 python3-openid==3.0.9
